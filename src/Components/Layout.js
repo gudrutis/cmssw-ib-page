@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import {Row} from 'react-bootstrap'
 
 
 class Layout extends Component {
@@ -8,9 +8,13 @@ class Layout extends Component {
     }
 
     render() {
+        let pathname = this.props.match.params.prefix;
         return (
-            <div>
-                {this.props.name}
+            <div className={'container'}>
+                <Row>
+                    {pathname}
+                    {/*{this.props.route.structure}*/}
+                </Row>
             </div>
         );
     }
