@@ -25,9 +25,8 @@ class App extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         $.ajax({
-            //problema su certificatu
             url: process.env.PUBLIC_URL + '/data/structure.json',
             dataType: 'json',
             cache: false,
@@ -42,7 +41,11 @@ class App extends Component {
     }
 
     render() {
-        // console.log(this.state.structure);
+        // console.log("Structure");
+        // console.log(this.state.structure.all_prefixes.length === 0);
+        if (this.state.structure.all_prefixes.length === 0){
+            return (<div/>)
+        }
         return (
             <div>
                 <Navigation toLinks={this.state.structure.all_prefixes}/>

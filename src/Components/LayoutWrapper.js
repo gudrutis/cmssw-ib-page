@@ -12,15 +12,26 @@ class LayoutWrapper extends Component {
         }
     }
 
+    componentWillMount() {
+        this.updateState(this.props);
+    }
+
     componentWillReceiveProps(newProps) {
-        let pathname = newProps.match.params.prefix;
-        let structure = newProps.structure;
-        let tempName = _.find(structure, function (val, key) {
-            return key == pathname;
+        if (this.props.match.params.prefix === newProps.match.params.prefix) {
+            return 0;
+        }
+        this.updateState(newProps);
+    }
+
+    updateState(props) {
+        let pathname = props.match.params.prefix;
+        let structure = props.structure;
+        let IbFlavorList = _.find(structure, function (val, key) {
+            return key === pathname;
         });
 
-        this.setState({nameList: tempName});
-        this.getData(tempName);
+        this.setState({nameList: IbFlavorList});
+        this.getData(IbFlavorList);
     }
 
     getData(ibList) {
@@ -47,8 +58,7 @@ class LayoutWrapper extends Component {
         return (
             <div className={'container'}>
                 {this.state.dataList.map(item => {
-                    return <div><JSONPretty json={item}></JSONPretty>
-                    </div>
+                    return <div><JSONPretty json={item}/></div>
                 })}
             </div>
         );
