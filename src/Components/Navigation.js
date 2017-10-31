@@ -23,7 +23,7 @@ class Navigation extends Component {
             <Navbar inverse fixedTop={true}>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <p>CMSSW Dashboard</p>
+                        <p>CMSSW IB</p>
                     </Navbar.Brand>
                     <Navbar.Toggle/>
                 </Navbar.Header>

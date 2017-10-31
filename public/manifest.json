@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "CMSSW IB",
+  "name": "CMSSW Integration Build",
   "icons": [
     {
       "src": "favicon.ico",

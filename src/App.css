@@ -22,7 +22,7 @@
   font-size: large;
 }
 
-/*TODO hard-codded padding */
+/*TODO hard-codded padding, */
 body { padding-top: 200px; }
 @media screen and (max-width: 768px) {
   body { padding-top: 0px; }
