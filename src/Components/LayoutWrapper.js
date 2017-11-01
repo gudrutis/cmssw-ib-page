@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import _ from 'underscore';
-import JSONPretty from 'react-json-pretty';
 import axios from 'axios'
 import wrapper from 'axios-cache-plugin'
 import uuid from 'uuid'
@@ -8,6 +7,7 @@ import SearchBar from './SearchBar'
 import ToggleButtonGroupControlled from "./ToggleButtonGroupControlled";
 import {Row} from "react-bootstrap";
 import FormGroup from "react-bootstrap/es/FormGroup";
+import ShowTable from './ShowTable'
 
 // TODO if speed is annoying, try to solve it by
 // TODO move to different service
@@ -87,9 +87,8 @@ class LayoutWrapper extends Component {
                 <ToggleButtonGroupControlled nameList={this.state.nameList}
                                              initSelections={this.state.all_release_queues}
                                              callbackToParent={this.updateNameListToShow.bind(this)}/>
-                {this.filterListToShow().map(item => {
-                    return <div key={uuid.v4()}><JSONPretty json={item}/></div>
-                })}
+
+                <ShowTable data={this.filterListToShow()}/>
             </div>
         );
     }

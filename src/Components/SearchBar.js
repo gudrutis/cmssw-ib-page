@@ -11,8 +11,6 @@ class SearchBar extends Component {
         };
     }
 
-
-
     render() {
         console.log(this.state);
         return (
