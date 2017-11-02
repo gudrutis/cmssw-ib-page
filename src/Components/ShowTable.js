@@ -1,46 +1,40 @@
 import React, {Component} from 'react';
-import uuid from 'uuid';
-import _ from 'underscore';
+import uuid from 'uuid'
+import PropTypes from 'prop-types';
 import JSONPretty from 'react-json-pretty';
-
-
-function transformDataList(data) {
-    let x = _.map(data, transformDataListElement)
-    x = _.flatten(x, true);
-    return _.groupBy(x, 'ib_date') || [];
-}
-
-function transformDataListElement(listEl) {
-    let release_name = listEl.release_name;
-    return _.map(listEl.comparisons, function (comparison) {
-        comparison['release_name'] = release_name;
-        return comparison;
-    })
-}
+import {Table} from "react-bootstrap";
 
 class ShowTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: transformDataList(props.data)
+            ibComparison: props.data
         };
     }
 
-    componentWillReceiveProps(newProps) {
-        this.setState({data: transformDataList(newProps.data)});
-    }
-
-
     render() {
-        console.log(this.state);
         return (
-            <div>
-                {_.map(this.state.data, function (item) {
-                    return <div key={uuid.v4()}><JSONPretty json={item}/></div>
-                })}
-            </div>
+            <Table responsive>
+                <thead>
+                </thead>
+                <tbody>
+                <tr>
+                    {this.state.ibComparison.map(item => {
+                        return (
+                            <td key={uuid.v4()}>
+                                {/*{item.compared_tags}*/}
+                                <JSONPretty json={item}/>
+                            </td>)
+                    })}
+                </tr>
+                </tbody>
+            </Table>
         );
     }
 }
+
+ShowTable.propTypes = {
+    data: PropTypes.array,
+};
 
 export default ShowTable;

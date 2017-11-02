@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
 import _ from 'underscore';
-import axios from 'axios'
-import wrapper from 'axios-cache-plugin'
-import uuid from 'uuid'
-import SearchBar from './SearchBar'
-import ToggleButtonGroupControlled from "./ToggleButtonGroupControlled";
-import {Row} from "react-bootstrap";
-import FormGroup from "react-bootstrap/es/FormGroup";
-import ShowTable from './ShowTable'
+import axios from 'axios';
+import wrapper from 'axios-cache-plugin';
+import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
+import ShowTable from './ShowTableWrapper'
 
 // TODO if speed is annoying, try to solve it by
 // TODO move to different service
@@ -20,7 +16,6 @@ httpWrapper.__addFilter(/\.json/);
 class LayoutWrapper extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             nameList: [],
             nameListToShow: [],
@@ -51,18 +46,21 @@ class LayoutWrapper extends Component {
     }
 
     getData(ibList) {
-        this.setState({dataList: []});
-        // TODO move to different service
-        ibList.map(name => {
-            httpWrapper.get(process.env.PUBLIC_URL + '/data/' + name + '.json')
-                .then(function (data) {
-                    this.setState({dataList: this.state.dataList.concat(data.data)}, function () {
-                    })
-                }.bind(this))
-                .catch(function (error) {
-                    console.log(error);
-                });
-        })
+        // this.setState({dataList: []});
+        let callbacks = ibList.map(name => {
+            return httpWrapper.get(process.env.PUBLIC_URL + '/data/' + name + '.json');
+        });
+
+        // when all callbaks are done, set data
+        axios.all(callbacks).then(function (allData) {
+            let data = allData.map(response => {
+                // TODO-pep reversing order, reversing in other please will reverse back and forth the original array.
+                let x = response.data;
+                x.comparisons = x.comparisons.reverse()
+                return x;
+            })
+            this.setState({dataList: data});
+        }.bind(this));
     }
 
     updateNameListToShow(newNameList) {
@@ -70,7 +68,6 @@ class LayoutWrapper extends Component {
     }
 
     filterListToShow() {
-        console.log(this.state);
         let nameListToShow = this.state.nameListToShow;
         return _.filter(this.state.dataList, function (item) {
             return _.contains(nameListToShow, item.release_name)
@@ -79,11 +76,8 @@ class LayoutWrapper extends Component {
 
     render() {
         return (
-            // TODO searcher viewbar
-            // TODO viewbar returns selections
-            // TODO view get filtered selection
             <div className={'container'}>
-                {/*<SearchBar/>*/}
+                {/*// TODO searcher viewbar*/}
                 <ToggleButtonGroupControlled nameList={this.state.nameList}
                                              initSelections={this.state.all_release_queues}
                                              callbackToParent={this.updateNameListToShow.bind(this)}/>

@@ -4,11 +4,9 @@ import React, {Component} from 'react';
 import uuid from 'uuid';
 import FormGroup from "react-bootstrap/es/FormGroup";
 
-class ToggleButtonGroupControlled extends Component {
+class TogglesShowIBFlawors extends Component {
     constructor(props, context) {
         super(props, context);
-        console.log("sitas")
-        console.log(props)
         this.state = {
             nameList: props.nameList,
             value: props.initSelections
@@ -26,7 +24,6 @@ class ToggleButtonGroupControlled extends Component {
     };
 
     render() {
-        console.log(this.state);
         return (
             <FormGroup>
                 <ToggleButtonGroup type="checkbox" value={this.state.value} onChange={this.onChange}>
@@ -39,4 +36,4 @@ class ToggleButtonGroupControlled extends Component {
     }
 }
 
-export default ToggleButtonGroupControlled;
+export default TogglesShowIBFlawors;
