@@ -7,13 +7,12 @@ import {Route, Switch, Redirect} from "react-router-dom";
 // import Sticky from 'react-stickynode';
 // import Sticky from 'react-sticky-el';
 // TODO: go through imports and check which ones we do not need
+//------------------------
+// TODO-project set most visited IB-flavor in cookie in then show in the future
 
 // Componenets
 import Navigation from './Components/Navigation'
 import LayoutWrapper from './Components/LayoutWrapper'
-
-// Constants
-const index = "/CMSSW_9_4_X";
 
 //------------------------------------------
 //      Main entry component
@@ -44,11 +43,12 @@ class App extends Component {
         });
     }
 
-    defaultPage(){
-        if (this.state.structure.all_prefixes){
-            return this.state.structure.all_prefixes;
-        } else if (this.state.structure.all_prefixes.length > 0){
-            return this.state.structure.all_prefixes[0];
+    defaultPage() {
+        if (this.state.structure.default_release) {
+            return this.state.structure.default_release;
+        } else if (this.state.structure.all_prefixes.length > 0) {
+            let lastPrefix = this.state.structure.all_prefixes.length - 1;
+            return this.state.structure.all_prefixes[lastPrefix];
         } else {
             return '/'
         }
@@ -61,9 +61,9 @@ class App extends Component {
         return (
             /* TODO sticky bibliotekos 'iskisa' pasislepusius inputus */
             <div>
-                <Navigation toLinks={this.defaultPage()}/>
+                <Navigation toLinks={this.state.structure.all_prefixes}/>
                 <Switch>
-                    <Redirect exact from="/" to={this.state.structure.default_release} push/>
+                    <Redirect exact from="/" to={this.defaultPage()} push/>
                     <Route path="/:prefix"
                            render={(props) => ( <LayoutWrapper {...props} structure={this.state.structure}/> )}/>
                 </Switch>
