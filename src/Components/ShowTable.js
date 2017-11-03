@@ -23,7 +23,7 @@ class ShowTable extends Component {
                         return (
                             <td key={uuid.v4()}>
                                 {/*{item.compared_tags}*/}
-                                <JSONPretty json={item}/>
+                                <JSONPretty json={[item.release_name, item.ib_date]}/>
                             </td>)
                     })}
                 </tr>

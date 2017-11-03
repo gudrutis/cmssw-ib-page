@@ -2,30 +2,25 @@ import React, {Component} from 'react';
 import uuid from 'uuid';
 import _ from 'underscore';
 import ShowTable from './ShowTable'
-import JSONPretty from 'react-json-pretty';
-import $ from 'jquery';
 
-// TODO-PREP preprocesing could be done by python in backend
 function transformDataList(data) {
-    let x = _.map(data, transformDataListElement)
+    // TODO-prep: could be done in python
+    let x = _.map(data, getComparisons)
     x = _.flatten(x, true);
-    console.log(x);
-    return _.map(_.groupBy(x, 'ib_date'), function (item) {
-        return item;
+    x = _.groupBy(x, 'next_ib')
+    let grouped = _.map(_.groupBy(x['false'], 'ib_date'), function (item, key) {
+        return {dateKey: key, data: item};
     });
+    let result = x['true'] != undefined ? [x['true']] : [];
+    let groupedArray = _.map(_.sortBy(grouped, 'dateKey').reverse(), function (item) {
+        return item.data;
+    }) ;
+    result = result.concat(groupedArray);
+    return result;
 }
 
-function transformDataListElement(listEl) {
-    let release_name = listEl.release_name;
-    // TODO-PREP, if default page can read reversed order, can be moved
-    let reversedComparisons = listEl.comparisons.slice().reverse();
-    let position = 0;
-    return _.map(reversedComparisons, function (comparison) {
-        // TODO-PREP will be fixed in python
-        comparison['release_flavor'] = release_name;
-        comparison['position'] = position;
-        position++;
-
+function getComparisons(listEl) {
+    return _.map(listEl.comparisons, function (comparison) {
         return comparison;
     });
 }
