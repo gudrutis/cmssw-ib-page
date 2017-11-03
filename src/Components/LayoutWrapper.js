@@ -3,9 +3,9 @@ import _ from 'underscore';
 import axios from 'axios';
 import wrapper from 'axios-cache-plugin';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
-import ShowTable from './ShowTableWrapper'
+import ShowTable from './ShowTableWrapper';
 
-// TODO if speed is annoying, try to solve it by
+// TODO if speed is an issue, try to solve it by
 // TODO move to different service
 let httpWrapper = wrapper(axios, {
     maxCacheSize: 15,
@@ -54,12 +54,21 @@ class LayoutWrapper extends Component {
         // when all callbaks are done, set data
         axios.all(callbacks).then(function (allData) {
             let data = allData.map(response => {
-                // TODO-pep reversing order, reversing in other please will reverse back and forth the original array.
-                let x = response.data;
-                x.comparisons = x.comparisons.reverse()
-                return x;
-            })
+                return response.data;
+            });
+
+            // TODO solved
+            // let data = allData.map(response => {
+            //     // TODO-PREP reversing order, reversing in other please will reverse back and forth the original array.
+            //     // TODO .reverse() mutates the original array. So on each request you keep getting flipped array.
+            //     let x = $.extend(true, {}, response.data) ;
+            //     x.comparisons = response.data.comparisons.slice().reverse();
+            //     return x;
+            // })
+
             this.setState({dataList: data});
+
+
         }.bind(this));
     }
 
@@ -77,7 +86,6 @@ class LayoutWrapper extends Component {
     render() {
         return (
             <div className={'container'}>
-                {/*// TODO searcher viewbar*/}
                 <ToggleButtonGroupControlled nameList={this.state.nameList}
                                              initSelections={this.state.all_release_queues}
                                              callbackToParent={this.updateNameListToShow.bind(this)}/>

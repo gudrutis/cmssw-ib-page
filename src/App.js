@@ -44,6 +44,16 @@ class App extends Component {
         });
     }
 
+    defaultPage(){
+        if (this.state.structure.all_prefixes){
+            return this.state.structure.all_prefixes;
+        } else if (this.state.structure.all_prefixes.length > 0){
+            return this.state.structure.all_prefixes[0];
+        } else {
+            return '/'
+        }
+    }
+
     render() {
         if (this.state.structure.all_prefixes.length === 0) {
             return (<div/>);
@@ -51,9 +61,9 @@ class App extends Component {
         return (
             /* TODO sticky bibliotekos 'iskisa' pasislepusius inputus */
             <div>
-                <Navigation toLinks={this.state.structure.all_prefixes}/>
+                <Navigation toLinks={this.defaultPage()}/>
                 <Switch>
-                    <Redirect exact from="/" to={index} push/>
+                    <Redirect exact from="/" to={this.state.structure.default_release} push/>
                     <Route path="/:prefix"
                            render={(props) => ( <LayoutWrapper {...props} structure={this.state.structure}/> )}/>
                 </Switch>

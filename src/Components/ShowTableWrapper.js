@@ -3,9 +3,9 @@ import uuid from 'uuid';
 import _ from 'underscore';
 import ShowTable from './ShowTable'
 import JSONPretty from 'react-json-pretty';
+import $ from 'jquery';
 
-
-// TODO preprocesing could be done by python in backend
+// TODO-PREP preprocesing could be done by python in backend
 function transformDataList(data) {
     let x = _.map(data, transformDataListElement)
     x = _.flatten(x, true);
@@ -17,13 +17,15 @@ function transformDataList(data) {
 
 function transformDataListElement(listEl) {
     let release_name = listEl.release_name;
-    // let reversedComparisons = listEl.comparisons.reverse();
-    let reversedComparisons = listEl.comparisons;
-    let x = 0;
+    // TODO-PREP, if default page can read reversed order, can be moved
+    let reversedComparisons = listEl.comparisons.slice().reverse();
+    let position = 0;
     return _.map(reversedComparisons, function (comparison) {
-        comparison['release_name'] = release_name;
-        comparison['position'] = x;
-        x++;
+        // TODO-PREP will be fixed in python
+        comparison['release_flavor'] = release_name;
+        comparison['position'] = position;
+        position++;
+
         return comparison;
     });
 }
