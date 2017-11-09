@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import uuid from 'uuid'
 import PropTypes from 'prop-types';
 import JSONPretty from 'react-json-pretty';
-import {Panel, PanelGroup, Table} from "react-bootstrap";
+import {Label, Panel, PanelGroup, Table} from "react-bootstrap";
 import _ from 'underscore';
 import $ from 'jquery';
 
@@ -15,7 +15,7 @@ class RenderTable extends Component {
     render() {
         return (
             <div className="table-responsive">
-                <h1><b>EXAMPLE LAYOUT</b></h1>
+                {/*<h1><b>EXAMPLE LAYOUT</b></h1>*/}
                 <Table id="#Table1" striped={true} bordered={true} condensed={true} hover>
                     <thead>
                     <tr>
@@ -52,7 +52,7 @@ class RenderTable extends Component {
                     <tbody>
                     <tr>
                         <td><b>Builds</b></td>
-                        <td>5000</td>
+                        <td><Label bsStyle="default">5000</Label></td>
                         <td>5000</td>
                         <td>5000</td>
                         <td>5000</td>
@@ -75,7 +75,7 @@ class RenderTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Unit Tests</b></td>
-                        <td>5000</td>
+                        <td><Label bsStyle="default">5000</Label></td>
                         <td>5000</td>
                         <td>5000</td>
                         <td>5000</td>
@@ -98,7 +98,7 @@ class RenderTable extends Component {
                     </tr>
                     <tr>
                         <td><b>RelVals</b></td>
-                        <td>5000</td>
+                        <td><Label bsStyle="default">5000</Label></td>
                         <td>5000</td>
                         <td>5000</td>
                         <td>5000</td>
@@ -121,7 +121,7 @@ class RenderTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Recall</b></td>
-                        <td>5000</td>
+                        <td><Label bsStyle="warning">5000</Label></td>
                         <td>5000</td>
                         <td>5000</td>
                         <td>5000</td>

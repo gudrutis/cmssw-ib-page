@@ -12,10 +12,11 @@ import {Route, Switch, Redirect} from "react-router-dom";
 // TODO-project set most visited IB-flavor in cookie in then show in the future
 // TODO-project create layout .json where layout is defined
 // TODO-project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits  }
+// TODO-project from structure.json select which ib flavors show by default
 
 // Componenets
 import Navigation from './Components/Navigation'
-import LayoutWrapper from './Components/LayoutWrapper'
+import Layout from './Components/Layout'
 
 //------------------------------------------
 //      Main entry component
@@ -68,7 +69,7 @@ class App extends Component {
                 <Switch>
                     <Redirect exact from="/" to={this.defaultPage()} push/>
                     <Route path="/:prefix"
-                           render={(props) => ( <LayoutWrapper {...props} structure={this.state.structure}/> )}/>
+                           render={(props) => ( <Layout {...props} structure={this.state.structure}/> )}/>
                 </Switch>
             </div>
         );

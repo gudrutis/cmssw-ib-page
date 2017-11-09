@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import uuid from 'uuid';
 import _ from 'underscore';
-import ShowTable from './ShowTable'
-import RenderTable from './RenderTable'
+import IBGroupFrame from './IBGroup/IBGroupFrame';
+import RenderTable from './RenderTable';
 
 function transformDataList(data) {
     // TODO-prep: could be done in python
@@ -26,7 +26,17 @@ function getComparisons(listEl) {
     });
 }
 
-class ShowTableWrapper extends Component {
+function getAllArchitecturesFromIBGroup(data) {
+    let a = _.map(data, function (item) {
+        return item.tests_archs;
+    });
+    a = _.flatten(a, true);
+    a = _.uniq(a);
+    return a;
+}
+
+// This class prepossess data before giving to following components
+class IBGroups extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,24 +51,17 @@ class ShowTableWrapper extends Component {
     render() {
         return (
             <div>
-                <RenderTable/>
+                {/*<RenderTable/>*/}
                 <div>
-                    {_.map(this.state.data, function (item) {
-                        return <ShowTable key={uuid.v4()} data={item}/>
+                    {_.map(this.state.data, function (ibGroup) {
+                        return <IBGroupFrame key={uuid.v4()} data={ibGroup}
+                                             architectures={getAllArchitecturesFromIBGroup(ibGroup)}/>
                     })}
                 </div>
             </div>
         );
 
-        // return (
-        //     <div>
-        //         {_.map(this.state.data, function (item) {
-        //             return <ShowTable key={uuid.v4()} data={item}/>
-        //         })}
-        //     </div>
-        // );
-
     }
 }
 
-export default ShowTableWrapper;
+export default IBGroups;
