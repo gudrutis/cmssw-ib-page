@@ -7,8 +7,11 @@ import {Route, Switch, Redirect} from "react-router-dom";
 // import Sticky from 'react-stickynode';
 // import Sticky from 'react-sticky-el';
 // TODO: go through imports and check which ones we do not need
+
 //------------------------
 // TODO-project set most visited IB-flavor in cookie in then show in the future
+// TODO-project create layout .json where layout is defined
+// TODO-project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits  }
 
 // Componenets
 import Navigation from './Components/Navigation'

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import uuid from 'uuid';
 import _ from 'underscore';
 import ShowTable from './ShowTable'
+import RenderTable from './RenderTable'
 
 function transformDataList(data) {
     // TODO-prep: could be done in python
@@ -11,10 +12,10 @@ function transformDataList(data) {
     let grouped = _.map(_.groupBy(x['false'], 'ib_date'), function (item, key) {
         return {dateKey: key, data: item};
     });
-    let result = x['true'] != undefined ? [x['true']] : [];
+    let result = x['true'] !== undefined ? [x['true']] : [];
     let groupedArray = _.map(_.sortBy(grouped, 'dateKey').reverse(), function (item) {
         return item.data;
-    }) ;
+    });
     result = result.concat(groupedArray);
     return result;
 }
@@ -40,11 +41,23 @@ class ShowTableWrapper extends Component {
     render() {
         return (
             <div>
-                {_.map(this.state.data, function (item) {
-                    return <ShowTable key={uuid.v4()} data={item}/>
-                })}
+                <RenderTable/>
+                <div>
+                    {_.map(this.state.data, function (item) {
+                        return <ShowTable key={uuid.v4()} data={item}/>
+                    })}
+                </div>
             </div>
         );
+
+        // return (
+        //     <div>
+        //         {_.map(this.state.data, function (item) {
+        //             return <ShowTable key={uuid.v4()} data={item}/>
+        //         })}
+        //     </div>
+        // );
+
     }
 }
 
