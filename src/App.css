@@ -22,15 +22,20 @@
   font-size: large;
 }
 
+@keyframes App-logo-spin {
+from { transform: rotate(0deg); }
+to { transform: rotate(360deg); }
+}
+
+/*increase max view of container*/
+@media only screen and (min-width : 1200px) {
+  .container {
+      width: 90%;
+  }
+}
+
 /*TODO hard-codded padding, */
 body { padding-top: 200px; }
 @media screen and (max-width: 768px) {
   body { padding-top: 0px; }
 }
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-
