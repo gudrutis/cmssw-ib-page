@@ -2,6 +2,7 @@
   "name": "cmssw-dashboard",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "axios": "^0.17.0",
     "axios-cache-plugin": "^0.1.0",

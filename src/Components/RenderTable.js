@@ -16,7 +16,7 @@ class RenderTable extends Component {
         return (
             <div className="table-responsive">
                 {/*<h1><b>EXAMPLE LAYOUT</b></h1>*/}
-                <Table id="#Table1" striped={true} bordered={true} condensed={true} hover>
+                <Table striped={true} bordered={true} condensed={true} hover>
                     <thead>
                     <tr>
                         <th rowSpan={2}></th>

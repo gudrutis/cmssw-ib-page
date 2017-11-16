@@ -2,41 +2,21 @@ import React, {Component} from 'react';
 import uuid from 'uuid';
 import _ from 'underscore';
 import IBGroupFrame from './IBGroup/IBGroupFrame';
-import RenderTable from './RenderTable';
-
-function transformDataList(data) {
-    // TODO-prep: could be done in python
-    let x = _.map(data, getComparisons)
-    x = _.flatten(x, true);
-    x = _.groupBy(x, 'next_ib')
-    let grouped = _.map(_.groupBy(x['false'], 'ib_date'), function (item, key) {
-        return {dateKey: key, data: item};
-    });
-    let result = x['true'] !== undefined ? [x['true']] : [];
-    let groupedArray = _.map(_.sortBy(grouped, 'dateKey').reverse(), function (item) {
-        return item.data;
-    });
-    result = result.concat(groupedArray);
-    return result;
-}
-
-function getComparisons(listEl) {
-    return _.map(listEl.comparisons, function (comparison) {
-        return comparison;
-    });
-}
-
-function getAllArchitecturesFromIBGroup(data) {
-    let a = _.map(data, function (item) {
-        return item.tests_archs;
-    });
-    a = _.flatten(a, true);
-    a = _.uniq(a);
-    return a;
-}
+import {transformDataList} from '../processing';
+import PropTypes from 'prop-types';
 
 // This class prepossess data before giving to following components
 class IBGroups extends Component {
+    static propTypes = {
+        data: PropTypes.arrayOf(
+            PropTypes.shape({
+                base_branch: PropTypes.string.isRequired,
+                release_name: PropTypes.string.isRequired,
+                comparisons: PropTypes.arrayOf(PropTypes.object)
+            })
+        )
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -51,17 +31,15 @@ class IBGroups extends Component {
     render() {
         return (
             <div>
-                {/*<RenderTable/>*/}
                 <div>
-                    {_.map(this.state.data, function (ibGroup) {
-                        return <IBGroupFrame key={uuid.v4()} data={ibGroup}
-                                             architectures={getAllArchitecturesFromIBGroup(ibGroup)}/>
+                    {_.map(this.state.data, function (IBGroup) {
+                        return <IBGroupFrame key={uuid.v4()} IBGroup={IBGroup}/>
                     })}
                 </div>
             </div>
         );
-
     }
+
 }
 
 export default IBGroups;
