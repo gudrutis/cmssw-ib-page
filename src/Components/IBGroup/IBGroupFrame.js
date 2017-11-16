@@ -6,13 +6,14 @@ import {Panel} from "react-bootstrap";
 import PropTypes from 'prop-types';
 
 class IBGroupFrame extends Component {
-    static propTypes = {
-        IBGroup: PropTypes.shape({
-            base_branch: PropTypes.string.isRequired,
-            release_name: PropTypes.string.isRequired,
-            comparisons: PropTypes.arrayOf(PropTypes.object)
-        })
-    };
+    // TODO
+    // static propTypes = {
+    //     IBGroup: PropTypes.shape({
+    //         base_branch: PropTypes.string.isRequired,
+    //         release_name: PropTypes.string.isRequired,
+    //         comparisons: PropTypes.arrayOf(PropTypes.object)
+    //     })
+    // };
 
     constructor(props) {
         super(props);
