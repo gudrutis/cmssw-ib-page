@@ -11,8 +11,12 @@ import {Route, Switch, Redirect} from "react-router-dom";
 //------------------------
 // TODO-project set most visited IB-flavor in cookie in then show in the future
 // TODO-project create layout .json where layout is defined
-// TODO-project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits  }
+// TODO-project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits }
 // TODO-project from structure.json select which ib flavors show by default
+
+// TODO-architecturu custom icons
+// TODO-color coding results with with pop-ups for explanation
+// TODO-relvals expanding explation on click
 
 // Componenets
 import Navigation from './Components/Navigation'
@@ -63,7 +67,7 @@ class App extends Component {
             return (<div/>);
         }
         return (
-            /* TODO sticky bibliotekos 'iskisa' pasislepusius inputus */
+            /* TODO sticky bibliotekos 'iskisa' pasislepusius inputus, todel nelabai galiui naudoti */
             <div>
                 <Navigation toLinks={this.state.structure.all_prefixes}/>
                 <Switch>

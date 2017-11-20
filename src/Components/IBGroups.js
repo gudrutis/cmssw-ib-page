@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import uuid from 'uuid';
 import _ from 'underscore';
 import IBGroupFrame from './IBGroup/IBGroupFrame';
-import {transformDataList} from '../processing';
+import {groupAndTransformIBDataList} from '../processing';
 import PropTypes from 'prop-types';
 
 // This class prepossess data before giving to following components
@@ -20,12 +20,12 @@ class IBGroups extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: transformDataList(props.data)
+            data: groupAndTransformIBDataList(props.data)
         };
     }
 
     componentWillReceiveProps(newProps) {
-        this.setState({data: transformDataList(newProps.data)});
+        this.setState({data: groupAndTransformIBDataList(newProps.data)});
     }
 
     render() {
