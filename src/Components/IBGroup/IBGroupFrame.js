@@ -38,30 +38,12 @@ class IBGroupFrame extends Component {
 
     }
 
-    // getHeader() {
-    //     const firstIbFromList = this.state.IBGroup[0];
-    //     const {isIB, next_ib,} = firstIbFromList;
-    //
-    //     switch (this.getIbGroupType()) {
-    //         case 'IB':
-    //             return 'IB';
-    //         case 'nextIB':
-    //             return 'nextIB';
-    //         case 'fullBuild':
-    //             return 'fullBuild';
-    //     }
-    //     return 'Error: IB group is empty'
-    // }
-
     render() {
-        // TODO check if {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits}
         const firstIbFromList = this.state.IBGroup[0];
-
         if (!firstIbFromList) {
             return (<div><h1>Error: IB group is empty</h1></div>)
         }
 
-        const {isIB, next_ib} = firstIbFromList;
         let statusLabels, comparisonTable, commitPanelProps = null;
         let panelHeader;
 
@@ -93,7 +75,7 @@ class IBGroupFrame extends Component {
             <Panel collapsible
                    defaultExpanded
                    header={panelHeader}>
-                <Panel collapsible /* TODO delete it */
+                <Panel collapsible
                        header={'DEVELOPMENT real data'}>
                     <JSONPretty json={this.state.IBGroup}/>
                 </Panel>

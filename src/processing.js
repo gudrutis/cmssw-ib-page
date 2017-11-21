@@ -35,4 +35,16 @@ export function getAllArchitecturesFromIBGroup(IBGroup) {
     return a;
 }
 
+export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
+    let a = _.map(IBGroup, function (ib) {
+        return {
+            flavor: ib.release_queue,
+            archs: ib.tests_archs
+        };
+    });
+    a = _.flatten(a, true);
+    a = _.uniq(a);
+    return a;
+}
+
 

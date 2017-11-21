@@ -5,7 +5,7 @@ class Commits extends Component {
     // TODO - prop types
     constructor(props) {
         super(props);
-        console.log(props);
+        // console.log(props);
         const {commitPanelProps} = props;
         this.state = {
             commitPanelProps

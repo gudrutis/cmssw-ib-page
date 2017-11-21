@@ -4,7 +4,7 @@ import axios from 'axios';
 import wrapper from 'axios-cache-plugin';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBGroups';
-import createHistory from 'history/createBrowserHistory'
+import createHistory from 'history/createBrowserHistory';
 
 // TODO if speed is an issue, try to solve it by
 // TODO move to different service
@@ -13,8 +13,6 @@ let httpWrapper = wrapper(axios, {
     ttl: 3 * 60 * 1000
 });
 httpWrapper.__addFilter(/\.json/);
-
-
 
 // This class gets data
 class LayoutWrapper extends Component {
@@ -82,9 +80,7 @@ class LayoutWrapper extends Component {
         // TODO cia rerenderint history
         let history = createHistory();
         let location = history.location;
-        console.log(location);
         return (
-
             <div className={'container'}>
                 <ToggleButtonGroupControlled nameList={this.state.nameList}
                                              initSelections={this.state.all_release_queues}
