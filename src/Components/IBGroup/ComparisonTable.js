@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import JSONPretty from 'react-json-pretty';
 import {Label, OverlayTrigger, Panel, PanelGroup, Table, Tooltip, Badge} from "react-bootstrap";
 import RenderTable from "../RenderTable";
-import { getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
+import {getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 
@@ -20,6 +20,10 @@ class ComparisonTable extends Component {
             archsByIb: getAllArchitecturesFromIBGroupByFlavor(props.data)
             // architectures: getAllArchitecturesFromIBGroup(props.data)
         };
+    }
+
+    renderBuildRow(){
+
     }
 
     render() {
@@ -42,45 +46,43 @@ class ComparisonTable extends Component {
                     </thead>
                     <tbody>
                     <tr>
-                        <td><b>Builds</b></td>
+                        <td>
+                            <b>Builds</b>
+                        </td>
                         {ibComparison.map((ib, pos) => {
-
                             const el = archsByIb[pos];
                             return el.archs.map(arch => {
-                                const buildResults = _.findWhere(ib.builds, {"arch": arch})
+                                const buildResults = _.findWhere(ib.builds, {"arch": arch});
 
-                                if (buildResults === undefined) {
-                                    // there was no build for this arch
-                                    return (
-                                        <th key={uuid.v4()}>No build</th>
-                                    )
-                                }
-                                let cellInfo, tooltip;
+                                let cellInfo, tooltip = undefined;
                                 const {details} = buildResults;
-                                if (!_.isEmpty(details)) {
+                                if (!_.isEmpty(details) && (details.compWarning != undefined && details.compWarning > 0)) {
+
                                     cellInfo = (
                                         <a href="#" class="btn label label-danger">
-                                            <span class="glyphicon  glyphicon-remove-circle"/>
+                                            {details.compWarning}
                                         </a>
-                                    )
+                                    );
                                     tooltip = (
-                                        <Tooltip>{`compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`}</Tooltip>)
+                                        <Tooltip>{`compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`}</Tooltip>
+                                    )
 
                                 } else {
                                     cellInfo = (
                                         <a href="#" class="btn label label-success">
                                             <span class="glyphicon glyphicon-ok-circle"/>
                                         </a>
-                                    )
+                                    );
                                     tooltip = <Tooltip><strong>All good!</strong> More info.</Tooltip>
                                 }
 
                                 return (
-                                    <th key={uuid.v4()}>
+                                    <td key={uuid.v4()}>
                                         <OverlayTrigger placement="top" overlay={tooltip}>
                                             {cellInfo}
                                         </OverlayTrigger>
-                                    </th>);
+                                    </td>
+                                );
                             })
                         })}
                     </tr>
