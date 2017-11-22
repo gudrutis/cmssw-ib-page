@@ -49,7 +49,7 @@ class IBGroupFrame extends Component {
 
         switch (this.getIbGroupType()) {
             case 'IB':
-                panelHeader = firstIbFromList.ib_date;
+                panelHeader = firstIbFromList.release_name;
                 statusLabels = <StatusLabels/>;
                 comparisonTable = <ComparisonTable data={this.state.IBGroup}/>;
                 commitPanelProps = {

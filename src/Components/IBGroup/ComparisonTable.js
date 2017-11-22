@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import JSONPretty from 'react-json-pretty';
-import {Label, OverlayTrigger, Panel, PanelGroup, Table, Tooltip} from "react-bootstrap";
+import {Label, OverlayTrigger, Panel, PanelGroup, Table, Tooltip, Badge} from "react-bootstrap";
 import RenderTable from "../RenderTable";
-import {getAllArchitecturesFromIBGroup, getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
+import { getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 
@@ -23,7 +23,6 @@ class ComparisonTable extends Component {
     }
 
     render() {
-
         const {archsByIb, ibComparison} = this.state
         return (
             <div className="table-responsive">
@@ -45,18 +44,27 @@ class ComparisonTable extends Component {
                     <tr>
                         <td><b>Builds</b></td>
                         {ibComparison.map((ib, pos) => {
+
                             const el = archsByIb[pos];
                             return el.archs.map(arch => {
                                 const buildResults = _.findWhere(ib.builds, {"arch": arch})
-                                const {details} = buildResults;
+
+                                if (buildResults === undefined) {
+                                    // there was no build for this arch
+                                    return (
+                                        <th key={uuid.v4()}>No build</th>
+                                    )
+                                }
                                 let cellInfo, tooltip;
+                                const {details} = buildResults;
                                 if (!_.isEmpty(details)) {
                                     cellInfo = (
                                         <a href="#" class="btn label label-danger">
                                             <span class="glyphicon  glyphicon-remove-circle"/>
                                         </a>
                                     )
-                                    tooltip = (<Tooltip>{`compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`}</Tooltip>)
+                                    tooltip = (
+                                        <Tooltip>{`compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`}</Tooltip>)
 
                                 } else {
                                     cellInfo = (
@@ -65,7 +73,6 @@ class ComparisonTable extends Component {
                                         </a>
                                     )
                                     tooltip = <Tooltip><strong>All good!</strong> More info.</Tooltip>
-                                    console.log(details);
                                 }
 
                                 return (

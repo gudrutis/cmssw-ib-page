@@ -18,6 +18,12 @@ import {Route, Switch, Redirect} from "react-router-dom";
 // TODO-color coding results with with pop-ups for explanation
 // TODO-relvals expanding explation on click
 
+// TODO-project old IB without build data will be cleaned,
+// TODO-project if there is no arch, display only commits (that is if it is commits)
+// TODO-project color code archs with images
+// TODO-project flavors should have name map
+// TODO-project collor code builds/test stats
+
 // Componenets
 import Navigation from './Components/Navigation'
 import Layout from './Components/Layout'
