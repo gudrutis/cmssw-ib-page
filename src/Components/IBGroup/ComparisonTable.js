@@ -48,7 +48,7 @@ class ComparisonTable extends Component {
         }
     }
 
-    renderRowCells(iterationFunction){
+    renderRowCells(iterationFunction) {
         const {archsByIb, ibComparison} = this.state;
         return ibComparison.map((ib, pos) => {
             const el = archsByIb[pos];
@@ -57,9 +57,11 @@ class ComparisonTable extends Component {
     }
 
     renderBuildRowCells() {
-
         const iterationFunction = function (arch, ib) {
             const buildResults = _.findWhere(ib.builds, {"arch": arch});
+            if (!buildResults) {
+                return ComparisonTable.renderCell();
+            }
 
             let cellInfo, tooltipContent = undefined;
             const {details} = buildResults;
@@ -68,46 +70,80 @@ class ComparisonTable extends Component {
                 cellInfo = ComparisonTable.renderLabel(
                     {colorType: 'danger', value: details.compWarning, tooltipContent}
                 );
-
             } else {
-                tooltipContent = <p><strong>All good!</strong> More info.</p>
+                tooltipContent = <p><strong>All good!</strong> More info.</p>;
                 cellInfo = ComparisonTable.renderLabel(
                     {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
                 );
             }
-
             return ComparisonTable.renderCell(cellInfo);
         };
+
         return this.renderRowCells(iterationFunction);
     }
 
     renderUnitTestsRowCells() {
-        const {archsByIb, ibComparison} = this.state;
+        const iterationFunction = function (arch, ib) {
+            const utestsResults = _.findWhere(ib.utests, {"arch": arch});
+            if (!utestsResults) {
+                return ComparisonTable.renderCell();
+            }
 
-        return ibComparison.map((ib, pos) => {
-            const el = archsByIb[pos];
-            return el.archs.map(arch => {
-                const buildResults = _.findWhere(ib.builds, {"arch": arch});
-                let cellInfo, tooltipContent = undefined;
-                const {details} = buildResults;
+            let cellInfo, tooltipContent = undefined;
+            const {details} = utestsResults;
+            if (!_.isEmpty(details) && (details.num_fails !== undefined && details.num_fails > 0)) {
+                const testStr = details.num_fails === 1 ? "test" : "tests"
+                tooltipContent = `${details.num_fails} unit ${testStr} failing`;
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'danger', value: details.num_fails, tooltipContent}
+                );
+            } else if (utestsResults.passed === "passed") {
+                tooltipContent = <p><strong>All good!</strong> More info.</p>;
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+                );
+            } else {
+                tooltipContent = <p>Results are unknown</p>
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'default', glyphicon: 'glyphicon-question-sign', tooltipContent}
+                );
+            }
+            return ComparisonTable.renderCell(cellInfo);
+        };
 
-                // if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
-                //     tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
-                //     cellInfo = ComparisonTable.renderLabel(
-                //         {colorType: 'danger', value: details.compWarning, tooltipContent}
-                //     );
-                //
-                // } else {
-                //     tooltipContent = <p><strong>All good!</strong> More info.</p>
-                //     cellInfo = ComparisonTable.renderLabel(
-                //         {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
-                //     );
-                // }
+        return this.renderRowCells(iterationFunction);
+    }
 
-                return ComparisonTable.renderCell(cellInfo);
+    renderRelValsRowCells() {
+        const iterationFunction = function (arch, ib) {
+            const testResults = _.findWhere(ib.relvals, {"arch": arch});
+            if (!testResults) {
+                return ComparisonTable.renderCell();
+            }
 
-            })
-        })
+            let cellInfo, tooltipContent = undefined;
+            const {details} = testResults;
+            if (!_.isEmpty(details) && (details.num_fails !== undefined && details.num_fails > 0)) {
+                const testStr = details.num_fails === 1 ? "test" : "tests"
+                tooltipContent = `${details.num_fails} unit ${testStr} failing`;
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'danger', value: details.num_fails, tooltipContent}
+                );
+            } else if (testResults.passed === "passed") {
+                tooltipContent = <p><strong>All good!</strong> More info.</p>;
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+                );
+            } else {
+                tooltipContent = <p>Results are unknown</p>
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'default', glyphicon: 'glyphicon-question-sign', tooltipContent}
+                );
+            }
+            return ComparisonTable.renderCell(cellInfo);
+        };
+
+        return this.renderRowCells(iterationFunction);
     }
 
     render() {
@@ -147,12 +183,11 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Unit Tests</b></td>
-
+                        {this.renderUnitTestsRowCells()}
                     </tr>
                     <tr>
                         <td><b>RelVals</b></td>
                         <th>
-
                         </th>
                     </tr>
                     <tr>
