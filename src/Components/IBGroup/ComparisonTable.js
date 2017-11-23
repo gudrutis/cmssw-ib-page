@@ -4,7 +4,8 @@ import {Badge, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import {getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
 import _ from 'underscore';
 import uuid from 'uuid';
-import {tooltipDelayInMs,archShowCodes} from '../../config.json'
+import {tooltipDelayInMs, archShowCodes} from '../../config.json'
+import RenderTable from "../RenderTable";
 
 class ComparisonTable extends Component {
     static propTypes = {
@@ -19,59 +20,65 @@ class ComparisonTable extends Component {
         };
     }
 
-    static renderCell(cellInfo, tooltipContent) {
-        if (tooltipContent != undefined) {
+    static renderCell(cellInfo) {
+        return (
+            <td key={uuid.v4()}>
+                {cellInfo}
+            </td>
+        )
+    }
+
+    static renderLabel({colorType, value, glyphicon, link, tooltipContent} = {}) {
+        if (tooltipContent !== undefined) {
             return (
-                <td key={uuid.v4()}>
-                    <OverlayTrigger placement="top" overlay={<Tooltip>{tooltipContent}</Tooltip>}
-                                    delay={tooltipDelayInMs}>
-                        {cellInfo}
-                    </OverlayTrigger>
-                </td>
-            )
+                <OverlayTrigger placement="top" overlay={<Tooltip>{tooltipContent}</Tooltip>}
+                                delay={tooltipDelayInMs}>
+                    <a href={link} className={`btn label label-${colorType}`}>
+                        {glyphicon ? <span className={`glyphicon ${glyphicon}`}/> : value}
+                    </a>
+                </OverlayTrigger>
+
+            );
         } else {
             return (
-                <td key={uuid.v4()}>
-                    {cellInfo}
-                </td>
-            )
+                <a href={link} className={`btn label label-${colorType}`}>
+                    {glyphicon ? <span className={`glyphicon ${glyphicon}`}/> : value}
+                </a>
+            );
         }
     }
 
-    static renderLabel({colorType, value, glyphicon, link} = {}) {
-        return (
-            <a href={link} className={`btn label label-${colorType}`}>
-                {glyphicon ? <span className={`glyphicon ${glyphicon}`}/> : value}
-            </a>
-        );
+    renderRowCells(iterationFunction){
+        const {archsByIb, ibComparison} = this.state;
+        return ibComparison.map((ib, pos) => {
+            const el = archsByIb[pos];
+            return el.archs.map(arch => iterationFunction(arch, ib))
+        })
     }
 
     renderBuildRowCells() {
-        const {archsByIb, ibComparison} = this.state;
 
-        return ibComparison.map((ib, pos) => {
-            const el = archsByIb[pos];
-            return el.archs.map(arch => {
-                const buildResults = _.findWhere(ib.builds, {"arch": arch});
+        const iterationFunction = function (arch, ib) {
+            const buildResults = _.findWhere(ib.builds, {"arch": arch});
 
-                let cellInfo, tooltipContent = undefined;
-                const {details} = buildResults;
-                if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
-                    cellInfo = ComparisonTable.renderLabel(
-                        {colorType: 'danger', value: details.compWarning}
-                    );
-                    tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
+            let cellInfo, tooltipContent = undefined;
+            const {details} = buildResults;
+            if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
+                tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'danger', value: details.compWarning, tooltipContent}
+                );
 
-                } else {
-                    cellInfo = ComparisonTable.renderLabel(
-                        {colorType: 'success', glyphicon: 'glyphicon-ok-circle'}
-                    );
-                    tooltipContent = <p><strong>All good!</strong> More info.</p>
-                }
+            } else {
+                tooltipContent = <p><strong>All good!</strong> More info.</p>
+                cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+                );
+            }
 
-                return ComparisonTable.renderCell(cellInfo, tooltipContent);
-            })
-        })
+            return ComparisonTable.renderCell(cellInfo);
+        };
+        return this.renderRowCells(iterationFunction);
     }
 
     renderUnitTestsRowCells() {
@@ -79,7 +86,27 @@ class ComparisonTable extends Component {
 
         return ibComparison.map((ib, pos) => {
             const el = archsByIb[pos];
+            return el.archs.map(arch => {
+                const buildResults = _.findWhere(ib.builds, {"arch": arch});
+                let cellInfo, tooltipContent = undefined;
+                const {details} = buildResults;
 
+                // if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
+                //     tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
+                //     cellInfo = ComparisonTable.renderLabel(
+                //         {colorType: 'danger', value: details.compWarning, tooltipContent}
+                //     );
+                //
+                // } else {
+                //     tooltipContent = <p><strong>All good!</strong> More info.</p>
+                //     cellInfo = ComparisonTable.renderLabel(
+                //         {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+                //     );
+                // }
+
+                return ComparisonTable.renderCell(cellInfo);
+
+            })
         })
     }
 
@@ -103,7 +130,7 @@ class ComparisonTable extends Component {
                                         {arch.split("_").map(str => {
                                             const {color} = archShowCodes;
 
-                                            return <div><span style={{backgroundColor: color[str]}} >{str}</span></div>
+                                            return <div><span style={{backgroundColor: color[str]}}>{str}</span></div>
                                         })}
                                     </th>
                                 )
@@ -120,9 +147,7 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Unit Tests</b></td>
-                        <th>
 
-                        </th>
                     </tr>
                     <tr>
                         <td><b>RelVals</b></td>
@@ -142,7 +167,7 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Q/A</b></td>
-                        <th></th>
+                        <th>TODO goes to labels</th>
                     </tr>
 
                     </tbody>
