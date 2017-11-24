@@ -81,7 +81,7 @@ class IBGroupFrame extends Component {
                 </Panel>
                 {statusLabels}
                 {comparisonTable}
-                <Commits commitPanelProps={commitPanelProps}/>
+                <Commits commitPanelProps={commitPanelProps} data={this.state.IBGroup} />
             </Panel>
         )
 

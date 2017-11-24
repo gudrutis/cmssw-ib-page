@@ -3,38 +3,48 @@ import {Panel, Tab, Tabs} from "react-bootstrap";
 
 class Commits extends Component {
     // TODO - prop types
+
     constructor(props) {
         super(props);
-        // console.log(props);
-        const {commitPanelProps} = props;
+        this.state = props;
         this.state = {
-            commitPanelProps
+            commitPanelProps: props.commitPanelProps,
+            ibComparison: props.data
         }
     }
 
     render() {
-        // TODO - finish
-        // TODO - if it is only 1 commit( eg. release), should I show tabs ?
-        // console.log(this.state.commitPanelProps)
+        const {commitPanelProps, ibComparison} = this.state;
+
         return (
-            <Panel {...this.state.commitPanelProps}
+            <Panel {...commitPanelProps}
                    header={'Commits'}>
-                <Tabs defaultActiveKey={1} animation={false} id="noanim-tab-example">
-                    <Tab eventKey={1} title="CMSSW_10_0_X">
-                        <p/>Tab 1 content
-                    </Tab>
-                    <Tab eventKey={2} title="CMSSW_10_0_ROOT6_X">
-                        <p>Commit 1</p>
-                    </Tab>
-                    <Tab eventKey={3} title="CMSSW_10_0_DEVEL_X">
-                        <p/>Tab 3 content
-                    </Tab>
-                    <Tab eventKey={4} title="CMSSW_10_0_CLANG_X">
-                        <p/>Tab 3 content
-                    </Tab>
-                    <Tab eventKey={5} title="CMSSW_10_0_ASAN_X">
-                        <p/>Tab 3 content
-                    </Tab>
+                <Tabs defaultActiveKey={0} animation={false}>
+                    {ibComparison.map((ib, pos) => {
+                        let commits;
+                        if (ib.merged_prs.length === 0) {
+                            commits = <p>No new pull requests since {ib.compared_tags.split("-->")[0]}</p>
+                        } else {
+                            commits = (
+                                <ul>
+                                    {ib.merged_prs.map(pr => {
+                                        return (
+                                            <li>
+                                                <a href={pr.url}>#{pr.number}</a> from
+                                                <b> {pr.author_login}</b>: {pr.title}
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            )
+                        }
+                        return (
+                            <Tab eventKey={pos} title={ib.release_queue}>
+                                <br/>
+                                {commits}
+                            </Tab>
+                        )
+                    })}
                 </Tabs>
             </Panel>
         )

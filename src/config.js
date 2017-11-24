@@ -1,5 +1,6 @@
 export default {
     tooltipDelayInMs: 200,
+
     urls: {
         "buildOrUnitTestUrl": "https://cmssdt.cern.ch/SDT/cgi-bin/showBuildLogs.py/",
         "scramDetailUrl": "http://cms-sw.github.io/scramDetail.html#",
@@ -16,11 +17,8 @@ export default {
             "gcc700": "#f5b7b1",
             "gcc630": "#20e41a"
         }
-        // "name": {
-        //     "slc7": "7",
-        //     "slc6": "6",
-        //     "amd64": "amd64",
-        //     "aarch64": "aarch64"
-        // }
+    },
+    statusLabels:{
+
     }
 };
