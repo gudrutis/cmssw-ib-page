@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Badge, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
+import {OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import {getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
 import _ from 'underscore';
 import uuid from 'uuid';
-import {tooltipDelayInMs, archShowCodes} from '../../config.json'
-import RenderTable from "../RenderTable";
+import config from '../../config'
+
+const {archShowCodes, tooltipDelayInMs, urls} = config;
 
 class ComparisonTable extends Component {
     static propTypes = {
@@ -28,7 +29,7 @@ class ComparisonTable extends Component {
         )
     }
 
-    static renderLabel({colorType, value, glyphicon, link, tooltipContent} = {}) {
+    static renderLabel({colorType = "default", value, glyphicon, link, tooltipContent} = {}) {
         if (tooltipContent !== undefined) {
             return (
                 <OverlayTrigger placement="top" overlay={<Tooltip>{tooltipContent}</Tooltip>}
@@ -56,31 +57,138 @@ class ComparisonTable extends Component {
         })
     }
 
-    renderBuildRowCells() {
-        const iterationFunction = function (arch, ib) {
-            const buildResults = _.findWhere(ib.builds, {"arch": arch});
-            if (!buildResults) {
-                return ComparisonTable.renderCell();
-            }
 
-            let cellInfo, tooltipContent = undefined;
-            const {details} = buildResults;
-            if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
-                tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
-                cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'danger', value: details.compWarning, tooltipContent}
-                );
-            } else {
-                tooltipContent = <p><strong>All good!</strong> More info.</p>;
-                cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
-                );
+    renderRowCells2({resultType, ifWarning, ifError, ifFailed, ifPassed, ifUnknown}) {
+        const {archsByIb, ibComparison} = this.state;
+        return ibComparison.map((ib, pos) => {
+            const el = archsByIb[pos];
+            return el.archs.map(arch => {
+                const results = _.findWhere(ib[resultType], {"arch": arch});
+                if (!results) {
+                    return ComparisonTable.renderCell();
+                }
+
+                let tooltipContent, cellInfo = undefined;
+                switch (results.passed) {
+                    case "passed":
+                        tooltipContent = <p>All good!</p>;
+                        cellInfo = ComparisonTable.renderLabel(
+                            {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+                        );
+                        return ifPassed ? ifPassed(results) : ComparisonTable.renderCell(cellInfo);
+
+                    case "error":
+                        return ifError ? ifError(results) : ComparisonTable.renderCell();
+
+                    case "failed":
+                        return ifFailed ? ifFailed(results) : ComparisonTable.renderCell();
+
+                    case "warning":
+                        return ifWarning ? ifWarning(results) : ComparisonTable.renderCell();
+
+                    case "uknown":
+                        tooltipContent = <p>Results are unknown</p>
+                        cellInfo = ComparisonTable.renderLabel(
+                            {glyphicon: 'glyphicon-question-sign', tooltipContent}
+                        );
+                        return ifUnknown ? ifUnknown(arch, ib) : ComparisonTable.renderCell(cellInfo);
+
+                    default:
+                        console.error("Look like test 'passed' field value is new")
+                        return ComparisonTable.renderCell();
+                }
+            })
+        })
+    }
+
+    renderBuildRowCells() {
+        const linkFunction = function (file) {
+            if (!file) {
+                return
             }
-            return ComparisonTable.renderCell(cellInfo);
+            let link_parts = file.split('/');
+            const si = 4;
+            link_parts = link_parts.slice(si, si+5);
+
+            return urls.buildOrUnitTestUrl + link_parts.join('/');
         };
 
-        return this.renderRowCells(iterationFunction);
+        const showResults = function (result) {
+            const {details} = result;
+            const resultKeys = Object.keys(details);
+
+            const showLabelConfig = {
+                compWarning: {
+                    color: "warning"
+                },
+                ignoreWarning: {
+                    hide: true
+                }
+            };
+
+            let cellInfoArray = resultKeys.map(key => {
+                let color, hide;
+                if (!showLabelConfig[key]) {
+                    color = key.includes("Error") ? "danger" : "default";
+                }
+                else {
+                    ({color, hide} = showLabelConfig[key]);
+                }
+
+                if (hide) {
+                    return;
+                }
+                const tooltipContent = <p><strong>{key}</strong></p>;
+                return ComparisonTable.renderLabel(
+                    {colorType: color, value: details[key], tooltipContent, link: linkFunction(result.file)}
+                );
+
+            });
+
+            return ComparisonTable.renderCell(cellInfoArray);
+        };
+
+        const config = {
+            resultType: 'builds',
+            ifPassed: function (details) {
+                let tooltipContent = <p><strong>All good!</strong> More info.</p>;
+                let cellInfo = ComparisonTable.renderLabel(
+                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent, link: linkFunction(details.file)}
+                );
+                return ComparisonTable.renderCell(cellInfo);
+            },
+            ifError: showResults,
+            ifFailed: showResults,
+            ifWarning: showResults
+        };
+        return this.renderRowCells2(config);
     }
+
+    // renderBuildRowCells3() {
+    //     const iterationFunction = function (arch, ib) {
+    //         const buildResults = _.findWhere(ib.builds, {"arch": arch});
+    //         if (!buildResults) {
+    //             return ComparisonTable.renderCell();
+    //         }
+    //
+    //         let cellInfo, tooltipContent = undefined;
+    //         const {details} = buildResults;
+    //         if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
+    //             tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
+    //             cellInfo = ComparisonTable.renderLabel(
+    //                 {colorType: 'danger', value: details.compWarning, tooltipContent}
+    //             );
+    //         } else {
+    //             tooltipContent = <p><strong>All good!</strong> More info.</p>;
+    //             cellInfo = ComparisonTable.renderLabel(
+    //                 {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+    //             );
+    //         }
+    //         return ComparisonTable.renderCell(cellInfo);
+    //     };
+    //
+    //     return this.renderRowCells(iterationFunction);
+    // }
 
     renderUnitTestsRowCells() {
         const iterationFunction = function (arch, ib) {
@@ -92,10 +200,15 @@ class ComparisonTable extends Component {
             let cellInfo, tooltipContent = undefined;
             const {details} = utestsResults;
             if (!_.isEmpty(details) && (details.num_fails !== undefined && details.num_fails > 0)) {
-                const testStr = details.num_fails === 1 ? "test" : "tests"
+                const testStr = details.num_fails === 1 ? "test" : "tests";
                 tooltipContent = `${details.num_fails} unit ${testStr} failing`;
                 cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'danger', value: details.num_fails, tooltipContent}
+                    {
+                        colorType: 'danger',
+                        value: details.num_fails,
+                        tooltipContent,
+                        link: "http://www.stackoverflow.com"
+                    }
                 );
             } else if (utestsResults.passed === "passed") {
                 tooltipContent = <p><strong>All good!</strong> More info.</p>;
@@ -127,17 +240,30 @@ class ComparisonTable extends Component {
                 const testStr = details.num_fails === 1 ? "test" : "tests"
                 tooltipContent = `${details.num_fails} unit ${testStr} failing`;
                 cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'danger', value: details.num_fails, tooltipContent}
+                    {
+                        colorType: 'danger',
+                        value: details.num_fails,
+                        tooltipContent,
+                        link: 'www.9gag.com'
+                    }
                 );
             } else if (testResults.passed === "passed") {
                 tooltipContent = <p><strong>All good!</strong> More info.</p>;
                 cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
+                    {
+                        colorType: 'success',
+                        glyphicon: 'glyphicon-ok-circle',
+                        tooltipContent
+                    }
                 );
             } else {
                 tooltipContent = <p>Results are unknown</p>
                 cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'default', glyphicon: 'glyphicon-question-sign', tooltipContent}
+                    {
+                        colorType: 'default',
+                        glyphicon: 'glyphicon-question-sign',
+                        tooltipContent
+                    }
                 );
             }
             return ComparisonTable.renderCell(cellInfo);
@@ -165,7 +291,6 @@ class ComparisonTable extends Component {
                                     <th>
                                         {arch.split("_").map(str => {
                                             const {color} = archShowCodes;
-
                                             return <div><span style={{backgroundColor: color[str]}}>{str}</span></div>
                                         })}
                                     </th>
