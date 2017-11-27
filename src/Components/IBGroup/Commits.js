@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, Tab, Tabs} from "react-bootstrap";
+import {getPreviousIbTag} from "../../processing";
 
 class Commits extends Component {
     // TODO - prop types
@@ -23,7 +24,7 @@ class Commits extends Component {
                     {ibComparison.map((ib, pos) => {
                         let commits;
                         if (ib.merged_prs.length === 0) {
-                            commits = <p>No new pull requests since {ib.compared_tags.split("-->")[0]}</p>
+                            commits = <p>No new pull requests since {getPreviousIbTag(ib)}</p>
                         } else {
                             commits = (
                                 <ul>

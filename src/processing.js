@@ -47,4 +47,17 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
     return a;
 }
 
+/**
+ * general utility functions
+ */
+
+export function getCurrentIbTag(ib) {
+    return ib.compared_tags.split("-->")[1]
+}
+
+export function getPreviousIbTag(ib) {
+    return ib.compared_tags.split("-->")[0]
+}
+
+
 

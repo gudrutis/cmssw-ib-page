@@ -50,7 +50,7 @@ class IBGroupFrame extends Component {
         switch (this.getIbGroupType()) {
             case 'IB':
                 panelHeader = firstIbFromList.release_name;
-                statusLabels = <StatusLabels/>;
+                statusLabels = <StatusLabels ib={firstIbFromList}/>;
                 comparisonTable = <ComparisonTable data={this.state.IBGroup}/>;
                 commitPanelProps = {
                     defaultExpanded: false,
@@ -81,7 +81,7 @@ class IBGroupFrame extends Component {
                 </Panel>
                 {statusLabels}
                 {comparisonTable}
-                <Commits commitPanelProps={commitPanelProps} data={this.state.IBGroup} />
+                <Commits commitPanelProps={commitPanelProps} data={this.state.IBGroup}/>
             </Panel>
         )
 

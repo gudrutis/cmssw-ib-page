@@ -108,12 +108,13 @@ class ComparisonTable extends Component {
             }
             let link_parts = file.split('/');
             const si = 4;
-            link_parts = link_parts.slice(si, si+5);
+            link_parts = link_parts.slice(si, si + 5);
 
             return urls.buildOrUnitTestUrl + link_parts.join('/');
         };
 
-        const showResults = function (result) {
+        const showResults = function (result, ib, arch) {
+            // TODO ib| arch needed for link generation
             const {details} = result;
             const resultKeys = Object.keys(details);
 
@@ -153,7 +154,12 @@ class ComparisonTable extends Component {
             ifPassed: function (details) {
                 let tooltipContent = <p><strong>All good!</strong> More info.</p>;
                 let cellInfo = ComparisonTable.renderLabel(
-                    {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent, link: linkFunction(details.file)}
+                    {
+                        colorType: 'success',
+                        glyphicon: 'glyphicon-ok-circle',
+                        tooltipContent,
+                        link: linkFunction(details.file)
+                    }
                 );
                 return ComparisonTable.renderCell(cellInfo);
             },
@@ -163,32 +169,6 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells2(config);
     }
-
-    // renderBuildRowCells3() {
-    //     const iterationFunction = function (arch, ib) {
-    //         const buildResults = _.findWhere(ib.builds, {"arch": arch});
-    //         if (!buildResults) {
-    //             return ComparisonTable.renderCell();
-    //         }
-    //
-    //         let cellInfo, tooltipContent = undefined;
-    //         const {details} = buildResults;
-    //         if (!_.isEmpty(details) && (details.compWarning !== undefined && details.compWarning > 0)) {
-    //             tooltipContent = `compWarning: ${details.compWarning}, ignoreWarning: ${details.ignoreWarning}`;
-    //             cellInfo = ComparisonTable.renderLabel(
-    //                 {colorType: 'danger', value: details.compWarning, tooltipContent}
-    //             );
-    //         } else {
-    //             tooltipContent = <p><strong>All good!</strong> More info.</p>;
-    //             cellInfo = ComparisonTable.renderLabel(
-    //                 {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
-    //             );
-    //         }
-    //         return ComparisonTable.renderCell(cellInfo);
-    //     };
-    //
-    //     return this.renderRowCells(iterationFunction);
-    // }
 
     renderUnitTestsRowCells() {
         const iterationFunction = function (arch, ib) {
@@ -228,48 +208,70 @@ class ComparisonTable extends Component {
     }
 
     renderRelValsRowCells() {
-        const iterationFunction = function (arch, ib) {
-            const testResults = _.findWhere(ib.relvals, {"arch": arch});
-            if (!testResults) {
-                return ComparisonTable.renderCell();
+        const linkFunction = function (file,) {
+            if (!file) {
+                return
             }
+            let link_parts = file.split('/');
+            const si = 4;
+            link_parts = link_parts.slice(si, si + 5);
 
-            let cellInfo, tooltipContent = undefined;
-            const {details} = testResults;
-            if (!_.isEmpty(details) && (details.num_fails !== undefined && details.num_fails > 0)) {
-                const testStr = details.num_fails === 1 ? "test" : "tests"
-                tooltipContent = `${details.num_fails} unit ${testStr} failing`;
-                cellInfo = ComparisonTable.renderLabel(
-                    {
-                        colorType: 'danger',
-                        value: details.num_fails,
-                        tooltipContent,
-                        link: 'www.9gag.com'
-                    }
+            return urls.relvalLogDetailUrl + link_parts.join('/');
+        };
+
+        const showResults = function (result) {
+            const {details} = result;
+            const resultKeys = Object.keys(details);
+
+            const showLabelConfig = {
+                compWarning: {
+                    color: "warning"
+                },
+                ignoreWarning: {
+                    hide: true
+                }
+            };
+
+            let cellInfoArray = resultKeys.map(key => {
+                let color, hide;
+                if (!showLabelConfig[key]) {
+                    color = key.includes("Error") ? "danger" : "default";
+                } else {
+                    ({color, hide} = showLabelConfig[key]);
+                }
+
+                if (hide) {
+                    return;
+                }
+                const tooltipContent = <p><strong>{key}</strong></p>;
+                return ComparisonTable.renderLabel(
+                    {colorType: color, value: details[key], tooltipContent, link: linkFunction(result.file)}
                 );
-            } else if (testResults.passed === "passed") {
-                tooltipContent = <p><strong>All good!</strong> More info.</p>;
-                cellInfo = ComparisonTable.renderLabel(
+
+            });
+
+            return ComparisonTable.renderCell(cellInfoArray);
+        };
+
+        const config = {
+            resultType: 'builds',
+            ifPassed: function (details) {
+                let tooltipContent = <p><strong>All good!</strong> More info.</p>;
+                let cellInfo = ComparisonTable.renderLabel(
                     {
                         colorType: 'success',
                         glyphicon: 'glyphicon-ok-circle',
-                        tooltipContent
+                        tooltipContent,
+                        link: linkFunction(details.file)
                     }
                 );
-            } else {
-                tooltipContent = <p>Results are unknown</p>
-                cellInfo = ComparisonTable.renderLabel(
-                    {
-                        colorType: 'default',
-                        glyphicon: 'glyphicon-question-sign',
-                        tooltipContent
-                    }
-                );
-            }
-            return ComparisonTable.renderCell(cellInfo);
+                return ComparisonTable.renderCell(cellInfo);
+            },
+            ifError: showResults,
+            ifFailed: showResults,
+            ifWarning: showResults
         };
-
-        return this.renderRowCells(iterationFunction);
+        return this.renderRowCells2(config);
     }
 
     render() {
