@@ -34,7 +34,7 @@ class StatusLabels extends Component {
             return {
                 name: config.name,
                 glyphicon: config.glyphicon ? config.glyphicon : "glyphicon-list-alt",
-                url: config.getUrl? config.getUrl(ib) : undefined
+                url: config.getUrl ? config.getUrl(ib) : undefined
             }
         };
 
@@ -46,20 +46,31 @@ class StatusLabels extends Component {
         };
 
         const {key} = config;
-        const result = ib[key];
+        let result = ib[key];
+
+        // if result variable does not follow standard and needs custom interpretation
+        if (config.customResultInterpretation) {
+            result = config.customResultInterpretation(result);
+        }
+
         let output;
         if (result === "found") {
             output = config.ifFound ? config.ifFound(ib) : defaultFound(config, ib);
-            return formatLabel(output);
         } else if (result === "not-found") {
-            return config.ifNotFound ? formatLabel(config.ifNotFound(ib)) : undefined;
-        } else if (result === "inprogress") {
+            output = config.ifNotFound ? config.ifNotFound : undefined;
+        } else if (result === "inprogress" || result === "inProgress") {
             output = config.ifInProgress ? config.ifInProgress(ib) : defaultInProgress(config);
-            return formatLabel(output)
         }
 
-        // if not found, return empty
-        return output;
+        ////  if non standard function
+        // if (config.customConfFunction) {
+        //     output = config.customConfFunction(ib);
+        // }
+
+        if (output) {
+            return formatLabel(output);
+        }
+
     }
 
     render() {
