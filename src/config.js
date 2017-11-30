@@ -32,9 +32,9 @@ export default {
              getUrl: function()
          }
          default icons:
-            not-found - empty
-            inprogress - glyphicon-refresh
-            found - glyphicon-list-alt
+         not-found - empty
+         inprogress - glyphicon-refresh
+         found - glyphicon-list-alt
 
          example
          // ifFound: function (ib) {
@@ -60,13 +60,13 @@ export default {
                     return "not-found";
                 } else if (result === "inprogress") {
                     return "inprogress";
-                } else if (result){
+                } else if (result) {
                     return "found";
                 }
             },
             ifFound: function (ib) {
-                const status = ib.comp_baseline_state ;
-                if (status==="ok"){
+                const status = ib.comp_baseline_state;
+                if (status === "ok") {
                     return {
                         name: this.name,
                         glyphicon: this.glyphicon,
@@ -138,7 +138,7 @@ export default {
                     return "not-found";
                 } else if (result === "inprogress") {
                     return "inprogress";
-                } else if (result){
+                } else if (result) {
                     return "found";
                 }
             }
