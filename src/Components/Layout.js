@@ -6,6 +6,8 @@ import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBGroups';
 import createHistory from 'history/createBrowserHistory';
 
+import config from '../config';
+const {urls} = config;
 // TODO if speed is an issue, try to solve it by
 // TODO move to different service
 let httpWrapper = wrapper(axios, {
@@ -52,7 +54,7 @@ class LayoutWrapper extends Component {
     getData(ibList) {
         // this.setState({dataList: []});
         let callbacks = ibList.map(name => {
-            return httpWrapper.get(process.env.PUBLIC_URL + '/data/' + name + '.json');
+            return httpWrapper.get(urls.dataDir + name + '.json');
         });
 
         // when all callbacks are done, set data

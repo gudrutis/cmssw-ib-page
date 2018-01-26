@@ -3,9 +3,8 @@ import React, {Component} from 'react';
 import './App.css';
 import $ from 'jquery'
 import {Route, Switch, Redirect} from "react-router-dom";
-// import { StickyContainer, Sticky } from 'react-sticky';
-// import Sticky from 'react-stickynode';
-// import Sticky from 'react-sticky-el';
+
+
 // TODO: go through imports and check which ones we do not need
 
 //------------------------
@@ -28,6 +27,8 @@ import {Route, Switch, Redirect} from "react-router-dom";
 import Navigation from './Components/Navigation'
 import Layout from './Components/Layout'
 
+import config from './config';
+const {urls} = config;
 //------------------------------------------
 //      Main entry component
 //------------------------------------------
@@ -44,7 +45,7 @@ class App extends Component {
 
     componentWillMount() {
         $.ajax({
-            url: process.env.PUBLIC_URL + '/data/structure.json',
+            url: urls.dataDir +'structure.json',
             dataType: 'json',
             cache: false,
             success: function (data) {

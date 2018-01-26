@@ -4,6 +4,7 @@ export default {
     tooltipDelayInMs: 200,
 
     urls: {
+        "dataDir":"/SDT/html/data/",
         "buildOrUnitTestUrl": "https://cmssdt.cern.ch/SDT/cgi-bin/showBuildLogs.py/",
         "scramDetailUrl": "http://cms-sw.github.io/scramDetail.html#",
         "relvalLogDetailUrl": "https://cms-sw.github.io/relvalLogDetail.html#",
