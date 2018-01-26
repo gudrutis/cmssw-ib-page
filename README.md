@@ -1,4 +1,4 @@
-# CMSSW IB page
+# CMSSDT IB page
 
 ## To start
 ```sh

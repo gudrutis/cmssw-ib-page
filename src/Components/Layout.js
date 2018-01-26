@@ -55,7 +55,7 @@ class LayoutWrapper extends Component {
             return httpWrapper.get(process.env.PUBLIC_URL + '/data/' + name + '.json');
         });
 
-        // when all callbaks are done, set data
+        // when all callbacks are done, set data
         axios.all(callbacks).then(function (allData) {
             let data = allData.map(response => {
                 return response.data;
