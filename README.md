@@ -2,7 +2,7 @@
 
 ## To start
 ```sh
-# you will need to install svn
+# you will need to install svn 
 
 cd public/build
 ./updateData.sh
