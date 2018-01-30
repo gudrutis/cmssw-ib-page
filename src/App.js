@@ -2,29 +2,25 @@ import React, {Component} from 'react';
 
 import './App.css';
 import $ from 'jquery'
-import {Route, Switch, Redirect} from "react-router-dom";
-
-
+import {Redirect, Route, Switch} from "react-router-dom";
 // TODO: go through imports and check which ones we do not need
-
 //------------------------
 // TODO-project set most visited IB-flavor in cookie in then show in the future
-// TODO-project create layout .json where layout is defined
-// TODO-project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits }
+// TODO-project set
+// project create layout .json where layout is defined
+// project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits }
 // TODO-project from structure.json select which ib flavors show by default
-
 // TODO-architecturu custom icons
 // TODO-color coding results with with pop-ups for explanation
 // TODO-relvals expanding explation on click
-
 // TODO-project old IB without build data will be cleaned,
 // TODO-project if there is no arch, display only commits (that is if it is commits)
 // TODO-project color code archs with images
-// TODO-project flavors should have name map
-// TODO-project collor code builds/test stats
 
+// 1. finish table
+// 2. cookies
+// 3.
 // Componenets
-import Navigation from './Components/Navigation'
 import Layout from './Components/Layout'
 
 import config from './config';

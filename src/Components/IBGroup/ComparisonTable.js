@@ -38,7 +38,6 @@ class ComparisonTable extends Component {
                         {glyphicon ? <span className={`glyphicon ${glyphicon}`}/> : value}
                     </a>
                 </OverlayTrigger>
-
             );
         } else {
             return (
@@ -87,14 +86,14 @@ class ComparisonTable extends Component {
                         return ifWarning ? ifWarning(results) : ComparisonTable.renderCell();
 
                     case "uknown":
-                        tooltipContent = <p>Results are unknown</p>
+                        tooltipContent = <p>Results are unknown</p>;
                         cellInfo = ComparisonTable.renderLabel(
                             {glyphicon: 'glyphicon-question-sign', tooltipContent}
                         );
                         return ifUnknown ? ifUnknown(arch, ib) : ComparisonTable.renderCell(cellInfo);
 
                     default:
-                        console.error("Look like test 'passed' field value is new")
+                        console.error("Look like test 'passed' field value is new");
                         return ComparisonTable.renderCell();
                 }
             })
@@ -196,7 +195,7 @@ class ComparisonTable extends Component {
                     {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent}
                 );
             } else {
-                tooltipContent = <p>Results are unknown</p>
+                tooltipContent = <p>Results are unknown</p>;
                 cellInfo = ComparisonTable.renderLabel(
                     {colorType: 'default', glyphicon: 'glyphicon-question-sign', tooltipContent}
                 );
@@ -282,20 +281,25 @@ class ComparisonTable extends Component {
                     <thead>
                     <tr>
                         <th rowSpan={2}/>
+                        {/* IB flavors row*/}
                         {archsByIb.map(item => {
                             return <th key={uuid.v4()} colSpan={item.archs.length}>{item.flavor.replace(/_/g, ' ')}</th>
                         })}
                     </tr>
                     <tr>
+                        {/* Arch names row */}
                         {archsByIb.map(item => {
                             return item.archs.map(arch => {
                                 return (
+                                    // var url = '/SDT/cgi-bin//newQA.py?arch='+arch+'&release='+release_name
                                     <th key={uuid.v4()}>
+                                        <a href={'#'} style={{color: 'black'}}>
                                         {arch.split("_").map(str => {
                                             const {color} = archShowCodes;
                                             return <div key={uuid.v4()}><span
                                                 style={{backgroundColor: color[str]}}>{str}</span></div>
                                         })}
+                                        </a>
                                     </th>
                                 )
                             })
