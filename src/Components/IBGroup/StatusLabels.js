@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import config from '../../config';
+import uuid from 'uuid';
 
 const {statusLabelsConfigs} = config;
 
@@ -16,15 +17,15 @@ class StatusLabels extends Component {
         const formatLabel = function ({glyphicon, name, url}) {
             if (url) {
                 return (
-                    <a href={url}>
-                        <span class={`glyphicon ${glyphicon}`}></span>
+                    <a href={url} key={uuid.v4()}>
+                        <span className={`glyphicon ${glyphicon}`}/>
                         <span> {name} </span>
                     </a>
                 )
             } else {
                 return [
-                    <span class={`glyphicon ${glyphicon}`}></span>,
-                    <span> {name} </span>
+                    <span key={uuid.v4()} className={`glyphicon ${glyphicon}`}/>,
+                    <span key={uuid.v4()}> {name} </span>
                 ]
 
             }
@@ -62,10 +63,6 @@ class StatusLabels extends Component {
             output = config.ifInProgress ? config.ifInProgress(ib) : defaultInProgress(config);
         }
 
-        ////  if non standard function
-        // if (config.customConfFunction) {
-        //     output = config.customConfFunction(ib);
-        // }
 
         if (output) {
             return formatLabel(output);

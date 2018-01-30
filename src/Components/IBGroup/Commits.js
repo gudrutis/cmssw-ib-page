@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Panel, Tab, Tabs} from "react-bootstrap";
 import {getPreviousIbTag} from "../../processing";
+import uuid from 'uuid';
 
 class Commits extends Component {
     // TODO - prop types
@@ -20,17 +21,17 @@ class Commits extends Component {
         return (
             <Panel {...commitPanelProps}
                    header={'Commits'}>
-                <Tabs defaultActiveKey={0} animation={false}>
+                <Tabs id={uuid.v4()} defaultActiveKey={0} animation={false}>
                     {ibComparison.map((ib, pos) => {
                         let commits;
                         if (ib.merged_prs.length === 0) {
-                            commits = <p>No new pull requests since {getPreviousIbTag(ib)}</p>
+                            commits = <p key={uuid.v4()}>No new pull requests since {getPreviousIbTag(ib)}</p>
                         } else {
                             commits = (
-                                <ul>
+                                <ul >
                                     {ib.merged_prs.map(pr => {
                                         return (
-                                            <li>
+                                            <li key={uuid.v4()}>
                                                 <a href={pr.url}>#{pr.number}</a> from
                                                 <b> {pr.author_login}</b>: {pr.title}
                                             </li>
@@ -40,7 +41,7 @@ class Commits extends Component {
                             )
                         }
                         return (
-                            <Tab eventKey={pos} title={ib.release_queue}>
+                            <Tab key={uuid.v4()} eventKey={pos} title={ib.release_queue}>
                                 <br/>
                                 {commits}
                             </Tab>

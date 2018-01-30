@@ -34,8 +34,8 @@ to { transform: rotate(360deg); }
   }
 }
 
-/*TODO hard-codded padding, */
-body { padding-top: 200px; }
-@media screen and (max-width: 768px) {
-  body { padding-top: 0px; }
-}
+/*!*TODO hard-codded padding, *!*/
+/*body { padding-top: 200px; }*/
+/*@media screen and (max-width: 768px) {*/
+  /*body { padding-top: 80px; }*/
+/*}*/

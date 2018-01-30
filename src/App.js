@@ -28,6 +28,7 @@ import Navigation from './Components/Navigation'
 import Layout from './Components/Layout'
 
 import config from './config';
+
 const {urls} = config;
 //------------------------------------------
 //      Main entry component
@@ -45,7 +46,7 @@ class App extends Component {
 
     componentWillMount() {
         $.ajax({
-            url: urls.dataDir +'structure.json',
+            url: urls.dataDir + 'structure.json',
             dataType: 'json',
             cache: false,
             success: function (data) {
@@ -74,13 +75,15 @@ class App extends Component {
             return (<div/>);
         }
         return (
-            /* TODO sticky bibliotekos 'iskisa' pasislepusius inputus, todel nelabai galiui naudoti */
             <div>
-                <Navigation toLinks={this.state.structure.all_prefixes}/>
                 <Switch>
                     <Redirect exact from="/" to={this.defaultPage()} push/>
                     <Route path="/:prefix"
-                           render={(props) => ( <Layout {...props} structure={this.state.structure}/> )}/>
+                           render={(props) => (
+                               <Layout {...props}
+                                       toLinks={this.state.structure.all_prefixes}
+                                       structure={this.state.structure}/>)}
+                    />
                 </Switch>
             </div>
         );

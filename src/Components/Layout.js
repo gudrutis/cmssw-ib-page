@@ -7,6 +7,8 @@ import IBGroups from './IBGroups';
 import createHistory from 'history/createBrowserHistory';
 
 import config from '../config';
+import Navigation from "./Navigation";
+
 const {urls} = config;
 // TODO if speed is an issue, try to solve it by
 // TODO move to different service
@@ -26,7 +28,9 @@ class LayoutWrapper extends Component {
             nameList: [],
             nameListToShow: [],
             dataList: [],
-            all_release_queues: props.structure.all_release_queues
+            all_release_queues: props.structure.all_release_queues,
+            toLinks: props.toLinks,
+            navigationHeight : 50
         }
     }
 
@@ -78,15 +82,32 @@ class LayoutWrapper extends Component {
         })
     }
 
+    getNavigationHeight() {
+        const navigationHeight = document.getElementById('navigation').clientHeight;
+        this.setState({navigationHeight});
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.getNavigationHeight.bind(this));
+        this.getNavigationHeight();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.getNavigationHeight.bind(this));
+    }
+
     render() {
         // TODO cia rerenderint history
         let history = createHistory();
         let location = history.location;
         return (
-            <div className={'container'}>
-                <ToggleButtonGroupControlled nameList={this.state.nameList}
-                                             initSelections={this.state.all_release_queues}
-                                             callbackToParent={this.updateNameListToShow.bind(this)}/>
+            <div className={'container'} style={{paddingTop: this.state.navigationHeight + 20}}>
+                <Navigation toLinks={this.state.toLinks} buttons={
+                    <ToggleButtonGroupControlled nameList={this.state.nameList}
+                                                 initSelections={this.state.all_release_queues}
+                                                 callbackToParent={this.updateNameListToShow.bind(this)}
+                    />
+                }/>
                 <IBGroups data={this.filterListToShow()}/>
             </div>
         );

@@ -6,6 +6,7 @@ import {Panel} from "react-bootstrap";
 import PropTypes from 'prop-types';
 import JSONPretty from 'react-json-pretty';
 
+
 /*
 * ib_date - field grouped by
 * isIB - true(IB)/ false(next realise, integration build)
@@ -14,7 +15,8 @@ import JSONPretty from 'react-json-pretty';
 
 class IBGroupFrame extends Component {
     static propTypes = {
-        IBGroup: PropTypes.arrayOf(PropTypes)
+        // TODO fix
+        // IBGroup: PropTypes.arrayOf(PropTypes)
     };
 
     constructor(props) {

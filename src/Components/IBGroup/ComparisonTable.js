@@ -32,7 +32,7 @@ class ComparisonTable extends Component {
     static renderLabel({colorType = "default", value, glyphicon, link, tooltipContent} = {}) {
         if (tooltipContent !== undefined) {
             return (
-                <OverlayTrigger placement="top" overlay={<Tooltip>{tooltipContent}</Tooltip>}
+                <OverlayTrigger key={uuid.v4()} placement="top" overlay={<Tooltip id={uuid.v4()}>{tooltipContent}</Tooltip>}
                                 delay={tooltipDelayInMs}>
                     <a href={link} className={`btn label label-${colorType}`}>
                         {glyphicon ? <span className={`glyphicon ${glyphicon}`}/> : value}
@@ -283,17 +283,18 @@ class ComparisonTable extends Component {
                     <tr>
                         <th rowSpan={2}/>
                         {archsByIb.map(item => {
-                            return <th colSpan={item.archs.length}>{item.flavor.replace(/_/g, ' ')}</th>
+                            return <th key={uuid.v4()} colSpan={item.archs.length}>{item.flavor.replace(/_/g, ' ')}</th>
                         })}
                     </tr>
                     <tr>
                         {archsByIb.map(item => {
                             return item.archs.map(arch => {
                                 return (
-                                    <th>
+                                    <th key={uuid.v4()}>
                                         {arch.split("_").map(str => {
                                             const {color} = archShowCodes;
-                                            return <div><span style={{backgroundColor: color[str]}}>{str}</span></div>
+                                            return <div key={uuid.v4()}><span
+                                                style={{backgroundColor: color[str]}}>{str}</span></div>
                                         })}
                                     </th>
                                 )
