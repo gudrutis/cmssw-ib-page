@@ -8,6 +8,9 @@ import {Col, Panel, Row} from "react-bootstrap";
 
 class Navigation extends Component {
 
+    // TODO palikti 3 pagrindinius, kitus paslepti i dropdown,
+    // TODO flavor mygtuku pavadinimus paslepti
+
     render() {
         let renderLinks = [];
         if (this.props.toLinks) {

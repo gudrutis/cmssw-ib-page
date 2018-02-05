@@ -39,6 +39,7 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
     let a = _.map(IBGroup, function (ib) {
         return {
             flavor: ib.release_queue,
+            name: ib.release_name,
             archs: ib.tests_archs
         };
     });

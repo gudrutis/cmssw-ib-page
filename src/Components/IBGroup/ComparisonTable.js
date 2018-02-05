@@ -32,7 +32,8 @@ class ComparisonTable extends Component {
     static renderLabel({colorType = "default", value, glyphicon, link, tooltipContent} = {}) {
         if (tooltipContent !== undefined) {
             return (
-                <OverlayTrigger key={uuid.v4()} placement="top" overlay={<Tooltip id={uuid.v4()}>{tooltipContent}</Tooltip>}
+                <OverlayTrigger key={uuid.v4()} placement="top"
+                                overlay={<Tooltip id={uuid.v4()}>{tooltipContent}</Tooltip>}
                                 delay={tooltipDelayInMs}>
                     <a href={link} className={`btn label label-${colorType}`}>
                         {glyphicon ? <span className={`glyphicon ${glyphicon}`}/> : value}
@@ -291,14 +292,16 @@ class ComparisonTable extends Component {
                         {archsByIb.map(item => {
                             return item.archs.map(arch => {
                                 return (
-                                    // var url = '/SDT/cgi-bin//newQA.py?arch='+arch+'&release='+release_name
                                     <th key={uuid.v4()}>
-                                        <a href={'#'} style={{color: 'black'}}>
-                                        {arch.split("_").map(str => {
-                                            const {color} = archShowCodes;
-                                            return <div key={uuid.v4()}><span
-                                                style={{backgroundColor: color[str]}}>{str}</span></div>
-                                        })}
+                                        <a href={urls.q_a(arch, item.name)} style={{color: 'black'}}>
+                                            {arch.split("_").map(str => {
+                                                const {color} = archShowCodes;
+                                                return (
+                                                    <div key={uuid.v4()}>
+                                                        <span style={{backgroundColor: color[str]}}>{str}</span>
+                                                    </div>
+                                                )
+                                            })}
                                         </a>
                                     </th>
                                 )
@@ -331,10 +334,6 @@ class ComparisonTable extends Component {
                     <tr>
                         <td><b>FWLite</b></td>
                         <th></th>
-                    </tr>
-                    <tr>
-                        <td><b>Q/A</b></td>
-                        <th>TODO goes to labels</th>
                     </tr>
 
                     </tbody>

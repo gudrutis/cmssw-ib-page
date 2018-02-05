@@ -4,12 +4,13 @@ export default {
     tooltipDelayInMs: 200,
 
     urls: {
-        "dataDir":"/SDT/html/data/",
-        "buildOrUnitTestUrl": "https://cmssdt.cern.ch/SDT/cgi-bin/showBuildLogs.py/",
+        "q_a": (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
+        "dataDir": "/SDT/html/data/",
+        "buildOrUnitTestUrl": "/SDT/cgi-bin/showBuildLogs.py/",
         "scramDetailUrl": "http://cms-sw.github.io/scramDetail.html#",
         "relvalLogDetailUrl": "https://cms-sw.github.io/relvalLogDetail.html#",
-        "fwliteUrl": "https://cmssdt.cern.ch/SDT/cgi-bin/showBuildLogs.py/fwlite/",
-        "showAddOnLogsUrls": "https://cmssdt.cern.ch/SDT/cgi-bin//showAddOnLogs.py/"
+        "fwliteUrl": "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
+        "showAddOnLogsUrls": "/SDT/cgi-bin//showAddOnLogs.py/"
     },
     archShowCodes: {
         "color": {
