@@ -10,7 +10,8 @@ export default {
         "scramDetailUrl": "http://cms-sw.github.io/scramDetail.html#",
         "relvalLogDetailUrl": "https://cms-sw.github.io/relvalLogDetail.html#",
         "fwliteUrl": "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
-        "showAddOnLogsUrls": "/SDT/cgi-bin//showAddOnLogs.py/"
+        "showAddOnLogsUrls": "/SDT/cgi-bin//showAddOnLogs.py/",
+        "relVals": ( type, file, arch, ib ) => '' // TODO finish
     },
     archShowCodes: {
         "color": {

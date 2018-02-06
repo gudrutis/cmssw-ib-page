@@ -6,9 +6,9 @@ import _ from 'underscore';
 
 export function groupAndTransformIBDataList(data) {
     // TODO-prep: could be done in python
-    let x = _.map(data, _getComparisons)
+    let x = _.map(data, _getComparisons);
     x = _.flatten(x, true);
-    x = _.groupBy(x, 'next_ib')
+    x = _.groupBy(x, 'next_ib');
     let grouped = _.map(_.groupBy(x['false'], 'ib_date'), function (item, key) {
         return {dateKey: key, data: item};
     });
