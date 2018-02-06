@@ -50,6 +50,7 @@ class ComparisonTable extends Component {
     }
 
     renderRowCells_old(iterationFunction) {
+        // TODO delete
         const {archsByIb, ibComparison} = this.state;
         return ibComparison.map((ib, pos) => {
             const el = archsByIb[pos];
@@ -59,7 +60,7 @@ class ComparisonTable extends Component {
 
     renderRowCells({resultType, ifWarning, ifError, ifFailed, ifPassed, ifUnknown}) {
         /**
-         * General purpose function, it will re-render
+         * General purpose function, it will re-render row according to given config
          * */
         const {archsByIb, ibComparison} = this.state;
         return ibComparison.map((ib, pos) => {
@@ -72,15 +73,24 @@ class ComparisonTable extends Component {
                 }
 
                 let defaultTooltipContent, defaultCellInfo = undefined;
-                // TODO
-                if (_.isEmpty(results)){
-                    return ;
+                if (_.isEmpty(results)) {
+                    defaultTooltipContent = <p>Results are unknown</p>;
+                    defaultCellInfo = ComparisonTable.renderLabel({
+                        colorType: 'default',
+                        glyphicon: 'glyphicon-question-sign',
+                        defaultTooltipContent
+                    });
+                    return ComparisonTable.renderCell(defaultCellInfo);
                 }
                 switch (results.passed) {
                     case "passed":
                         defaultTooltipContent = <p>All good!</p>;
                         defaultCellInfo = ComparisonTable.renderLabel(
-                            {colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent: defaultTooltipContent}
+                            {
+                                colorType: 'success',
+                                glyphicon: 'glyphicon-ok-circle',
+                                tooltipContent: defaultTooltipContent
+                            }
                         );
                         return ifPassed ? ifPassed(results, ib.release_name) : ComparisonTable.renderCell(defaultCellInfo);
                     case "error":
@@ -89,86 +99,74 @@ class ComparisonTable extends Component {
                         return ifFailed ? ifFailed(results, ib.release_name) : ComparisonTable.renderCell();
                     case "warning":
                         return ifWarning ? ifWarning(results, ib.release_name) : ComparisonTable.renderCell();
-                    case "uknown":
+                    case "unknown":
                         defaultTooltipContent = <p>Results are unknown</p>;
                         defaultCellInfo = ComparisonTable.renderLabel(
                             {glyphicon: 'glyphicon-question-sign', tooltipContent: defaultTooltipContent}
                         );
                         return ifUnknown ? ifUnknown(arch, ib) : ComparisonTable.renderCell(defaultCellInfo);
                     default:
-                        console.error("Look like test 'passed' field value is new");
+                        console.error("There is new value: " + results.passed);
                         return ComparisonTable.renderCell();
                 }
             })
         })
     }
 
-    renderBuildRowCells() {
-        // TODO unikali funkcija gauti faila
-        const linkFunction = function (params) {
-            const {file, arch, ibName} = params;
-            if (!file) {
-                // TODO custom return
-                return
-            }
-            let link_parts = file.split('/');
-            const si = 4;
-            link_parts = link_parts.slice(si, si + 5);
-            return urls.buildOrUnitTestUrl + link_parts.join('/');
-        };
+    renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
+        const customShowLabelConfig = showLabelConfig ? showLabelConfig : undefined;
 
         const showGeneralResults = function (result, ib) {
             const {details} = result;
-            const resultKeys = Object.keys(details); // get all object properties name
+            const resultKeys = Object.keys(details); //get all object properties name
 
-            const showLabelConfig = {
+            const showLabelConfig = Object.assign({
                 compWarning: {
                     color: "warning"
                 },
                 ignoreWarning: {
                     hide: true
                 }
-            };
+            }, customShowLabelConfig);
+
 
             /**
              * Generates labels for each cell
              * */
-            // TODO aggregate error results, if no errors show warnings
+                // TODO aggregate error results, if no errors show warnings
             let cellInfoArray = resultKeys.map(key => {
-                let color, hide;
-                if (!showLabelConfig[key]) {
-                    // if the key includes word error, set color to danger
-                    color = key.includes("Error") ? "danger" : "default";
-                } else {
-                    ({color, hide} = showLabelConfig[key]);
-                }
-                if (hide) {
-                    // if property is to be hidden, return nothing
-                    return;
-                }
-                const tooltipContent = <p><strong>{key}</strong></p>;
-                return ComparisonTable.renderLabel(
-                    {
-                        colorType: color, value: details[key], tooltipContent, link: linkFunction(
-                        {"file": result.file, "arch": result.arch, "ibName": ib})
+                    let color, hide;
+                    if (!showLabelConfig[key]) {
+                        // if the key includes word error, set color to danger
+                        color = key.includes("Error") ? "danger" : "default";
+                    } else {
+                        ({color, hide} = showLabelConfig[key]);
                     }
-                );
-            });
-
+                    if (hide) {
+                        // if property is to be hidden, return nothing
+                        return;
+                    }
+                    const tooltipContent = <p><strong>{key}</strong></p>;
+                    return ComparisonTable.renderLabel(
+                        {
+                            colorType: color, value: details[key], tooltipContent, link: getUrl(
+                            {"file": result.file, "arch": result.arch, "ibName": ib})
+                        }
+                    );
+                });
             return ComparisonTable.renderCell(cellInfoArray);
         };
 
         const config = {
-            resultType: 'builds',
+            resultType: resultType,
             ifPassed: function (details, ib) {
-                // TODO daug dublicacijos nes reikia spec failo funkcijos
                 let tooltipContent = <p><strong>All good!</strong> Click for more info.</p>;
                 let cellInfo = ComparisonTable.renderLabel(
                     {
                         colorType: 'success',
                         glyphicon: 'glyphicon-ok-circle',
                         tooltipContent,
-                        link: linkFunction({"file": details.file, "arch": details.arch, "ibName": ib})
+                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib})
                     }
                 );
                 return ComparisonTable.renderCell(cellInfo);
@@ -187,7 +185,6 @@ class ComparisonTable extends Component {
             if (!utestsResults) {
                 return ComparisonTable.renderCell();
             }
-
             let cellInfo, tooltipContent = undefined;
             const {details} = utestsResults;
             if (!_.isEmpty(details) && (details.num_fails !== undefined && details.num_fails > 0)) {
@@ -212,7 +209,6 @@ class ComparisonTable extends Component {
             }
             return ComparisonTable.renderCell(cellInfo);
         };
-
         return this.renderRowCells_old(iterationFunction);
     }
 
@@ -286,6 +282,22 @@ class ComparisonTable extends Component {
 
     render() {
         const {archsByIb} = this.state;
+
+        // TODO palikt cia, ziuret kaip bus su kitais testais - gal galima iskelt
+        const getBuildOrUnitUrl = function (params) {
+            const {file, arch, ibName} = params;
+            if (!file) {
+                // do nothing
+            } else if (file === 'not-ready') {
+                return "http://cms-sw.github.io/scramDetail.html#" + arch + ";" + ibName
+            } else {
+                let link_parts = file.split('/');
+                const si = 4;
+                link_parts = link_parts.slice(si, si + 5);
+                return urls.buildOrUnitTestUrl + link_parts.join('/');
+            }
+        };
+
         return (
             <div className="table-responsive">
                 <Table striped={true} bordered={true} condensed={true} hover>
@@ -324,11 +336,28 @@ class ComparisonTable extends Component {
                         <td>
                             <b>Builds</b>
                         </td>
-                        {this.renderBuildRowCells()}
+                        {this.renderRowCellsWithDefaultPreConfig({
+                                resultType: 'builds',
+                                getUrl: getBuildOrUnitUrl
+                            }
+                        )}
                     </tr>
                     <tr>
                         <td><b>Unit Tests</b></td>
                         {this.renderUnitTestsRowCells()}
+                    </tr>
+                    <tr>
+                        <td><b>Unit Tests2</b></td>
+                        {this.renderRowCellsWithDefaultPreConfig({
+                                resultType: 'utests',
+                                getUrl: getBuildOrUnitUrl,
+                                showLabelConfig: {
+                                    num_fails: {
+                                        color: "danger"
+                                    }
+                                }
+                            }
+                        )}
                     </tr>
                     <tr>
                         <td><b>RelVals</b></td>
