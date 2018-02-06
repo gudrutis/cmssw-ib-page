@@ -4,23 +4,23 @@ export default {
     tooltipDelayInMs: 200,
 
     urls: {
-        "q_a": (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
-        "dataDir": "/SDT/html/data/",
-        "buildOrUnitTestUrl": "/SDT/cgi-bin/showBuildLogs.py/",
-        "scramDetailUrl": "http://cms-sw.github.io/scramDetail.html#",
-        "relvalLogDetailUrl": "https://cms-sw.github.io/relvalLogDetail.html#",
-        "fwliteUrl": "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
-        "showAddOnLogsUrls": "/SDT/cgi-bin//showAddOnLogs.py/",
-        "relVals": ( type, file, arch, ib ) => '' // TODO finish
+        q_a: (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
+        dataDir: "/SDT/html/data/",
+        buildOrUnitTestUrl: "/SDT/cgi-bin/showBuildLogs.py/",
+        scramDetailUrl: "http://cms-sw.github.io/scramDetail.html#",
+        relvalLogDetailUrl: "https://cms-sw.github.io/relvalLogDetail.html#",
+        fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
+        showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
+        relVals: ( type, file, arch, ib ) => '' // TODO finish
     },
     archShowCodes: {
-        "color": {
-            "slc7": "#20e41a",
-            "slc6": "#48c9b0",
-            "amd64": "#20e41a",
-            "aarch64": "#f0b27a",
-            "gcc700": "#f5b7b1",
-            "gcc630": "#20e41a"
+        color: {
+            slc7: "#20e41a",
+            slc6: "#48c9b0",
+            amd64: "#20e41a",
+            aarch64: "#f0b27a",
+            gcc700: "#f5b7b1",
+            gcc630: "#20e41a"
         }
     },
     statusLabelsConfigs: [
