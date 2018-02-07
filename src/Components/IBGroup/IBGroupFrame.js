@@ -3,15 +3,14 @@ import Commits from "./Commits";
 import StatusLabels from "./StatusLabels";
 import ComparisonTable from "./ComparisonTable";
 import {Panel} from "react-bootstrap";
-import PropTypes from 'prop-types';
 import JSONPretty from 'react-json-pretty';
 
 
-/*
-* ib_date - field grouped by
-* isIB - true(IB)/ false(next realise, integration build)
-* next_ib - is the record next IB build
-* */
+/**
+ * ib_date - field grouped by
+ * isIB - true(IB)/ false(next realise, integration build)
+ * next_ib - is the record next IB build
+ * */
 
 class IBGroupFrame extends Component {
     static propTypes = {
@@ -29,7 +28,6 @@ class IBGroupFrame extends Component {
     getIbGroupType() {
         const firstIbFromList = this.state.IBGroup[0];
         const {isIB, next_ib} = firstIbFromList;
-
         if (isIB === true) {
             return 'IB'
         } else if (isIB === false && next_ib === true) {
@@ -37,7 +35,6 @@ class IBGroupFrame extends Component {
         } else {
             return 'fullBuild'
         }
-
     }
 
     render() {
@@ -48,11 +45,12 @@ class IBGroupFrame extends Component {
 
         let statusLabels, comparisonTable, commitPanelProps = null;
         let panelHeader;
-
-        switch (this.getIbGroupType()) {
+        let showOnlyIbTag = false;
+        const ibGroupType = this.getIbGroupType();
+        switch (ibGroupType) {
             case 'IB':
+                showOnlyIbTag = false;
                 panelHeader = firstIbFromList.release_name;
-                statusLabels = <StatusLabels ib={firstIbFromList}/>;
                 comparisonTable = <ComparisonTable data={this.state.IBGroup}/>;
                 commitPanelProps = {
                     defaultExpanded: false,
@@ -60,18 +58,20 @@ class IBGroupFrame extends Component {
                 };
                 break;
             case 'nextIB':
+                showOnlyIbTag = true;
                 panelHeader = 'nextIB';
                 commitPanelProps = {
                     collapsible: false,
                 };
-
                 break;
             case 'fullBuild':
+                showOnlyIbTag = true;
                 panelHeader = firstIbFromList.release_name;
                 commitPanelProps = {
                     collapsible: false,
                 };
         }
+        statusLabels = <StatusLabels ib={firstIbFromList} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
 
         return (
             <Panel collapsible

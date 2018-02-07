@@ -48,7 +48,7 @@ export default {
             //     };
             // },
          */
-        // TODO IB Tag
+            // IB Tag is in StatusLabel  component
         {
             //add_comp_baseline_tests_link
             key: "comp_baseline",
@@ -128,6 +128,7 @@ export default {
         {
             //add_static_analyzer_link
             //TODO non-standart method, needs to be able to creat multiple labels
+            //TODO it will be fixed from python path
             //  Modules to thread unsafe statics
             //   Modules to thread unsafe EventSetup products
             //  produce/analyze/filter()
@@ -160,8 +161,8 @@ export default {
             //add_material_budget_tests_link
             // NOTE JSON usually empty
             //TODO non-standart method, needs to be able to creat multiple labels
+            //TODO it will be fixed from python part
             key: "material_budget"
         }
-
     ]
 };
