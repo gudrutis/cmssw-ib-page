@@ -49,15 +49,6 @@ class ComparisonTable extends Component {
         }
     }
 
-    renderRowCells_old(iterationFunction) {
-        // TODO delete
-        const {archsByIb, ibComparison} = this.state;
-        return ibComparison.map((ib, pos) => {
-            const el = archsByIb[pos];
-            return el.archs.map(arch => iterationFunction(arch, ib))
-        })
-    }
-
     renderRowCells({resultType, ifWarning, ifError, ifFailed, ifPassed, ifUnknown}) {
         /**
          * General purpose function, it will re-render row according to given config
@@ -83,6 +74,7 @@ class ComparisonTable extends Component {
                     return ComparisonTable.renderCell(defaultCellInfo);
                 }
                 switch (results.passed) {
+                    case true:
                     case "passed":
                         defaultTooltipContent = <p>All good!</p>;
                         defaultCellInfo = ComparisonTable.renderLabel(
@@ -93,6 +85,7 @@ class ComparisonTable extends Component {
                             }
                         );
                         return ifPassed ? ifPassed(results, ib.release_name) : ComparisonTable.renderCell(defaultCellInfo);
+                    case false:
                     case "error":
                         return ifError ? ifError(results, ib.release_name) : ComparisonTable.renderCell();
                     case "failed":
@@ -120,6 +113,7 @@ class ComparisonTable extends Component {
             const {details} = result;
             const resultKeys = Object.keys(details); //get all object properties name
 
+            // merge custom showLabelConfig with default one
             const showLabelConfig = Object.assign({
                 compWarning: {
                     color: "warning"
@@ -134,6 +128,7 @@ class ComparisonTable extends Component {
              * Generates labels for each cell
              * */
                 // TODO aggregate error results, if no errors show warnings
+                // TODO it should be visible if there was no change with previous IB (DO in python scripts)
             let cellInfoArray = resultKeys.map(key => {
                     let color, hide;
                     if (!showLabelConfig[key]) {
@@ -178,124 +173,55 @@ class ComparisonTable extends Component {
         return this.renderRowCells(config);
     }
 
-    renderUnitTestsRowCells() {
-        // TODO perrasyti
-        const iterationFunction = function (arch, ib) {
-            const utestsResults = _.findWhere(ib.utests, {"arch": arch});
-            if (!utestsResults) {
-                return ComparisonTable.renderCell();
-            }
-            let cellInfo, tooltipContent = undefined;
-            const {details} = utestsResults;
-            if (!_.isEmpty(details) && (details.num_fails !== undefined && details.num_fails > 0)) {
-                const testStr = details.num_fails === 1 ? "test" : "tests";
-                tooltipContent = `${details.num_fails} unit ${testStr} failing`;
-                cellInfo = ComparisonTable.renderLabel({
-                    colorType: 'danger',
-                    value: details.num_fails,
-                    tooltipContent,
-                    link: "http://www.stackoverflow.com"
-                });
-            } else if (utestsResults.passed === "passed") {
-                tooltipContent = <p><strong>All good!</strong> More info.</p>;
-                cellInfo = ComparisonTable.renderLabel({
-                    colorType: 'success', glyphicon: 'glyphicon-ok-circle', tooltipContent
-                });
-            } else {
-                tooltipContent = <p>Results are unknown</p>;
-                cellInfo = ComparisonTable.renderLabel({
-                    colorType: 'default', glyphicon: 'glyphicon-question-sign', tooltipContent
-                });
-            }
-            return ComparisonTable.renderCell(cellInfo);
-        };
-        return this.renderRowCells_old(iterationFunction);
-    }
-
-    renderRelValsRowCells() {
-        // TODO, just a copy off renderBuildRow()
-        const linkFunction = function (file) {
-            if (!file) {
-                return
-            }
-            let link_parts = file.split('/');
-            const si = 4;
-            link_parts = link_parts.slice(si, si + 5);
-
-            return urls.relvalLogDetailUrl + link_parts.join('/');
-        };
-
-        const showResults = function (result) {
-            const {details} = result;
-            const resultKeys = Object.keys(details);
-
-            const showLabelConfig = {
-                compWarning: {
-                    color: "warning"
-                },
-                ignoreWarning: {
-                    hide: true
-                }
-            };
-
-            let cellInfoArray = resultKeys.map(key => {
-                let color, hide;
-                if (!showLabelConfig[key]) {
-                    color = key.includes("Error") ? "danger" : "default";
-                } else {
-                    ({color, hide} = showLabelConfig[key]);
-                }
-
-                if (hide) {
-                    return;
-                }
-                const tooltipContent = <p><strong>{key}</strong></p>;
-                return ComparisonTable.renderLabel(
-                    {colorType: color, value: details[key], tooltipContent, link: linkFunction(result.file)}
-                );
-
-            });
-
-            return ComparisonTable.renderCell(cellInfoArray);
-        };
-
-        const config = {
-            resultType: 'builds',
-            ifPassed: function (details) {
-                let tooltipContent = <p><strong>All good!</strong> More info.</p>;
-                let cellInfo = ComparisonTable.renderLabel(
-                    {
-                        colorType: 'success',
-                        glyphicon: 'glyphicon-ok-circle',
-                        tooltipContent,
-                        link: linkFunction(details.file)
-                    }
-                );
-                return ComparisonTable.renderCell(cellInfo);
-            },
-            ifError: showResults,
-            ifFailed: showResults,
-            ifWarning: showResults
-        };
-        return this.renderRowCells(config);
-    }
-
     render() {
         const {archsByIb} = this.state;
 
-        // TODO palikt cia, ziuret kaip bus su kitais testais - gal galima iskelt
+        // TODO refactor and put to configs
         const getBuildOrUnitUrl = function (params) {
             const {file, arch, ibName} = params;
             if (!file) {
                 // do nothing
             } else if (file === 'not-ready') {
-                return "http://cms-sw.github.io/scramDetail.html#" + arch + ";" + ibName
+                return urls.scramDetailUrl + arch + ";" + ibName
             } else {
                 let link_parts = file.split('/');
                 const si = 4;
                 link_parts = link_parts.slice(si, si + 5);
                 return urls.buildOrUnitTestUrl + link_parts.join('/');
             }
+        };
+
+        const getRelValUrl = function (params) {
+            const {file, arch, ibName} = params;
+            if (!file) {
+                // do nothing
+            } else if (file === 'not-ready') {
+                return urls.relVals + arch + ';' + ibName
+            } else {
+                const si = 4;
+                let link_parts = file.split('/');
+                return urls.relVals + link_parts[si] + ';' + link_parts[si + 4]
+            }
+        };
+
+        const  getFWliteUrl = function (params) {
+            const {file, arch, ibName} = params;
+            if (file === 'not-ready') {
+                // return nothing
+            } else {
+                const si = 4;
+                let link_parts = file.split('/');
+                link_parts = link_parts.slice(si, si + 5);
+                return urls.fwliteUrl + link_parts.join('/');
+            }
+        };
+
+        const getOtherTestUrl = function (params) {
+            const {file, arch, ibName} = params;
+            const si = 4;
+            let link_parts = file.split('/');
+            link_parts = link_parts.slice(si, si + 5);
+            return urls.showAddOnLogsUrls + link_parts.join('/') + '/addOnTests/';
         };
 
         return (
@@ -344,10 +270,6 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Unit Tests</b></td>
-                        {this.renderUnitTestsRowCells()}
-                    </tr>
-                    <tr>
-                        <td><b>Unit Tests2</b></td>
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'utests',
                                 getUrl: getBuildOrUnitUrl,
@@ -361,21 +283,43 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>RelVals</b></td>
-                        {this.renderRelValsRowCells()}
+                        {this.renderRowCellsWithDefaultPreConfig({
+                                resultType: 'relvals',
+                                getUrl: getRelValUrl,
+                                showLabelConfig: {
+                                    num_passed: {color: "success"},
+                                    known_failed: {color: "info"},
+                                    num_failed: {color: "danger"}
+                                }
+                            }
+                        )}
                     </tr>
                     <tr>
                         <td><b>Other Tests</b></td>
-                        <th>
-                            {/* TODO */}
-                        </th>
+                        {this.renderRowCellsWithDefaultPreConfig({
+                                resultType: 'addons',
+                                getUrl: getOtherTestUrl,
+                                showLabelConfig: {
+                                    num_passed: {color: "success"},
+                                    known_failed: {color: "info"},
+                                    num_failed: {color: "danger"}
+                                }
+                            }
+                        )}
                     </tr>
                     <tr>
                         <td><b>FWLite</b></td>
-                        <th>
-                            {/* TODO */}
-                        </th>
+                        {this.renderRowCellsWithDefaultPreConfig({
+                                resultType: 'fwlite',
+                                getUrl: getFWliteUrl,
+                                showLabelConfig: {
+                                    num_passed: {color: "success"},
+                                    known_failed: {color: "info"},
+                                    num_failed: {color: "danger"}
+                                }
+                            }
+                        )}
                     </tr>
-
                     </tbody>
                 </Table>
             </div>

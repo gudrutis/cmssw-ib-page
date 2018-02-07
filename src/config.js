@@ -11,7 +11,7 @@ export default {
         relvalLogDetailUrl: "https://cms-sw.github.io/relvalLogDetail.html#",
         fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
         showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
-        relVals: ( type, file, arch, ib ) => '' // TODO finish
+        relVals: "https://cms-sw.github.io/relvalLogDetail.html#"
     },
     archShowCodes: {
         color: {
