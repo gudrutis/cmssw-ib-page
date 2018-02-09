@@ -107,25 +107,46 @@ class ComparisonTable extends Component {
     }
 
     renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
+        const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
+        const config = {
+            resultType: resultType,
+            ifPassed: function (details, ib) {
+                let tooltipContent = <p><strong>All good!</strong> Click for more info.</p>;
+                let cellInfo = ComparisonTable.renderLabel(
+                    {
+                        colorType: 'success',
+                        glyphicon: 'glyphicon-ok-circle',
+                        tooltipContent,
+                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib})
+                    }
+                );
+                return ComparisonTable.renderCell(cellInfo);
+            },
+            ifError: showGeneralResults,
+            ifFailed: showGeneralResults,
+            ifWarning: showGeneralResults
+        };
+        return this.renderRowCells(config);
+    }
 
-        const showGeneralResults = function (result, ib) {
+    showGeneralResults(showLabelConfig, getUrl) {
+        return function (result, ib) {
             const {details, done} = result;
             const resultKeys = Object.keys(details); //get all object properties name
             let labelConfig = {value: 0};
 
-            // iterate over first group of config, if not
             for (let i = 0; i < showLabelConfig.length; i++) {
                 let el = showLabelConfig[i];
                 el.groupFields.map((predicate) => {
                     if (typeof predicate === "function") {
                         resultKeys.map(key => {
                             if (predicate(key)) {
-                                labelConfig.value += details[key]*1;
+                                labelConfig.value += details[key] * 1;
                             }
                         });
                     } else {
                         if (resultKeys.indexOf(predicate) > -1) {
-                            labelConfig.value += details[predicate]*1;
+                            labelConfig.value += details[predicate] * 1;
                         }
                     }
                 });
@@ -149,7 +170,10 @@ class ComparisonTable extends Component {
             );
 
         };
+    }
 
+    renderOtherTestResults({resultType, getUrl, showLabelConfig}) {
+        const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
             resultType: resultType,
             ifPassed: function (details, ib) {
@@ -164,7 +188,18 @@ class ComparisonTable extends Component {
                 );
                 return ComparisonTable.renderCell(cellInfo);
             },
-            ifError: showGeneralResults,
+            ifError: function (details, ib) {
+                let tooltipContent = <p><strong>There are errors!</strong> Click for more info.</p>;
+                let cellInfo = ComparisonTable.renderLabel(
+                    {
+                        colorType: 'danger',
+                        glyphicon: 'glyphicon-remove-sign',
+                        tooltipContent,
+                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib})
+                    }
+                );
+                return ComparisonTable.renderCell(cellInfo);
+            },
             ifFailed: showGeneralResults,
             ifWarning: showGeneralResults
         };
@@ -314,7 +349,7 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>Other Tests</b></td>
-                        {this.renderRowCellsWithDefaultPreConfig({
+                        {this.renderOtherTestResults({
                                 resultType: 'addons',
                                 getUrl: getOtherTestUrl,
                                 showLabelConfig: [
