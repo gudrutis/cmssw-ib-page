@@ -60,9 +60,9 @@ class ComparisonTable extends Component {
             return el.archs.map(arch => {
                 const results = _.findWhere(ib[resultType], {"arch": arch});
                 if (!results) {
+                    // if not found,
                     return ComparisonTable.renderCell();
                 }
-
                 let defaultTooltipContent, defaultCellInfo = undefined;
                 if (_.isEmpty(results)) {
                     defaultTooltipContent = <p>Results are unknown</p>;
@@ -110,7 +110,7 @@ class ComparisonTable extends Component {
         const customShowLabelConfig = showLabelConfig ? showLabelConfig : undefined;
 
         const showGeneralResults = function (result, ib) {
-            const {details} = result;
+            const {details, done} = result;
             const resultKeys = Object.keys(details); //get all object properties name
 
             // merge custom showLabelConfig with default one
@@ -123,32 +123,34 @@ class ComparisonTable extends Component {
                 }
             }, customShowLabelConfig);
 
-
-            /**
-             * Generates labels for each cell
-             * */
-                // TODO aggregate error results, if no errors show warnings
-                // TODO it should be visible if there was no change with previous IB (DO in python scripts)
+            // Generates labels for each cell
+            // TODO aggregate error results, if no errors show warnings
+            // TODO it should be visible if there was no change with previous IB (DO in python scripts)
             let cellInfoArray = resultKeys.map(key => {
-                    let color, hide;
-                    if (!showLabelConfig[key]) {
-                        // if the key includes word error, set color to danger
-                        color = key.includes("Error") ? "danger" : "default";
-                    } else {
-                        ({color, hide} = showLabelConfig[key]);
+                let color, hide;
+                if (!showLabelConfig[key]) {
+                    // if the key includes word error, set color to danger
+                    color = key.includes("Error") ? "danger" : "default";
+                } else {
+                    ({color, hide} = showLabelConfig[key]);
+                }
+                if (hide) {
+                    // if property is to be hidden, return nothing
+                    return;
+                }
+                // If test is not finished, add a flag
+                let showResult = details[key];
+                if (done === false) {
+                    showResult = '' + details[key] + '*'
+                }
+                const tooltipContent = <p><strong>{key}</strong></p>;
+                return ComparisonTable.renderLabel(
+                    {
+                        colorType: color, value: showResult, tooltipContent,
+                        link: getUrl({"file": result.file, "arch": result.arch, "ibName": ib})
                     }
-                    if (hide) {
-                        // if property is to be hidden, return nothing
-                        return;
-                    }
-                    const tooltipContent = <p><strong>{key}</strong></p>;
-                    return ComparisonTable.renderLabel(
-                        {
-                            colorType: color, value: details[key], tooltipContent, link: getUrl(
-                            {"file": result.file, "arch": result.arch, "ibName": ib})
-                        }
-                    );
-                });
+                );
+            });
             return ComparisonTable.renderCell(cellInfoArray);
         };
 
@@ -204,7 +206,7 @@ class ComparisonTable extends Component {
             }
         };
 
-        const  getFWliteUrl = function (params) {
+        const getFWliteUrl = function (params) {
             const {file, arch, ibName} = params;
             if (file === 'not-ready') {
                 // return nothing
