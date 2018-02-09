@@ -107,51 +107,47 @@ class ComparisonTable extends Component {
     }
 
     renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
-        const customShowLabelConfig = showLabelConfig ? showLabelConfig : undefined;
 
         const showGeneralResults = function (result, ib) {
             const {details, done} = result;
             const resultKeys = Object.keys(details); //get all object properties name
+            let labelConfig = {value: 0};
 
-            // merge custom showLabelConfig with default one
-            const showLabelConfig = Object.assign({
-                compWarning: {
-                    color: "warning"
-                },
-                ignoreWarning: {
-                    hide: true
-                }
-            }, customShowLabelConfig);
-
-            // Generates labels for each cell
-            // TODO aggregate error results, if no errors show warnings
-            // TODO it should be visible if there was no change with previous IB (DO in python scripts)
-            let cellInfoArray = resultKeys.map(key => {
-                let color, hide;
-                if (!showLabelConfig[key]) {
-                    // if the key includes word error, set color to danger
-                    color = key.includes("Error") ? "danger" : "default";
-                } else {
-                    ({color, hide} = showLabelConfig[key]);
-                }
-                if (hide) {
-                    // if property is to be hidden, return nothing
-                    return;
-                }
-                // If test is not finished, add a flag
-                let showResult = details[key];
-                if (done === false) {
-                    showResult = '' + details[key] + '*'
-                }
-                const tooltipContent = <p><strong>{key}</strong></p>;
-                return ComparisonTable.renderLabel(
-                    {
-                        colorType: color, value: showResult, tooltipContent,
-                        link: getUrl({"file": result.file, "arch": result.arch, "ibName": ib})
+            // iterate over first group of config, if not
+            for (let i = 0; i < showLabelConfig.length; i++) {
+                let el = showLabelConfig[i];
+                el.groupFields.map((predicate) => {
+                    if (typeof predicate === "function") {
+                        resultKeys.map(key => {
+                            if (predicate(key)) {
+                                labelConfig.value += details[key]*1;
+                            }
+                        });
+                    } else {
+                        if (resultKeys.indexOf(predicate) > -1) {
+                            labelConfig.value += details[predicate]*1;
+                        }
                     }
-                );
+                });
+                if (labelConfig.value > 0) {
+                    labelConfig.colorType = el.color;
+                    break;
+                }
+            }
+            if (done === false) {
+                labelConfig.value = '' + labelConfig.value + '*';
+            }
+            const tooltipContent = resultKeys.map(key => {
+                return <p>{key}: {details[key]}</p>
             });
-            return ComparisonTable.renderCell(cellInfoArray);
+            return ComparisonTable.renderCell(ComparisonTable.renderLabel(
+                {
+                    colorType: labelConfig.colorType, value: labelConfig.value, tooltipContent,
+                    link: getUrl({"file": result.file, "arch": result.arch, "ibName": ib})
+                }
+                )
+            );
+
         };
 
         const config = {
@@ -266,7 +262,19 @@ class ComparisonTable extends Component {
                         </td>
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'builds',
-                                getUrl: getBuildOrUnitUrl
+                                getUrl: getBuildOrUnitUrl,
+                                // first group will be showed as label
+
+                                showLabelConfig: [
+                                    {
+                                        groupFields: [(key) => key.includes("Error")],
+                                        color: "danger"
+                                    },
+                                    {
+                                        groupFields: ["compWarning"],
+                                        color: "warning"
+                                    }
+                                ],
                             }
                         )}
                     </tr>
@@ -275,11 +283,10 @@ class ComparisonTable extends Component {
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'utests',
                                 getUrl: getBuildOrUnitUrl,
-                                showLabelConfig: {
-                                    num_fails: {
-                                        color: "danger"
-                                    }
-                                }
+                                showLabelConfig: [{
+                                    groupFields: ["num_fails"],
+                                    color: "danger"
+                                }]
                             }
                         )}
                     </tr>
@@ -288,11 +295,20 @@ class ComparisonTable extends Component {
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'relvals',
                                 getUrl: getRelValUrl,
-                                showLabelConfig: {
-                                    num_passed: {color: "success"},
-                                    known_failed: {color: "info"},
-                                    num_failed: {color: "danger"}
-                                }
+                                showLabelConfig: [
+                                    {
+                                        groupFields: ["num_failed"],
+                                        color: "danger"
+                                    },
+                                    {
+                                        groupFields: ["known_failed"],
+                                        color: "info"
+                                    },
+                                    {
+                                        groupFields: ["num_passed"],
+                                        color: "success"
+                                    }
+                                ]
                             }
                         )}
                     </tr>
@@ -301,11 +317,20 @@ class ComparisonTable extends Component {
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'addons',
                                 getUrl: getOtherTestUrl,
-                                showLabelConfig: {
-                                    num_passed: {color: "success"},
-                                    known_failed: {color: "info"},
-                                    num_failed: {color: "danger"}
-                                }
+                                showLabelConfig: [
+                                    {
+                                        groupFields: ["num_failed"],
+                                        color: "danger"
+                                    },
+                                    {
+                                        groupFields: ["known_failed"],
+                                        color: "info"
+                                    },
+                                    {
+                                        groupFields: ["num_passed"],
+                                        color: "success"
+                                    }
+                                ]
                             }
                         )}
                     </tr>
@@ -314,11 +339,20 @@ class ComparisonTable extends Component {
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'fwlite',
                                 getUrl: getFWliteUrl,
-                                showLabelConfig: {
-                                    num_passed: {color: "success"},
-                                    known_failed: {color: "info"},
-                                    num_failed: {color: "danger"}
-                                }
+                                showLabelConfig: [
+                                    {
+                                        groupFields: ["num_failed"],
+                                        color: "danger"
+                                    },
+                                    {
+                                        groupFields: ["known_failed"],
+                                        color: "info"
+                                    },
+                                    {
+                                        groupFields: ["num_passed"],
+                                        color: "success"
+                                    }
+                                ]
                             }
                         )}
                     </tr>
