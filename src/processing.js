@@ -60,5 +60,14 @@ export function getPreviousIbTag(ib) {
     return ib.compared_tags.split("-->")[0]
 }
 
+export function getDisplayName(name) {
+    let re = /^[a-zA-Z]+_[0-9]+_[0-9]+_/g; // will match 'CMSSW_10_0_'
+    let result = name.replace(re, '');
+    if (result === 'X') {
+        return 'DEFAULT'
+    } else {
+        return result;
+    }
+}
 
 

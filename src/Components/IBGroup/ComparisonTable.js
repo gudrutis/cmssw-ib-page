@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {OverlayTrigger, Table, Tooltip} from "react-bootstrap";
-import {getAllArchitecturesFromIBGroupByFlavor} from '../../processing';
+import {getAllArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 import config from '../../config'
@@ -265,7 +265,7 @@ class ComparisonTable extends Component {
                         <th rowSpan={2}/>
                         {/* IB flavors row*/}
                         {archsByIb.map(item => {
-                            return <th key={uuid.v4()} colSpan={item.archs.length}>{item.flavor.replace(/_/g, ' ')}</th>
+                            return <th key={uuid.v4()} colSpan={item.archs.length}>{getDisplayName(item.flavor)}</th>
                         })}
                     </tr>
                     <tr>
@@ -298,8 +298,8 @@ class ComparisonTable extends Component {
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'builds',
                                 getUrl: getBuildOrUnitUrl,
-                                // first group will be showed as label
-
+                                // first group will be showed as label,
+                                // if not found, then second group will be showed
                                 showLabelConfig: [
                                     {
                                         groupFields: [(key) => key.includes("Error")],
