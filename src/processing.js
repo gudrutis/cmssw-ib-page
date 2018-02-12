@@ -60,13 +60,24 @@ export function getPreviousIbTag(ib) {
     return ib.compared_tags.split("-->")[0]
 }
 
+// keeping short display name for an object
+let displayNameCache = {};
 export function getDisplayName(name) {
-    let re = /^[a-zA-Z]+_[0-9]+_[0-9]+_/g; // will match 'CMSSW_10_0_'
-    let result = name.replace(re, '');
-    if (result === 'X') {
-        return 'DEFAULT'
+
+    let lookUp = displayNameCache[name];
+    if (lookUp){
+        return lookUp;
     } else {
-        return result;
+        let re = /^[a-zA-Z]+_[0-9]+_[0-9]+_/g; // will match 'CMSSW_10_0_'
+        let result = name.replace(re, '');
+        if (result === 'X') {
+            displayNameCache[name] = 'DEFAULT'
+            return 'DEFAULT'
+        } else {
+            displayNameCache[name] = result
+            return result;
+        }
+
     }
 }
 
