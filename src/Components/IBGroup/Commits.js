@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, Tab, Tabs} from "react-bootstrap";
-import {getPreviousIbTag} from "../../processing";
+import {getDisplayName, getPreviousIbTag} from "../../processing";
 import uuid from 'uuid';
 
 class Commits extends Component {
@@ -41,7 +41,7 @@ class Commits extends Component {
                             )
                         }
                         return (
-                            <Tab key={uuid.v4()} eventKey={pos} title={ib.release_queue}>
+                            <Tab key={uuid.v4()} eventKey={pos} title={getDisplayName(ib.release_queue)}>
                                 <br/>
                                 {commits}
                             </Tab>

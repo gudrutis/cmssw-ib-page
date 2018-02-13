@@ -87,10 +87,10 @@ class IBGroupFrame extends Component {
             <Panel collapsible
                    defaultExpanded
                    header={panelHeader}>
-                <Panel collapsible
-                       header={'DEVELOPMENT real data'}>
-                    <JSONPretty json={this.state.IBGroup}/>
-                </Panel>
+                {/*<Panel collapsible*/}
+                       {/*header={'DEVELOPMENT real data'}>*/}
+                    {/*<JSONPretty json={this.state.IBGroup}/>*/}
+                {/*</Panel>*/}
                 {statusLabels}
                 {comparisonTable}
                 <Commits commitPanelProps={commitPanelProps} data={this.state.IBGroup}/>
