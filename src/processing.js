@@ -60,21 +60,45 @@ export function getPreviousIbTag(ib) {
     return ib.compared_tags.split("-->")[0]
 }
 
+export function checkIfTableIsEmpty({fieldsToCheck = [], IBGroup = []}) {
+    for (let i = 0; i < IBGroup.length; i++) {
+        let ib = IBGroup[i];
+        for (let i = 0; i < fieldsToCheck.length; i++) {
+            let field = fieldsToCheck[i];
+            if (!(ib[field] === undefined || ib[field].length === 0 )) {
+                return false // there are some data in the table
+            }
+        }
+    }
+    return true // fields are empty
+}
+
+export function checkIfCommitsAreEmpty({IBGroup = []}) {
+    for (let i = 0; i < IBGroup.length; i++) {
+        let ib = IBGroup[i];
+        if (!(ib['merged_prs'] === undefined || ib['merged_prs'].length === 0 )) {
+            return false // there are commits
+        }
+    }
+    return true // there are no commits
+}
+
 // keeping short display name for an object
 let displayNameCache = {};
-export function getDisplayName(name) {
 
+export function getDisplayName(name) {
+    // TODO could be writen as service and load json
     let lookUp = displayNameCache[name];
-    if (lookUp){
+    if (lookUp) {
         return lookUp;
     } else {
         let re = /^[a-zA-Z]+_[0-9]+_[0-9]+_/g; // will match 'CMSSW_10_0_'
         let result = name.replace(re, '');
         if (result === 'X') {
-            displayNameCache[name] = 'DEFAULT'
+            displayNameCache[name] = 'DEFAULT';
             return 'DEFAULT'
         } else {
-            displayNameCache[name] = result
+            displayNameCache[name] = result;
             return result;
         }
 

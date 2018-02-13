@@ -127,8 +127,8 @@ export default {
         },
         {
             //add_static_analyzer_link
-            //TODO non-standart method, needs to be able to creat multiple labels
-            //TODO it will be fixed from python path
+            //  TODO non-standart method, needs to be able to creat multiple labels
+            //  TODO it will be fixed from python path
             //  Modules to thread unsafe statics
             //   Modules to thread unsafe EventSetup products
             //  produce/analyze/filter()
@@ -149,7 +149,7 @@ export default {
         },
         {
             // NOTE JSON usually empty
-            //add_rv_exceptions_link
+            // add_rv_exceptions_link
             glyphicon: "glyphicon-warning-sign",
             key: "RVExceptions",
             name: "Relvals Exceptions Summary",
@@ -158,10 +158,10 @@ export default {
             }
         },
         {
-            //add_material_budget_tests_link
+            // add_material_budget_tests_link
             // NOTE JSON usually empty
-            //TODO non-standart method, needs to be able to creat multiple labels
-            //TODO it will be fixed from python part
+            // TODO non-standart method, needs to be able to creat multiple labels
+            // TODO it will be fixed from python part
             key: "material_budget"
         }
     ]

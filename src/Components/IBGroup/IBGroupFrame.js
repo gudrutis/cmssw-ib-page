@@ -4,6 +4,7 @@ import StatusLabels from "./StatusLabels";
 import ComparisonTable from "./ComparisonTable";
 import {Panel} from "react-bootstrap";
 import JSONPretty from 'react-json-pretty';
+import {checkIfCommitsAreEmpty, checkIfTableIsEmpty} from "../../processing";
 
 
 /**
@@ -49,11 +50,19 @@ class IBGroupFrame extends Component {
         const ibGroupType = this.getIbGroupType();
         switch (ibGroupType) {
             case 'IB':
+                const isIBGroupTableEmpty = checkIfTableIsEmpty({
+                    fieldsToCheck: ['builds'],
+                    IBGroup: this.state.IBGroup
+                });
+                const isCommitsEmpty = checkIfCommitsAreEmpty({IBGroup: this.state.IBGroup});
+                if (isCommitsEmpty && isIBGroupTableEmpty) {
+                    return null; // if IB is empty, hide it
+                }
                 showOnlyIbTag = false;
                 panelHeader = firstIbFromList.release_name;
-                comparisonTable = <ComparisonTable data={this.state.IBGroup}/>;
+                comparisonTable = isIBGroupTableEmpty ? null : <ComparisonTable data={this.state.IBGroup}/>;
                 commitPanelProps = {
-                    defaultExpanded: false,
+                    defaultExpanded: !isCommitsEmpty,
                     collapsible: true,
                 };
                 break;
@@ -73,6 +82,7 @@ class IBGroupFrame extends Component {
         }
         statusLabels = <StatusLabels ib={firstIbFromList} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
 
+        // TODO if empty return
         return (
             <Panel collapsible
                    defaultExpanded
