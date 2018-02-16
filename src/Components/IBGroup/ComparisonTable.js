@@ -137,6 +137,18 @@ class ComparisonTable extends Component {
         return this.renderRowCells(config);
     }
 
+    renderRelVals({resultType, getUrl, showLabelConfig}) {
+        const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
+        const config = {
+            resultType: resultType,
+            ifPassed: showGeneralResults,
+            ifError: showGeneralResults,
+            ifFailed: showGeneralResults,
+            ifWarning: showGeneralResults
+        };
+        return this.renderRowCells(config);
+    }
+
     showGeneralResults(showLabelConfig, getUrl) {
         return function (result, ib) {
             const {details, done} = result;
@@ -370,7 +382,7 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td><b>RelVals</b></td>
-                        {this.renderRowCellsWithDefaultPreConfig({
+                        {this.renderRelVals({
                                 resultType: 'relvals',
                                 getUrl: getRelValUrl,
                                 showLabelConfig: [
