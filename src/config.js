@@ -11,12 +11,13 @@ export default {
         relvalLogDetailUrl: "https://cms-sw.github.io/relvalLogDetail.html#",
         fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
         showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
-        relVals: "https://cms-sw.github.io/relvalLogDetail.html#"
+        relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
+        commits : "https://github.com/cms-sw/cmsdist/commits/"
     },
     archShowCodes: {
         color: {
-            slc7: "#20e41a",
-            slc6: "#48c9b0",
+            slc7: "#48c9b0",
+            slc6: "#20e41a",
             amd64: "#20e41a",
             aarch64: "#f0b27a",
             gcc700: "#f5b7b1",
@@ -130,7 +131,7 @@ export default {
             //  TODO non-standart method, needs to be able to creat multiple labels
             //  TODO it will be fixed from python path
             //  Modules to thread unsafe statics
-            //   Modules to thread unsafe EventSetup products
+            //  Modules to thread unsafe EventSetup products
             //  produce/analyze/filter()
             name: "Static Analyzer(TODO)",
             key: "static_checks",

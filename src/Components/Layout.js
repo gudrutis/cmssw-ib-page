@@ -30,7 +30,7 @@ class LayoutWrapper extends Component {
             dataList: [],
             all_release_queues: props.structure.all_release_queues,
             toLinks: props.toLinks,
-            navigationHeight : 50
+            navigationHeight: 50
         }
     }
 
@@ -97,9 +97,6 @@ class LayoutWrapper extends Component {
     }
 
     render() {
-        // TODO cia rerenderint history
-        let history = createHistory();
-        let location = history.location;
         return (
             <div className={'container'} style={{paddingTop: this.state.navigationHeight + 20}}>
                 <Navigation toLinks={this.state.toLinks} buttons={

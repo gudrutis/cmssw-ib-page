@@ -71,7 +71,6 @@ class StatusLabels extends Component {
         /**
          * non-standart function to show IB tag
          */
-            // TODO
         let config = {};
         switch (ibGroupType) {
             case 'IB':

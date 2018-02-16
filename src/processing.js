@@ -40,7 +40,9 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
         return {
             flavor: ib.release_queue,
             name: ib.release_name,
-            archs: ib.tests_archs
+            archs: ib.tests_archs,
+            cmsdistTag: ib.cmsdistTags[ib.tests_archs],
+            current_tag: getCurrentIbTag(ib)
         };
     });
     a = _.flatten(a, true);
