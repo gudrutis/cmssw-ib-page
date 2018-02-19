@@ -22,7 +22,7 @@ class IBGroupFrame extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            IBGroup: props.IBGroup
+            IBGroup: props.IBGroup,
         };
     }
 
@@ -80,7 +80,7 @@ class IBGroupFrame extends Component {
                     collapsible: false,
                 };
         }
-        statusLabels = <StatusLabels ib={firstIbFromList} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
+        statusLabels = <StatusLabels IBGroup={this.state.IBGroup} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
 
         // TODO if empty return
         return (

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import config from '../../config';
 import uuid from 'uuid';
-import {getCurrentIbTag} from "../../processing";
+import MenuItem from "react-bootstrap/es/MenuItem";
+import {Dropdown, Glyphicon} from "react-bootstrap";
+import {getCurrentIbTag, getDisplayName} from "../../processing";
 
 const {statusLabelsConfigs} = config;
 
@@ -10,7 +12,8 @@ class StatusLabels extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            ib: props.ib,
+            IBGroup: props.IBGroup,
+            ib: props.IBGroup[0],
             ibGroupType: props.ibGroupType,
             showOnlyIbTag: props.showOnlyIbTag
         }
@@ -67,7 +70,7 @@ class StatusLabels extends Component {
         }
     }
 
-    static renderIBTag(ib, ibGroupType) {
+    static renderIBTag(IBGroup, ibGroupType) {
         /**
          * non-standart function to show IB tag
          */
@@ -76,34 +79,58 @@ class StatusLabels extends Component {
             case 'IB':
                 config = {
                     name: "IB Tag",
-                    glyphicon: "glyphicon-tag",
-                    url: 'https://github.com/cms-sw/cmssw/tree/' + getCurrentIbTag(ib)
+                    glyphicon: "tag",
+                    url: 'https://github.com/cms-sw/cmssw/tree/'
                 };
                 break;
             case 'nextIB':
                 config = {
                     name: "See Branch",
-                    glyphicon: "glyphicon-list",
-                    url: 'https://github.com/cms-sw/cmssw/commits/' + getCurrentIbTag(ib)
+                    glyphicon: "list",
+                    url: 'https://github.com/cms-sw/cmssw/commits/'
                 };
                 break;
             case 'fullBuild':
                 config = {
                     name: "Release",
-                    glyphicon: "glyphicon-tag",
-                    url: 'https://github.com/cms-sw/cmssw/releases/tag/' + getCurrentIbTag(ib)
+                    glyphicon: "tag",
+                    url: 'https://github.com/cms-sw/cmssw/releases/tag/'
                 };
         }
-        return StatusLabels.formatLabel(config);
+        // getCurrentIbTag(ib)
+
+        if (IBGroup.length > 1){
+            return ([
+                    <Dropdown id="dropdown-custom-1" bsSize="small">
+                        <Dropdown.Toggle>
+                            <Glyphicon glyph={config.glyphicon}/>
+                            {" " + config.name}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="super-colors">
+                            {IBGroup.map((ib) => {
+                                return <MenuItem
+                                    href={config.url + getCurrentIbTag(ib)}>{getDisplayName(ib.release_queue)}</MenuItem>
+                            })}
+                        </Dropdown.Menu>
+                    </Dropdown>,
+                    <span>   </span>
+                ]
+            )
+        } else {
+            config['glyphicon'] = "glyphicon-" + config['glyphicon'];
+            config['url'] = config['url'] + getCurrentIbTag(IBGroup[0]);
+            return StatusLabels.formatLabel(config);
+        }
     }
 
     render() {
-        const {ib, showOnlyIbTag, ibGroupType} = this.state;
+        const {IBGroup, showOnlyIbTag, ibGroupType, ib} = this.state;
         if (showOnlyIbTag) {
-            return <p>{StatusLabels.renderIBTag(ib, ibGroupType)}</p>
+            return <p>{StatusLabels.renderIBTag(IBGroup, ibGroupType)}</p>
         } else {
             return (
-                <p>{[StatusLabels.renderIBTag(ib, ibGroupType), statusLabelsConfigs.map(conf => StatusLabels.renderLabel(conf, ib))]}
+                <p>{[StatusLabels.renderIBTag(IBGroup, ibGroupType),
+                    statusLabelsConfigs.map(conf => StatusLabels.renderLabel(conf, ib))]}
                 </p>)
         }
     }
