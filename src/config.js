@@ -12,7 +12,7 @@ export default {
         fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
         showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
         relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
-        commits : "https://github.com/cms-sw/cmsdist/commits/"
+        commits: "https://github.com/cms-sw/cmsdist/commits/"
     },
     archShowCodes: {
         color: {
@@ -127,30 +127,41 @@ export default {
             }
         },
         {
-            //add_static_analyzer_link
-            //  TODO non-standart method, needs to be able to creat multiple labels
-            //  TODO it will be fixed from python path
-            //  Modules to thread unsafe statics
-            //  Modules to thread unsafe EventSetup products
-            //  produce/analyze/filter()
-            name: "Static Analyzer(TODO)",
-            key: "static_checks",
-            // getUrl: function (ib) {
-            //     return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/igprof/" + getCurrentIbTag(ib);
-            // }
-            customResultInterpretation: function (result) {
-                if (result === "not-found") {
-                    return "not-found";
-                } else if (result === "inprogress") {
-                    return "inprogress";
-                } else if (result) {
-                    return "found";
-                }
+            name: "Static Analyzer",
+            key: "static_checks_v2",
+            getUrl: function (ib, result) {
+                return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
+                    + getCurrentIbTag(ib) + '/' + result.arch + '/llvm-analysis/index.html';
+            },
+        },
+        {
+            name: "SA thread unsafe",
+            key: "static_checks_v2",
+            getUrl: function (ib, result) {
+                return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
+                    + getCurrentIbTag(ib) + '/' + result.arch + "/reports/modules2statics.txt";
+            },
+            ifInProgress : () => {
+                return null;
+            }
+        },
+        {
+            name: "SA failures (TODO)",
+            // TODO SA failures (list) (custom link)
+        },
+        {
+            name: "SA thread unsafe EventSetup products (TODO)",
+            key: "static_checks_v2",
+            getUrl: function (ib, result) {
+                return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
+                    + getCurrentIbTag(ib) + '/' + result.arch + "/reports/tlf2esd.txt";
+            },
+            ifInProgress : () => {
+                return null;
             }
         },
         {
             // NOTE JSON usually empty
-            // add_rv_exceptions_link
             glyphicon: "glyphicon-warning-sign",
             key: "RVExceptions",
             name: "Relvals Exceptions Summary",
@@ -159,6 +170,15 @@ export default {
             }
         },
         {
+            name: "material_budget (TODO)",
+            // add_material_budget_tests_link
+            // NOTE JSON usually empty
+            // TODO non-standart method, needs to be able to creat multiple labels
+            // TODO it will be fixed from python part
+            key: "material_budget"
+        },
+        {
+            name: "material_budget (TODO)",
             // add_material_budget_tests_link
             // NOTE JSON usually empty
             // TODO non-standart method, needs to be able to creat multiple labels

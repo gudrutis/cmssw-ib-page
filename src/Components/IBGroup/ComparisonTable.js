@@ -340,7 +340,6 @@ class ComparisonTable extends Component {
                                         <Label bsStyle="primary"> {patchOrFullBuild}</Label>
                                     </th>
                                 );
-
                             })
                         })}
                     </tr>
@@ -392,7 +391,7 @@ class ComparisonTable extends Component {
                                     },
                                     {
                                         groupFields: ["known_failed"],
-                                        color: "info"
+                                        color: "warning"
                                     },
                                     {
                                         groupFields: ["num_passed"],

@@ -35,11 +35,11 @@ class StatusLabels extends Component {
         }
     };
 
-    static defaultFound(config, ib) {
+    static defaultFound(config, ib, result) {
         return {
             name: config.name,
             glyphicon: config.glyphicon ? config.glyphicon : "glyphicon-list-alt",
-            url: config.getUrl ? config.getUrl(ib) : undefined
+            url: config.getUrl ? config.getUrl(ib, result) : undefined
         }
     };
 
@@ -51,19 +51,25 @@ class StatusLabels extends Component {
     };
 
     static renderLabel(config, ib) {
+        let status;
         const {key} = config;
-        let result = ib[key];
+        const result = ib[key];
+        if (result !== null && typeof result === 'object') {
+            status = result.status;
+        } else {
+            status = result;
+        }
         // if result variable does not follow standard and needs custom interpretation
         if (config.customResultInterpretation) {
-            result = config.customResultInterpretation(result);
+            status = config.customResultInterpretation(status);
         }
         let outputConfig;
-        if (result === "found") {
-            outputConfig = config.ifFound ? config.ifFound(ib) : StatusLabels.defaultFound(config, ib);
-        } else if (result === "not-found") {
-            outputConfig = config.ifNotFound ? config.ifNotFound : undefined;
-        } else if (result === "inprogress" || result === "inProgress") {
-            outputConfig = config.ifInProgress ? config.ifInProgress(ib) : StatusLabels.defaultInProgress(config);
+        if (status === "found" || status === "passed") {
+            outputConfig = config.ifFound ? config.ifFound(ib, result) : StatusLabels.defaultFound(config, ib, result);
+        } else if (status === "not-found") {
+            outputConfig = config.ifNotFound ? config.ifNotFound(ib, result) : undefined;
+        } else if (status === "inprogress" || status === "inProgress") {
+            outputConfig = config.ifInProgress ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
         }
         if (outputConfig) {
             return StatusLabels.formatLabel(outputConfig);
@@ -97,25 +103,23 @@ class StatusLabels extends Component {
                     url: 'https://github.com/cms-sw/cmssw/releases/tag/'
                 };
         }
-        // getCurrentIbTag(ib)
 
-        if (IBGroup.length > 1){
+        if (IBGroup.length > 1) {
             return ([
-                    <Dropdown id="dropdown-custom-1" bsSize="small">
-                        <Dropdown.Toggle>
-                            <Glyphicon glyph={config.glyphicon}/>
-                            {" " + config.name}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="super-colors">
-                            {IBGroup.map((ib) => {
-                                return <MenuItem
-                                    href={config.url + getCurrentIbTag(ib)}>{getDisplayName(ib.release_queue)}</MenuItem>
-                            })}
-                        </Dropdown.Menu>
-                    </Dropdown>,
-                    <span>   </span>
-                ]
-            )
+                <Dropdown id="dropdown-custom-1" bsSize="small">
+                    <Dropdown.Toggle>
+                        <Glyphicon glyph={config.glyphicon}/>
+                        {" " + config.name}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="super-colors">
+                        {IBGroup.map((ib) => {
+                            return <MenuItem
+                                href={config.url + getCurrentIbTag(ib)}>{getDisplayName(ib.release_queue)}</MenuItem>
+                        })}
+                    </Dropdown.Menu>
+                </Dropdown>,
+                <span>   </span>
+            ])
         } else {
             config['glyphicon'] = "glyphicon-" + config['glyphicon'];
             config['url'] = config['url'] + getCurrentIbTag(IBGroup[0]);
