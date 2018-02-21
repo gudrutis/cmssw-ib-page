@@ -4,7 +4,6 @@ import {getDisplayName, getPreviousIbTag} from "../../processing";
 import uuid from 'uuid';
 
 class Commits extends Component {
-    // TODO - prop types
 
     constructor(props) {
         super(props);
@@ -28,7 +27,7 @@ class Commits extends Component {
                             commits = <p key={uuid.v4()}>No new pull requests since {getPreviousIbTag(ib)}</p>
                         } else {
                             commits = (
-                                <ul >
+                                <ul>
                                     {ib.merged_prs.map(pr => {
                                         return (
                                             <li key={uuid.v4()}>

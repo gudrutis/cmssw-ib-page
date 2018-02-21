@@ -17,11 +17,11 @@ export default {
     archShowCodes: {
         color: {
             slc7: "#48c9b0",
-            slc6: "#20e41a",
-            amd64: "#20e41a",
-            aarch64: "#f0b27a",
-            gcc700: "#f5b7b1",
-            gcc630: "#20e41a"
+            slc6: "#5cb85c",
+            amd64: "#5cb85c",
+            aarch64: "#f1ad4f",
+            gcc700: "#d9534f",
+            gcc630: "#5cb85c"
         }
     },
     statusLabelsConfigs: [

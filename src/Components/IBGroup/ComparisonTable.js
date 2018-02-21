@@ -303,8 +303,8 @@ class ComparisonTable extends Component {
                                         arch.split("_").map(str => {
                                             const {color} = archShowCodes;
                                             return (
-                                                <div key={uuid.v4()}>
-                                                    <span style={{backgroundColor: color[str]}}>{str}</span>
+                                                <div style={{backgroundColor: color[str]}} key={uuid.v4()}>
+                                                    <span style={{color: "white"}}>{str}</span>
                                                 </div>
                                             )
                                         })
@@ -313,7 +313,7 @@ class ComparisonTable extends Component {
                                 const checkIfItIsAPatch = (current_tag, architecture, tagName) => {
                                     const intendedTagName1 = 'IB/'.concat(current_tag, '/', architecture);
                                     const intendedTagName2 = 'ERR/'.concat(current_tag, '/', architecture);
-                                    return ( tagName != intendedTagName1 && tagName != intendedTagName2 );
+                                    return ( tagName !== intendedTagName1 && tagName !== intendedTagName2 );
                                 };
                                 let link, tooltipText;
                                 let patchOrFullBuild = '---';
@@ -337,7 +337,7 @@ class ComparisonTable extends Component {
                                 return (
                                     <th key={uuid.v4()}>
                                         {(link) ? renderTooltip(linkWrapper(link, cellContent()), tooltipText) : cellContent()}
-                                        <Label bsStyle="primary"> {patchOrFullBuild}</Label>
+                                        <Label bsStyle="info"> {patchOrFullBuild}</Label>
                                     </th>
                                 );
                             })
