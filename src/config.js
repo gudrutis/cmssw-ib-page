@@ -147,6 +147,8 @@ export default {
         },
         {
             name: "SA failures (TODO)",
+            key: "static_checks_failures",
+
             // TODO SA failures (list) (custom link)
         },
         {

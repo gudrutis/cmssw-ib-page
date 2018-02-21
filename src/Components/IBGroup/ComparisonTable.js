@@ -293,7 +293,7 @@ class ComparisonTable extends Component {
                             return item.archs.map(arch => {
                                 const linkWrapper = (link, result) => {
                                     return (
-                                        <a href={link} style={{color: 'blue'}}>
+                                        <a href={link} style={{color: 'blue', textDecoration: 'underline'}}>
                                             {result}
                                         </a>
                                     )
