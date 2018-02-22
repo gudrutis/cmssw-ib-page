@@ -317,7 +317,8 @@ class ComparisonTable extends Component {
                                 };
                                 let link, tooltipText;
                                 let patchOrFullBuild = '---';
-                                let {cmsdistTag, current_tag} = item;
+                                let {cmsdistTags, current_tag} = item;
+                                let cmsdistTag = cmsdistTags[arch];
                                 if (cmsdistTag === "Not Found") {
                                 } else if (!cmsdistTag) {
                                 } else {

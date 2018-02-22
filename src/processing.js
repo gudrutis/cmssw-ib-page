@@ -41,7 +41,7 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
             flavor: ib.release_queue,
             name: ib.release_name,
             archs: ib.tests_archs,
-            cmsdistTag: ib.cmsdistTags[ib.tests_archs],
+            cmsdistTags: ib.cmsdistTags,
             current_tag: getCurrentIbTag(ib)
         };
     });
