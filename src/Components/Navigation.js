@@ -22,7 +22,7 @@ class Navigation extends Component {
                     </LinkContainer>
                 )
             });
-            importantLinks = renderedLinks.slice(0,3);
+            importantLinks = renderedLinks.slice(0, 3);
             olderLinks = renderedLinks.slice(3);
         }
 
@@ -52,7 +52,6 @@ class Navigation extends Component {
             </Navbar>
         );
     }
-
 }
 
 export default Navigation;

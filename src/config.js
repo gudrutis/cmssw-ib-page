@@ -49,7 +49,7 @@ export default {
             //     };
             // },
          */
-            // IB Tag is in StatusLabel  component
+        // IB Tag is in StatusLabel  component
         {
             //add_comp_baseline_tests_link
             key: "comp_baseline",
@@ -141,24 +141,39 @@ export default {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
                     + getCurrentIbTag(ib) + '/' + result.arch + "/reports/modules2statics.txt";
             },
-            ifInProgress : () => {
+            ifInProgress: () => {
                 return null;
             }
         },
         {
-            name: "SA failures (TODO)",
+            // This config produce multiple labels
+            // iterateItem - will be added from result to a config
+            name: "SA failures",
             key: "static_checks_failures",
-
-            // TODO SA failures (list) (custom link)
+            glyphicon: "glyphicon-alert",
+            getUrl: function (ib, result) {
+                return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
+                    + getCurrentIbTag(ib) + '/' + result.arch + "/" + this.iterateItem;
+            },
+            ifInProgress: () => {
+                return null;
+            },
+            ifFound: function (ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: this.glyphicon,
+                    url: this.getUrl(ib, result)
+                };
+            }
         },
         {
-            name: "SA thread unsafe EventSetup products (TODO)",
+            name: "SA thread unsafe EventSetup products",
             key: "static_checks_v2",
             getUrl: function (ib, result) {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
                     + getCurrentIbTag(ib) + '/' + result.arch + "/reports/tlf2esd.txt";
             },
-            ifInProgress : () => {
+            ifInProgress: () => {
                 return null;
             }
         },
@@ -172,20 +187,36 @@ export default {
             }
         },
         {
-            name: "material_budget (TODO)",
-            // add_material_budget_tests_link
-            // NOTE JSON usually empty
-            // TODO non-standart method, needs to be able to creat multiple labels
-            // TODO it will be fixed from python part
-            key: "material_budget"
+            name: "Material budget",
+            key: "material_budget_v2",
+            getUrl: function (ib, result) {
+                return "/SDT/jenkins-artifacts/material-budget/" + getCurrentIbTag(ib) + '/' + result.arch;
+            }
         },
         {
-            name: "material_budget (TODO)",
-            // add_material_budget_tests_link
-            // NOTE JSON usually empty
-            // TODO non-standart method, needs to be able to creat multiple labels
-            // TODO it will be fixed from python part
-            key: "material_budget"
+            name: "Material budget comparison",
+            key: "material_budget_comparison",
+            glyphicon: "glyphicon-ok-sign",
+            glyphiconWarning: "glyphicon-warning-sign",
+            getUrl: function (ib, result) {
+                return "/SDT/jenkins-artifacts/material-budget/" + getCurrentIbTag(ib) + '/' + result.arch + "/comparison";
+            },
+            ifFound: function (ib, result) {
+                const results = result.results;
+                if (results === "ok") {
+                    return {
+                        name: this.name,
+                        glyphicon: this.glyphicon,
+                        url: this.getUrl(ib, result)
+                    };
+                } else {
+                    return {
+                        name: this.name,
+                        glyphicon: this.glyphiconWarning,
+                        url: this.getUrl(ib, result)
+                    };
+                }
+            }
         }
     ]
 };

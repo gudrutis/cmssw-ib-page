@@ -4,8 +4,6 @@ import axios from 'axios';
 import wrapper from 'axios-cache-plugin';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBGroups';
-import createHistory from 'history/createBrowserHistory';
-
 import config from '../config';
 import Navigation from "./Navigation";
 
@@ -20,8 +18,6 @@ httpWrapper.__addFilter(/\.json/);
 
 // This class gets data
 class LayoutWrapper extends Component {
-    // TODO propTypes
-
     constructor(props) {
         super(props);
         this.state = {
@@ -67,7 +63,6 @@ class LayoutWrapper extends Component {
                 return response.data;
             });
             this.setState({dataList: data});
-
         }.bind(this));
     }
 

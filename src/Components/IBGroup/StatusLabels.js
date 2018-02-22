@@ -65,7 +65,22 @@ class StatusLabels extends Component {
         }
         let outputConfig;
         if (status === "found" || status === "passed") {
-            outputConfig = config.ifFound ? config.ifFound(ib, result) : StatusLabels.defaultFound(config, ib, result);
+            if (result.iterable) {
+                let count = 1;
+                let configSeperatedByIterable = result.iterable.map(item => {
+                    let newConfig = Object.assign({}, config);
+                    newConfig.iterateItem = item;
+                    newConfig.name = config.name + " " + count;
+                    count += 1;
+                    return newConfig;
+                });
+                return configSeperatedByIterable.map((config) => {
+                    let outputConfig = config.ifFound ? config.ifFound(ib, result) : StatusLabels.defaultFound(config, ib, result);
+                    return StatusLabels.formatLabel(outputConfig);
+                })
+            } else {
+                outputConfig = config.ifFound ? config.ifFound(ib, result) : StatusLabels.defaultFound(config, ib, result);
+            }
         } else if (status === "not-found") {
             outputConfig = config.ifNotFound ? config.ifNotFound(ib, result) : undefined;
         } else if (status === "inprogress" || status === "inProgress") {
