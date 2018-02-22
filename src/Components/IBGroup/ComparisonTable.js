@@ -281,7 +281,7 @@ class ComparisonTable extends Component {
                 <Table striped={true} bordered={true} condensed={true} hover>
                     <thead>
                     <tr>
-                        <th rowSpan={2}/>
+                        <th className={'name-column'} rowSpan={2}/>
                         {/* IB flavors row*/}
                         {archsByIb.map(item => {
                             return <th key={uuid.v4()} colSpan={item.archs.length}>{getDisplayName(item.flavor)}</th>
@@ -347,7 +347,7 @@ class ComparisonTable extends Component {
                     </thead>
                     <tbody>
                     <tr>
-                        <td>
+                        <td className={'name-column'}>
                             <b>Builds</b>
                         </td>
                         {this.renderRowCellsWithDefaultPreConfig({
@@ -369,7 +369,7 @@ class ComparisonTable extends Component {
                         )}
                     </tr>
                     <tr>
-                        <td><b>Unit Tests</b></td>
+                        <td className={'name-column'}><b>Unit Tests</b></td>
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'utests',
                                 getUrl: getBuildOrUnitUrl,
@@ -381,7 +381,7 @@ class ComparisonTable extends Component {
                         )}
                     </tr>
                     <tr>
-                        <td><b>RelVals</b></td>
+                        <td className={'name-column'}><b>RelVals</b></td>
                         {this.renderRelVals({
                                 resultType: 'relvals',
                                 getUrl: getRelValUrl,
@@ -403,7 +403,7 @@ class ComparisonTable extends Component {
                         )}
                     </tr>
                     <tr>
-                        <td><b>Other Tests</b></td>
+                        <td className={'name-column'}><b>Other Tests</b></td>
                         {this.renderOtherTestResults({
                                 resultType: 'addons',
                                 getUrl: getOtherTestUrl,
@@ -425,7 +425,7 @@ class ComparisonTable extends Component {
                         )}
                     </tr>
                     <tr>
-                        <td><b>FWLite</b></td>
+                        <td className={'name-column'}><b>FWLite</b></td>
                         {this.renderRowCellsWithDefaultPreConfig({
                                 resultType: 'fwlite',
                                 getUrl: getFWliteUrl,
@@ -447,7 +447,7 @@ class ComparisonTable extends Component {
                         )}
                     </tr>
                     <tr>
-                        <td><b>Q/A</b></td>
+                        <td className={'name-column'}><b>Q/A</b></td>
                         {archsByIb.map(item => {
                             return item.archs.map(arch => {
                                 return (
