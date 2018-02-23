@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import uuid from 'uuid';
 import FormGroup from "react-bootstrap/es/FormGroup";
 import ShowArchStore from "../stores/ShowArchStore";
+import * as  ShowArchActions from "../actions/ShowArchActions"
 
 class TogglesShowIBFlawors extends Component {
     constructor() {
@@ -11,7 +12,7 @@ class TogglesShowIBFlawors extends Component {
         this.getData = this.getData.bind(this);
         this.state = {
             archs: ShowArchStore.getAll(),
-            value: ShowArchStore.getActive()
+            activeArchs: ShowArchStore.getActive()
         }
     }
 
@@ -26,22 +27,21 @@ class TogglesShowIBFlawors extends Component {
     getData() {
         this.setState({
             archs: ShowArchStore.getAll(),
-
+            activeArchs: ShowArchStore.getActive()
         })
     }
 
-    onChange = (value) => {
-        console.log(value);
-        this.setState({value});
+    onChange = (activeArchs) => {
+        ShowArchActions.setActiveArchs(activeArchs);
     };
 
     render() {
         return (
             <FormGroup>
-                <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.value} onChange={this.onChange}>
+                <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.activeArchs} onChange={this.onChange}>
                     {this.state.archs.map(item => {
                         return <ToggleButton key={uuid.v4()}
-                                             value={item}>{item.id}: {item.toggle.toString()}</ToggleButton>
+                                             value={item}> {item}</ToggleButton>
                     })}
                 </ToggleButtonGroup>
             </FormGroup>

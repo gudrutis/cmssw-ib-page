@@ -14,4 +14,10 @@ export function toggleArch(id) {
     })
 }
 
+export function setActiveArchs(values){
+    dispatcher.dispatch({
+        type: ShowArchActionTypes.SET_ACTIVE_ARCHS,
+        values: values
+    })
+}
 // TODO action to load data from backend

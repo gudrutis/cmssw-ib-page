@@ -6,28 +6,37 @@ import _ from 'underscore';
 class ShowArchStore extends EventEmitter {
     constructor() {
         super();
-        this.archs = [
-            {id: 'slc6', toggle: true},
-            {id: 'slc7', toggle: true},
-            {id: 'aarch64', toggle: true},
-            {id: 'amd64', toggle: true}
+        // TODO should be loaded , not hardcoded
+        this.allArchs = [
+            'slc6',
+            'slc7',
+            'aarch64',
+            'amd64'
         ];
+        this.activeArchs = this.allArchs;
     }
+
     toggleArch(archName) {
-        const index = _.findIndex(this.archs, (i) => {
-            return i.id === archName
-        });
-        this.archs[index].toggle = !this.archs[index].toggle;
-        this.emit("change");
+        // const index = _.findIndex(this.archs, (i) => {
+        //     return i.id === archName
+        // });
+        // this.archs[index].toggle = !this.archs[index].toggle;
+        // this.emit("change");
     }
+
     getAll() {
-        return this.archs;
+        return this.allArchs;
     }
+
     getActive() {
-        // return this.archs.map(
-        //     (arch) =>
-        // );
+        return this.activeArchs;
     }
+
+    setActiveArchs(values){
+        this.activeArchs = values;
+        this.emit("change")
+    }
+
     handleActions(action) {
         switch (action.type) {
             case ShowArchActionTypes.TOGGLE_ARCH: {
@@ -35,8 +44,18 @@ class ShowArchStore extends EventEmitter {
                 break;
             }
             case ShowArchActionTypes.LOAD_ARCHS: {
-                this.todos = action.todos;
+                // TODO
+                // this.arch = action.todos;
                 this.emit("change");
+                break;
+            }
+            case ShowArchActionTypes.LOAD_ACTIVE_ARCHS: {
+
+                this.emit("change");
+                break;
+            }
+            case ShowArchActionTypes.SET_ACTIVE_ARCHS: {
+                this.setActiveArchs(action.values);
                 break;
             }
         }
