@@ -44,7 +44,12 @@ class Navigation extends Component {
                     <Row>
                         <Col xs={12}>
                             <Nav>
-                                {this.props.buttons}
+                                {this.props.flaworControl}
+                            </Nav>
+                        </Col>
+                        <Col xs={12}>
+                            <Nav>
+                                {this.props.archControl}
                             </Nav>
                         </Col>
                     </Row>

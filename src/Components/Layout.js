@@ -6,6 +6,7 @@ import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBGroups';
 import config from '../config';
 import Navigation from "./Navigation";
+import TogglesShowIBFlawors from "./TogglesShowArchs";
 
 const {urls} = config;
 // TODO if speed is an issue, try to solve it by
@@ -94,12 +95,17 @@ class LayoutWrapper extends Component {
     render() {
         return (
             <div className={'container'} style={{paddingTop: this.state.navigationHeight + 20}}>
-                <Navigation toLinks={this.state.toLinks} buttons={
-                    <ToggleButtonGroupControlled nameList={this.state.nameList}
-                                                 initSelections={this.state.all_release_queues}
-                                                 callbackToParent={this.updateNameListToShow.bind(this)}
-                    />
-                }/>
+                <Navigation toLinks={this.state.toLinks}
+                            flaworControl={
+                                <ToggleButtonGroupControlled nameList={this.state.nameList}
+                                                             initSelections={this.state.all_release_queues}
+                                                             callbackToParent={this.updateNameListToShow.bind(this)}
+                                />
+                            }
+                            archControl={
+                                <TogglesShowIBFlawors/>
+                            }
+                />
                 <IBGroups data={this.filterListToShow()}/>
             </div>
         );
