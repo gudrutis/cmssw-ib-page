@@ -35,12 +35,26 @@ export function getAllArchitecturesFromIBGroup(IBGroup) {
     return a;
 }
 
-export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
+function _filterArchs(archs, activeArchs) {
+    return _.filter(archs, (arch) => {
+        const [os, cpu, compiler] = arch.split('_');
+        if (activeArchs['os'].indexOf(os) > -1 && activeArchs['cpu'].indexOf(cpu) > -1
+            && activeArchs['compiler'].indexOf(compiler) > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+}
+
+export function getAllArchitecturesFromIBGroupByFlavor(IBGroup, activeArchs) {
     let a = _.map(IBGroup, function (ib) {
+        const filteredArchs = _filterArchs(ib.tests_archs, activeArchs);
+
         return {
             flavor: ib.release_queue,
             name: ib.release_name,
-            archs: ib.tests_archs,
+            archs: filteredArchs,
             cmsdistTags: ib.cmsdistTags,
             current_tag: getCurrentIbTag(ib)
         };
@@ -50,10 +64,30 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup) {
     return a;
 }
 
+export function extractInfoFromArchs(archList) {
+    let infoObject = {
+        'os': new Set(),
+        'cpu': new Set(),
+        'compiler': new Set()
+    };
+    archList.map(
+        (arch) => {
+            const results = arch.split("_");
+            infoObject['os'].add(results[0]);
+            infoObject['cpu'].add(results[1]);
+            infoObject['compiler'].add(results[2]);
+        }
+    );
+    return {
+        'os': Array.from(infoObject['os']),
+        'cpu': Array.from(infoObject['cpu']),
+        'compiler': Array.from(infoObject['compiler']),
+    };
+}
+
 /**
  * general utility functions
  */
-
 export function getCurrentIbTag(ib) {
     return ib.compared_tags.split("-->")[1]
 }

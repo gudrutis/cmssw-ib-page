@@ -4,7 +4,8 @@ import {Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import {getAllArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../processing';
 import _ from 'underscore';
 import uuid from 'uuid';
-import config from '../../config'
+import config from '../../config';
+import ShowArchStore from "../../Stores/ShowArchStore";
 
 const {archShowCodes, tooltipDelayInMs, urls} = config;
 
@@ -51,10 +52,27 @@ class ComparisonTable extends Component {
 
     constructor(props) {
         super(props);
+        this.getArchSettings = this.getArchSettings.bind(this);
         this.state = {
             ibComparison: props.data,
-            archsByIb: getAllArchitecturesFromIBGroupByFlavor(props.data)
+            archsByIb: getAllArchitecturesFromIBGroupByFlavor(props.data, ShowArchStore.getActive()),
+            activeArchs: ShowArchStore.getActive()
         };
+    }
+
+    componentWillMount() {
+        ShowArchStore.on("change", this.getArchSettings);
+    }
+
+    componentWillUnmount() {
+        ShowArchStore.removeListener("change", this.getArchSettings);
+    }
+
+    getArchSettings() {
+        this.setState({
+            archsByIb: getAllArchitecturesFromIBGroupByFlavor(this.props.data, ShowArchStore.getActive()),
+            activeArchs: ShowArchStore.getActive()
+        })
     }
 
     renderRowCells({resultType, ifWarning, ifError, ifFailed, ifPassed, ifUnknown}) {
@@ -278,13 +296,19 @@ class ComparisonTable extends Component {
 
         return (
             <div className="table-responsive">
+                <p><b>Active os: </b>{this.state.activeArchs.os.map((el) => <span> {el}</span>)}</p>
+                <p><b>Active cpu: </b>{this.state.activeArchs.cpu.map((el) => <span> {el}</span>)}</p>
+                <p><b>Active compiler: </b>{this.state.activeArchs.compiler.map((el) => <span> {el}</span>)}</p>
                 <Table striped={true} bordered={true} condensed={true} hover>
                     <thead>
                     <tr>
                         <th className={'name-column'} rowSpan={2}/>
                         {/* IB flavors row*/}
                         {archsByIb.map(item => {
-                            return <th key={uuid.v4()} colSpan={item.archs.length}>{getDisplayName(item.flavor)}</th>
+                            if (item.archs.length > 0) {
+                                return <th key={uuid.v4()}
+                                           colSpan={item.archs.length}>{getDisplayName(item.flavor)}</th>
+                            }
                         })}
                     </tr>
                     <tr>
@@ -303,8 +327,9 @@ class ComparisonTable extends Component {
                                         arch.split("_").map(str => {
                                             const {color} = archShowCodes;
                                             return (
-                                                <div style={{backgroundColor: color[str]}} key={uuid.v4()}>
-                                                    <span style={{color: "white"}}>{str}</span>
+                                                <div style={{backgroundColor: color[str], paddingLeft: 6.3}}
+                                                     key={uuid.v4()}>
+                                                    <span style={{color: "white"}}>{" " + str}</span>
                                                 </div>
                                             )
                                         })
@@ -325,10 +350,6 @@ class ComparisonTable extends Component {
                                     link = urls.commits + cmsdistTag;
                                     if (checkIfItIsAPatch(current_tag, arch, cmsdistTag)) {
                                         tooltipText = 'Used same cmsdist tag as ' + cmsdistTag.replace('IB/', '').replace('/' + arch, '');
-                                        const baseIB = cmsdistTag.split('/')[1];
-                                        const previousDate = baseIB.substring(baseIB.lastIndexOf('_') + 1, baseIB.length);
-                                        // patchOrFullBuild = 'Patch from ' + previousDate;
-                                        // TODO tooltip and go to previous build
                                         patchOrFullBuild = 'Patch';
                                     } else {
                                         tooltipText = 'See cmsdist tag used for this build';

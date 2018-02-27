@@ -1,19 +1,34 @@
 import {EventEmitter} from "events";
 import dispatcher from "../dispatcher";
-import ShowArchActionTypes from "../actions/ShowArchActionTypes";
-import _ from 'underscore';
+import ShowArchActionTypes from "../Actions/ShowArchActionTypes";
+import config from "../config";
+import * as axios from "axios";
+import wrapper from 'axios-cache-plugin';
+import {extractInfoFromArchs} from "../processing";
+
+const {urls} = config;
+// TODO if speed is an issue, try to solve it by
+// TODO move to different service
+let httpWrapper = wrapper(axios, {
+    maxCacheSize: 15,
+    ttl: 3 * 60 * 1000
+});
+httpWrapper.__addFilter(/\.json/);
 
 class ShowArchStore extends EventEmitter {
     constructor() {
         super();
-        // TODO should be loaded , not hardcoded
-        this.allArchs = [
-            'slc6',
-            'slc7',
-            'aarch64',
-            'amd64'
-        ];
-        this.activeArchs = this.allArchs;
+        this.allArchs = {
+            'os': [],
+            'cpu': [],
+            'compiler': []
+        };
+        this.activeArchs = {
+            'os': [],
+            'cpu': [],
+            'compiler': []
+        };
+        this.getData();
     }
 
     toggleArch(archName) {
@@ -24,6 +39,18 @@ class ShowArchStore extends EventEmitter {
         // this.emit("change");
     }
 
+    getData() {
+        axios.get(urls.latestIBSummary)
+            .then(function (response) {
+                this.allArchs = extractInfoFromArchs(response.data.all_archs);
+                this.activeArchs = Object.assign({}, this.allArchs);
+                this.emit("change");
+            }.bind(this))
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
     getAll() {
         return this.allArchs;
     }
@@ -32,9 +59,10 @@ class ShowArchStore extends EventEmitter {
         return this.activeArchs;
     }
 
-    setActiveArchs(values){
-        this.activeArchs = values;
-        this.emit("change")
+    setActiveArchs(values) {
+        const {field, activeValues} = values;
+        this.activeArchs[field] = activeValues;
+        this.emit("change");
     }
 
     handleActions(action) {
@@ -50,7 +78,7 @@ class ShowArchStore extends EventEmitter {
                 break;
             }
             case ShowArchActionTypes.LOAD_ACTIVE_ARCHS: {
-
+                // TODO
                 this.emit("change");
                 break;
             }

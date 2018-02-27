@@ -6,6 +6,7 @@ export default {
     urls: {
         q_a: (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
         dataDir: "/SDT/html/data/",
+        latestIBSummary: "/SDT/html/data/LatestIBsSummary.json",
         buildOrUnitTestUrl: "/SDT/cgi-bin/showBuildLogs.py/",
         scramDetailUrl: "http://cms-sw.github.io/scramDetail.html#",
         relvalLogDetailUrl: "https://cms-sw.github.io/relvalLogDetail.html#",
@@ -18,9 +19,11 @@ export default {
         color: {
             slc7: "#48c9b0",
             slc6: "#5cb85c",
+
             amd64: "#5cb85c",
             aarch64: "#f1ad4f",
-            gcc700: "#d9534f",
+
+            gcc700: "#48c9b0",
             gcc630: "#5cb85c"
         }
     },

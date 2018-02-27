@@ -3,7 +3,6 @@ import Commits from "./Commits";
 import StatusLabels from "./StatusLabels";
 import ComparisonTable from "./ComparisonTable";
 import {Panel} from "react-bootstrap";
-import JSONPretty from 'react-json-pretty';
 import {checkIfCommitsAreEmpty, checkIfTableIsEmpty} from "../../processing";
 
 
@@ -15,7 +14,6 @@ import {checkIfCommitsAreEmpty, checkIfTableIsEmpty} from "../../processing";
 
 class IBGroupFrame extends Component {
     static propTypes = {
-        // TODO fix
         // IBGroup: PropTypes.arrayOf(PropTypes)
     };
 
@@ -81,24 +79,16 @@ class IBGroupFrame extends Component {
                 };
         }
         statusLabels = <StatusLabels IBGroup={this.state.IBGroup} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
-
-        // TODO if empty return
         return (
             <Panel collapsible
                    defaultExpanded
                    header={panelHeader}>
-                {/*<Panel collapsible*/}
-                       {/*header={'DEVELOPMENT real data'}>*/}
-                    {/*<JSONPretty json={this.state.IBGroup}/>*/}
-                {/*</Panel>*/}
                 {statusLabels}
                 {comparisonTable}
                 <Commits commitPanelProps={commitPanelProps} data={this.state.IBGroup}/>
             </Panel>
         )
-
     }
-
 }
 
 export default IBGroupFrame;

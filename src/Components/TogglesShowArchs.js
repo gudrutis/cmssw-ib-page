@@ -3,8 +3,8 @@ import ToggleButtonGroup from "react-bootstrap/es/ToggleButtonGroup";
 import React, {Component} from 'react';
 import uuid from 'uuid';
 import FormGroup from "react-bootstrap/es/FormGroup";
-import ShowArchStore from "../stores/ShowArchStore";
-import * as  ShowArchActions from "../actions/ShowArchActions"
+import ShowArchStore from "../Stores/ShowArchStore";
+import * as  ShowArchActions from "../Actions/ShowArchActions";
 
 class TogglesShowIBFlawors extends Component {
     constructor() {
@@ -31,15 +31,35 @@ class TogglesShowIBFlawors extends Component {
         })
     }
 
-    onChange = (activeArchs) => {
-        ShowArchActions.setActiveArchs(activeArchs);
+    onChange = (field) => {
+        return (activeArchs) => {
+            ShowArchActions.setActiveArchs(activeArchs, field);
+        };
     };
 
     render() {
         return (
             <FormGroup>
-                <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.activeArchs} onChange={this.onChange}>
-                    {this.state.archs.map(item => {
+                <span> OS: </span>
+                <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.activeArchs.os}
+                                   onChange={this.onChange('os')}>
+                    {this.state.archs.os.map(item => {
+                        return <ToggleButton key={uuid.v4()}
+                                             value={item}> {item}</ToggleButton>
+                    })}
+                </ToggleButtonGroup>
+                <span> CPU: </span>
+                <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.activeArchs.cpu}
+                                   onChange={this.onChange('cpu')}>
+                    {this.state.archs.cpu.map(item => {
+                        return <ToggleButton key={uuid.v4()}
+                                             value={item}> {item}</ToggleButton>
+                    })}
+                </ToggleButtonGroup>
+                <span> Compiler: </span>
+                <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.activeArchs.compiler}
+                                   onChange={this.onChange('compiler')}>
+                    {this.state.archs.compiler.map(item => {
                         return <ToggleButton key={uuid.v4()}
                                              value={item}> {item}</ToggleButton>
                     })}
