@@ -62,22 +62,22 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup, activeArchs) {
 
 export function extractInfoFromArchs(archList) {
     let infoObject = {
-        'os': new Set(),
-        'cpu': new Set(),
-        'compiler': new Set()
+        'os': [],
+        'cpu': [],
+        'compiler': []
     };
     archList.map(
         (arch) => {
             const results = arch.split("_");
-            infoObject['os'].add(results[0]);
-            infoObject['cpu'].add(results[1]);
-            infoObject['compiler'].add(results[2]);
+            infoObject['os'].push(results[0]);
+            infoObject['cpu'].push(results[1]);
+            infoObject['compiler'].push(results[2]);
         }
     );
     return {
-        'os': Array.from(infoObject['os']),
-        'cpu': Array.from(infoObject['cpu']),
-        'compiler': Array.from(infoObject['compiler']),
+        'os': _.uniq(infoObject['os']),
+        'cpu': _.uniq(infoObject['cpu']),
+        'compiler': _.uniq(infoObject['compiler']),
     };
 }
 
