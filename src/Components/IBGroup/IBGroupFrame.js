@@ -3,7 +3,7 @@ import Commits from "./Commits";
 import StatusLabels from "./StatusLabels";
 import ComparisonTable from "./ComparisonTable";
 import {Panel} from "react-bootstrap";
-import {checkIfCommitsAreEmpty, checkIfTableIsEmpty} from "../../processing";
+import {checkIfCommitsAreEmpty, checkIfTableIsEmpty} from "../../Utils/processing";
 
 
 /**

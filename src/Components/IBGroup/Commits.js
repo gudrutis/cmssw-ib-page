@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Panel, Tab, Tabs} from "react-bootstrap";
-import {getDisplayName, getPreviousIbTag} from "../../processing";
+import {getDisplayName, getPreviousIbTag} from "../../Utils/processing";
 import uuid from 'uuid';
 
 class Commits extends Component {

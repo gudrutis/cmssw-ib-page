@@ -3,7 +3,7 @@ import config from '../../config';
 import uuid from 'uuid';
 import MenuItem from "react-bootstrap/es/MenuItem";
 import {Dropdown, Glyphicon} from "react-bootstrap";
-import {getCurrentIbTag, getDisplayName} from "../../processing";
+import {getCurrentIbTag, getDisplayName} from "../../Utils/processing";
 
 const {statusLabelsConfigs} = config;
 
@@ -128,7 +128,7 @@ class StatusLabels extends Component {
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="super-colors">
                         {IBGroup.map((ib) => {
-                            return <MenuItem
+                            return <MenuItem key={uuid.v4()}
                                 href={config.url + getCurrentIbTag(ib)}>{getDisplayName(ib.release_queue)}</MenuItem>
                         })}
                     </Dropdown.Menu>

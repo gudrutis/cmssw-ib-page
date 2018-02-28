@@ -3,7 +3,7 @@ import ToggleButtonGroup from "react-bootstrap/es/ToggleButtonGroup";
 import React, {Component} from 'react';
 import uuid from 'uuid';
 import FormGroup from "react-bootstrap/es/FormGroup";
-import {getDisplayName} from '../processing';
+import {getDisplayName} from '../Utils/processing';
 
 class TogglesShowIBFlawors extends Component {
     constructor(props, context) {

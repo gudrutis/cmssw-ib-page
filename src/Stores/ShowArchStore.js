@@ -4,7 +4,8 @@ import ShowArchActionTypes from "../Actions/ShowArchActionTypes";
 import config from "../config";
 import * as axios from "axios";
 import wrapper from 'axios-cache-plugin';
-import {extractInfoFromArchs} from "../processing";
+import {extractInfoFromArchs} from "../Utils/processing";
+import {getMultipleFiles, getSingleFile} from "../Utils/ajax";
 
 const {urls} = config;
 // TODO if speed is an issue, try to solve it by
@@ -40,15 +41,20 @@ class ShowArchStore extends EventEmitter {
     }
 
     getData() {
-        axios.get(urls.latestIBSummary)
-            .then(function (response) {
+        getMultipleFiles({
+            fileUrlList: [urls.latestIBSummary, urls.releaseStructure],
+            onSuccessCallback: function (responseList) {
+                // console.log(proces(responseList[0].allArchs, responseList[1].allArchs))
+            }.bind(this)
+        });
+        getSingleFile({
+            fileUrl: urls.latestIBSummary,
+            onSuccessCallback: function (response) {
                 this.allArchs = extractInfoFromArchs(response.data.all_archs);
                 this.activeArchs = Object.assign({}, this.allArchs);
                 this.emit("change");
-            }.bind(this))
-            .catch(function (error) {
-                console.log(error);
-            });
+            }.bind(this)
+        });
     }
 
     getAll() {

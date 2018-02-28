@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
-import {getAllArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../processing';
+import {getAllArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../Utils/processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 import config from '../../config';
@@ -296,9 +296,6 @@ class ComparisonTable extends Component {
 
         return (
             <div className="table-responsive">
-                <p><b>Active os: </b>{this.state.activeArchs.os.map((el) => <span> {el}</span>)}</p>
-                <p><b>Active cpu: </b>{this.state.activeArchs.cpu.map((el) => <span> {el}</span>)}</p>
-                <p><b>Active compiler: </b>{this.state.activeArchs.compiler.map((el) => <span> {el}</span>)}</p>
                 <Table striped={true} bordered={true} condensed={true} hover>
                     <thead>
                     <tr>

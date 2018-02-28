@@ -38,12 +38,8 @@ export function getAllArchitecturesFromIBGroup(IBGroup) {
 function _filterArchs(archs, activeArchs) {
     return _.filter(archs, (arch) => {
         const [os, cpu, compiler] = arch.split('_');
-        if (activeArchs['os'].indexOf(os) > -1 && activeArchs['cpu'].indexOf(cpu) > -1
-            && activeArchs['compiler'].indexOf(compiler) > -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return activeArchs['os'].indexOf(os) > -1 && activeArchs['cpu'].indexOf(cpu) > -1
+            && activeArchs['compiler'].indexOf(compiler) > -1;
     });
 }
 

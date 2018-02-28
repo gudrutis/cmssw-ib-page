@@ -1,4 +1,4 @@
-import {getCurrentIbTag} from "./processing";
+import {getCurrentIbTag} from "./Utils/processing";
 
 export default {
     tooltipDelayInMs: 200,
@@ -6,6 +6,7 @@ export default {
     urls: {
         q_a: (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
         dataDir: "/SDT/html/data/",
+        releaseStructure: "/SDT/html/data/structure.json",
         latestIBSummary: "/SDT/html/data/LatestIBsSummary.json",
         buildOrUnitTestUrl: "/SDT/cgi-bin/showBuildLogs.py/",
         scramDetailUrl: "http://cms-sw.github.io/scramDetail.html#",

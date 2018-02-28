@@ -1,21 +1,13 @@
 import React, {Component} from 'react';
 import _ from 'underscore';
-import axios from 'axios';
-import wrapper from 'axios-cache-plugin';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBGroups';
 import config from '../config';
 import Navigation from "./Navigation";
 import TogglesShowIBFlawors from "./TogglesShowArchs";
+import {getMultipleFiles} from "../Utils/ajax";
 
 const {urls} = config;
-// TODO if speed is an issue, try to solve it by
-// TODO move to different service
-let httpWrapper = wrapper(axios, {
-    maxCacheSize: 15,
-    ttl: 3 * 60 * 1000
-});
-httpWrapper.__addFilter(/\.json/);
 
 // This class gets data
 class LayoutWrapper extends Component {
@@ -53,18 +45,15 @@ class LayoutWrapper extends Component {
     }
 
     getData(ibList) {
-        // this.setState({dataList: []});
-        let callbacks = ibList.map(name => {
-            return httpWrapper.get(urls.dataDir + name + '.json');
+        getMultipleFiles({
+            fileUrlList: ibList.map(name => urls.dataDir + name + '.json'),
+            onSuccessCallback: function (responsesList) {
+                let data = responsesList.map(response => {
+                    return response.data;
+                });
+                this.setState({dataList: data});
+            }.bind(this)
         });
-
-        // when all callbacks are done, set data
-        axios.all(callbacks).then(function (allData) {
-            let data = allData.map(response => {
-                return response.data;
-            });
-            this.setState({dataList: data});
-        }.bind(this));
     }
 
     updateNameListToShow(newNameList) {

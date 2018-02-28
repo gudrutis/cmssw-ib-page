@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-
 import './App.css';
-import $ from 'jquery'
 import {Redirect, Route, Switch} from "react-router-dom";
+import Layout from './Components/Layout'
+import config from './config';
+import {getSingleFile} from "./Utils/ajax";
+
 // TODO: go through imports and check which ones we do not need
 //------------------------
 // TODO-project set most visited IB-flavor in cookie in then show in the future
@@ -17,18 +19,11 @@ import {Redirect, Route, Switch} from "react-router-dom";
 // TODO-project if there is no arch, display only commits (that is if it is commits)
 // TODO-project color code archs with images
 
-// 1. finish table
-// 2. cookies
-// 3.
-// Componenets
-import Layout from './Components/Layout'
-
-import config from './config';
-
-const {urls} = config;
 //------------------------------------------
 //      Main entry component
 //------------------------------------------
+const {urls} = config;
+
 class App extends Component {
 
     constructor() {
@@ -41,17 +36,11 @@ class App extends Component {
     }
 
     componentWillMount() {
-        $.ajax({
-            url: urls.dataDir + 'structure.json',
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                this.setState({structure: data}, function () {
-                })
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.log(err);
-            }
+        getSingleFile({
+            fileUrl: urls.releaseStructure,
+            onSuccessCallback: function (response) {
+                this.setState({structure: response.data})
+            }.bind(this)
         });
     }
 
