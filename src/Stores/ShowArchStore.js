@@ -2,35 +2,27 @@ import {EventEmitter} from "events";
 import dispatcher from "../dispatcher";
 import ShowArchActionTypes from "../Actions/ShowArchActionTypes";
 import config from "../config";
-import * as axios from "axios";
-import wrapper from 'axios-cache-plugin';
 import {extractInfoFromArchs} from "../Utils/processing";
 import {getMultipleFiles, getSingleFile} from "../Utils/ajax";
 
 const {urls} = config;
-// TODO if speed is an issue, try to solve it by
-// TODO move to different service
-let httpWrapper = wrapper(axios, {
-    maxCacheSize: 15,
-    ttl: 3 * 60 * 1000
-});
-httpWrapper.__addFilter(/\.json/);
 
 class ShowArchStore extends EventEmitter {
     constructor() {
         super();
+        this.emptyConfig = {
+            'os': [], 'cpu': [], 'compiler': []
+        };
         this.allArchs = {
-            'os': [],
-            'cpu': [],
-            'compiler': []
+            'os': [], 'cpu': [], 'compiler': []
         };
         this.activeArchs = {
-            'os': [],
-            'cpu': [],
-            'compiler': []
+            'os': [], 'cpu': [], 'compiler': []
         };
+        this.queConfig = {};
         this.getData();
     }
+
 
     toggleArch(archName) {
         // const index = _.findIndex(this.archs, (i) => {
@@ -42,9 +34,42 @@ class ShowArchStore extends EventEmitter {
 
     getData() {
         getMultipleFiles({
-            fileUrlList: [urls.latestIBSummary, urls.releaseStructure],
+            fileUrlList: [urls.releaseStructure, urls.latestIBSummary],
             onSuccessCallback: function (responseList) {
-                // console.log(proces(responseList[0].allArchs, responseList[1].allArchs))
+                // console.log(responseList[0].data, responseList[1].data)
+                const structureData = responseList[0].data;
+                const ibSummary = responseList[1].data;
+                const {all_prefixes, all_release_queues} = structureData;
+                const {prod_archs} = ibSummary; // TODO
+                let archListByRealise = {}, config = {};
+                all_release_queues.map((que) => {
+                    if (!ibSummary[que]) {
+                        return
+                    }
+                    archListByRealise[que] = Object.keys(ibSummary[que]);
+                });
+                all_prefixes.map((prefix) => {
+                    const realeaseFlavors = structureData[prefix];
+                    realeaseFlavors.map((flavor) => {
+                        if (!config[prefix]) {
+                            config[prefix] = [];
+                        }
+                        config[prefix] = config[prefix].concat(
+                            archListByRealise[flavor]
+                        );
+                    })
+                });
+                all_prefixes.map(que => {
+                    if (!config[que]) {
+                        return
+                    }
+                    let results = extractInfoFromArchs(config[que]);
+                    config[que] = {
+                        allArchs: results,
+                        activeArchs: Object.assign({}, results)
+                    }
+                });
+                this.queConfig = config;
             }.bind(this)
         });
         getSingleFile({
@@ -65,9 +90,27 @@ class ShowArchStore extends EventEmitter {
         return this.activeArchs;
     }
 
+    getAllArchsForQue(releaseQue) {
+        const archsConfig = this.queConfig[releaseQue];
+        if (archsConfig) {
+            return archsConfig['allArchs'];
+        } else {
+            return this.emptyConfig;
+        }
+    }
+
+    getActiveArchsForQue(releaseQue) {
+        const archsConfig = this.queConfig[releaseQue];
+        if (archsConfig) {
+            return archsConfig['activeArchs'];
+        } else {
+            return this.emptyConfig;
+        }
+    }
+
     setActiveArchs(values) {
-        const {field, activeValues} = values;
-        this.activeArchs[field] = activeValues;
+        const {field, activeValues, releaseQue} = values;
+        this.queConfig[releaseQue]['activeArchs'][field] = activeValues;
         this.emit("change");
     }
 

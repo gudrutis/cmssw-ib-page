@@ -12,28 +12,35 @@ class IBGroups extends Component {
             PropTypes.shape({
                 base_branch: PropTypes.string.isRequired,
                 release_name: PropTypes.string.isRequired,
-                comparisons: PropTypes.arrayOf(PropTypes.object)
+                comparisons: PropTypes.arrayOf(PropTypes.object),
             })
         )
     };
 
     constructor(props) {
         super(props);
+        const {releaseQue, data} = props;
         this.state = {
-            data: groupAndTransformIBDataList(props.data)
+            data: groupAndTransformIBDataList(data),
+            releaseQue
         };
     }
 
     componentWillReceiveProps(newProps) {
-        this.setState({data: groupAndTransformIBDataList(newProps.data)});
+        const {releaseQue, data} = newProps;
+        this.setState({
+            data: groupAndTransformIBDataList(data),
+            releaseQue
+        });
     }
 
     render() {
+        const {releaseQue} = this.state;
         return (
             <div>
                 <div>
                     {_.map(this.state.data, function (IBGroup) {
-                        return <IBGroupFrame key={uuid.v4()} IBGroup={IBGroup}/>
+                        return <IBGroupFrame key={uuid.v4()} IBGroup={IBGroup} releaseQue={releaseQue}/>
                     })}
                 </div>
             </div>

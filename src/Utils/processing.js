@@ -43,7 +43,7 @@ function _filterArchs(archs, activeArchs) {
     });
 }
 
-export function getAllArchitecturesFromIBGroupByFlavor(IBGroup, activeArchs) {
+export function getAllActiveArchitecturesFromIBGroupByFlavor(IBGroup, activeArchs) {
     let a = _.map(IBGroup, function (ib) {
         const filteredArchs = _filterArchs(ib.tests_archs, activeArchs);
 
@@ -61,6 +61,7 @@ export function getAllArchitecturesFromIBGroupByFlavor(IBGroup, activeArchs) {
 }
 
 export function extractInfoFromArchs(archList) {
+    archList = _.filter(archList, (arch) => arch !== undefined);
     let infoObject = {
         'os': [],
         'cpu': [],

@@ -19,7 +19,8 @@ class LayoutWrapper extends Component {
             dataList: [],
             all_release_queues: props.structure.all_release_queues,
             toLinks: props.toLinks,
-            navigationHeight: 50
+            navigationHeight: 50,
+            releaseQue: props.match.params.prefix
         }
     }
 
@@ -35,12 +36,12 @@ class LayoutWrapper extends Component {
     }
 
     updateState(props) {
-        let pathname = props.match.params.prefix;
+        let releaseQue = props.match.params.prefix;
         let structure = props.structure;
         let IbFlavorList = _.find(structure, function (val, key) {
-            return key === pathname;
+            return key === releaseQue;
         });
-        this.setState({nameList: IbFlavorList});
+        this.setState({nameList: IbFlavorList, releaseQue});
         this.getData(IbFlavorList);
     }
 
@@ -82,20 +83,21 @@ class LayoutWrapper extends Component {
     }
 
     render() {
+        const {releaseQue, toLinks, navigationHeight, nameList, all_release_queues} = this.state;
         return (
-            <div className={'container'} style={{paddingTop: this.state.navigationHeight + 20}}>
-                <Navigation toLinks={this.state.toLinks}
+            <div className={'container'} style={{paddingTop: navigationHeight + 20}}>
+                <Navigation toLinks={toLinks}
                             flaworControl={
-                                <ToggleButtonGroupControlled nameList={this.state.nameList}
-                                                             initSelections={this.state.all_release_queues}
+                                <ToggleButtonGroupControlled nameList={nameList}
+                                                             initSelections={all_release_queues}
                                                              callbackToParent={this.updateNameListToShow.bind(this)}
                                 />
                             }
                             archControl={
-                                <TogglesShowIBFlawors/>
+                                <TogglesShowIBFlawors releaseQue={releaseQue}/>
                             }
                 />
-                <IBGroups data={this.filterListToShow()}/>
+                <IBGroups data={this.filterListToShow()} releaseQue={releaseQue}/>
             </div>
         );
     }

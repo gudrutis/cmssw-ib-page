@@ -6,14 +6,31 @@ import FormGroup from "react-bootstrap/es/FormGroup";
 import ShowArchStore from "../Stores/ShowArchStore";
 import * as  ShowArchActions from "../Actions/ShowArchActions";
 
-class TogglesShowIBFlawors extends Component {
-    constructor() {
-        super();
+class TogglesShowArchs extends Component {
+    constructor(props) {
+        super(props);
         this.getData = this.getData.bind(this);
+        const {releaseQue} = props;
         this.state = {
-            archs: ShowArchStore.getAll(),
-            activeArchs: ShowArchStore.getActive()
+            releaseQue: props.releaseQue,
+            archs: ShowArchStore.getAllArchsForQue(releaseQue),
+            activeArchs: ShowArchStore.getActiveArchsForQue(releaseQue)
         }
+    }
+
+    onChange = (field) => {
+        const {releaseQue} = this.state;
+        return (activeArchs) => {
+            ShowArchActions.setActiveArchs(activeArchs, field, releaseQue);
+        };
+    };
+
+    getData() {
+        const {releaseQue} = this.state;
+        this.setState({
+            archs: ShowArchStore.getAllArchsForQue(releaseQue),
+            activeArchs: ShowArchStore.getActiveArchsForQue(releaseQue)
+        })
     }
 
     componentWillMount() {
@@ -24,18 +41,10 @@ class TogglesShowIBFlawors extends Component {
         ShowArchStore.removeListener("change", this.getData);
     }
 
-    getData() {
-        this.setState({
-            archs: ShowArchStore.getAll(),
-            activeArchs: ShowArchStore.getActive()
-        })
+    componentWillReceiveProps(newProps) {
+        this.setState(newProps);
+        this.getData();
     }
-
-    onChange = (field) => {
-        return (activeArchs) => {
-            ShowArchActions.setActiveArchs(activeArchs, field);
-        };
-    };
 
     render() {
         return (
@@ -69,4 +78,4 @@ class TogglesShowIBFlawors extends Component {
     }
 }
 
-export default TogglesShowIBFlawors;
+export default TogglesShowArchs;

@@ -14,12 +14,13 @@ export function toggleArch(id) {
     })
 }
 
-export function setActiveArchs(values, field) {
+export function setActiveArchs(values, field, releaseQue) {
     dispatcher.dispatch({
         type: ShowArchActionTypes.SET_ACTIVE_ARCHS,
         values: {
             activeValues: values,
-            field
+            field,
+            releaseQue
         },
     })
 }

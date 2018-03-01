@@ -27,6 +27,7 @@ class TogglesShowIBFlawors extends Component {
     render() {
         return (
             <FormGroup>
+                <span>Flavor: </span>
                 <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={this.state.value} onChange={this.onChange}>
                     {this.state.nameList.map(item => {
                         return <ToggleButton key={uuid.v4()} value={item}> {getDisplayName(item)} </ToggleButton>

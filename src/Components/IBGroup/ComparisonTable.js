@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
-import {getAllArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../Utils/processing';
+import {getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../Utils/processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 import config from '../../config';
@@ -53,10 +53,11 @@ class ComparisonTable extends Component {
     constructor(props) {
         super(props);
         this.getArchSettings = this.getArchSettings.bind(this);
+        const {data, releaseQue} = props;
         this.state = {
-            ibComparison: props.data,
-            archsByIb: getAllArchitecturesFromIBGroupByFlavor(props.data, ShowArchStore.getActive()),
-            activeArchs: ShowArchStore.getActive()
+            ibComparison: data,
+            archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(data, ShowArchStore.getActiveArchsForQue(releaseQue)),
+            releaseQue
         };
     }
 
@@ -69,9 +70,9 @@ class ComparisonTable extends Component {
     }
 
     getArchSettings() {
+        const {ibComparison, releaseQue} = this.state;
         this.setState({
-            archsByIb: getAllArchitecturesFromIBGroupByFlavor(this.props.data, ShowArchStore.getActive()),
-            activeArchs: ShowArchStore.getActive()
+            archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(ibComparison, ShowArchStore.getActiveArchsForQue(releaseQue)),
         })
     }
 

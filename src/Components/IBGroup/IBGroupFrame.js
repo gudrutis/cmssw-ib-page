@@ -21,6 +21,7 @@ class IBGroupFrame extends Component {
         super(props);
         this.state = {
             IBGroup: props.IBGroup,
+            releaseQue: props.releaseQue
         };
     }
 
@@ -58,7 +59,8 @@ class IBGroupFrame extends Component {
                 }
                 showOnlyIbTag = false;
                 panelHeader = firstIbFromList.release_name;
-                comparisonTable = isIBGroupTableEmpty ? null : <ComparisonTable data={this.state.IBGroup}/>;
+                comparisonTable = isIBGroupTableEmpty ? null :
+                    <ComparisonTable data={this.state.IBGroup} releaseQue={this.state.releaseQue}/>;
                 commitPanelProps = {
                     defaultExpanded: !isCommitsEmpty,
                     collapsible: true,
@@ -78,7 +80,8 @@ class IBGroupFrame extends Component {
                     collapsible: false,
                 };
         }
-        statusLabels = <StatusLabels IBGroup={this.state.IBGroup} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
+        statusLabels =
+            <StatusLabels IBGroup={this.state.IBGroup} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;
         return (
             <Panel collapsible
                    defaultExpanded
