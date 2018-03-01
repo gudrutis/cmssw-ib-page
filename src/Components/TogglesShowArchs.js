@@ -9,7 +9,7 @@ import * as  ShowArchActions from "../Actions/ShowArchActions";
 class TogglesShowArchs extends Component {
     constructor(props) {
         super(props);
-        this.getData = this.getData.bind(this);
+        this.doUpdateData = this.doUpdateData.bind(this);
         const {releaseQue} = props;
         this.state = {
             releaseQue: props.releaseQue,
@@ -25,8 +25,12 @@ class TogglesShowArchs extends Component {
         };
     };
 
-    getData() {
+    doUpdateData() {
         const {releaseQue} = this.state;
+        this.getData(releaseQue);
+    }
+
+    getData(releaseQue) {
         this.setState({
             archs: ShowArchStore.getAllArchsForQue(releaseQue),
             activeArchs: ShowArchStore.getActiveArchsForQue(releaseQue)
@@ -34,16 +38,16 @@ class TogglesShowArchs extends Component {
     }
 
     componentWillMount() {
-        ShowArchStore.on("change", this.getData);
+        ShowArchStore.on("change", this.doUpdateData);
     }
 
     componentWillUnmount() {
-        ShowArchStore.removeListener("change", this.getData);
+        ShowArchStore.removeListener("change", this.doUpdateData);
     }
 
     componentWillReceiveProps(newProps) {
+        this.getData(newProps.releaseQue);
         this.setState(newProps);
-        this.getData();
     }
 
     render() {

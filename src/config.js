@@ -28,6 +28,13 @@ export default {
             gcc630: "#5cb85c"
         }
     },
+    colorCoding: [
+        '#5cb85c', // production arch
+        '#48c9b0',
+        '#f1ad4f',
+        '#d9534f',
+        '#777' // default
+    ],
     statusLabelsConfigs: [
         // functions  [found|not-found|inProgress]
         /**
