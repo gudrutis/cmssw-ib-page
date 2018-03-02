@@ -2,8 +2,8 @@ import {getCurrentIbTag} from "./Utils/processing";
 
 export default {
     tooltipDelayInMs: 200,
-
     urls: {
+        projectIssue: "https://github.com/cms-sw/cmssdt-ib/issues",
         q_a: (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
         dataDir: "/SDT/html/data/",
         releaseStructure: "/SDT/html/data/structure.json",
@@ -16,18 +16,18 @@ export default {
         relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
         commits: "https://github.com/cms-sw/cmsdist/commits/"
     },
-    archShowCodes: {
-        color: {
-            slc6: "#5cb85c",
-            slc7: "#777",
-
-            amd64: "#5cb85c",
-            aarch64: "#777",
-
-            gcc630: "#5cb85c",
-            gcc700: "#777"
-        }
-    },
+    // archShowCodes: {
+    //     color: {
+    //         slc6: "#5cb85c",
+    //         slc7: "#777",
+    //
+    //         amd64: "#5cb85c",
+    //         aarch64: "#777",
+    //
+    //         gcc630: "#5cb85c",
+    //         gcc700: "#777"
+    //     }
+    // },
     colorCoding: {
         prodColor: '#5cb85c', // production arch
         alternatingColors: [

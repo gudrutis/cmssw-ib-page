@@ -5,11 +5,32 @@ import Nav from "react-bootstrap/es/Nav";
 import NavItem from "react-bootstrap/es/NavItem";
 import {LinkContainer} from "react-router-bootstrap";
 import uuid from "uuid";
-import {Col, Row} from "react-bootstrap";
+import {Button, Col, Glyphicon, Modal, OverlayTrigger, Popover, Row, Tooltip} from "react-bootstrap";
+import config from '../config';
+
+const {urls} = config;
 
 class Navigation extends Component {
 
+    constructor(props, context) {
+        super(props, context);
+        this.handleShow = this.handleShow.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.state = {
+            show: false
+        };
+    }
+
+    handleClose() {
+        this.setState({show: false});
+    }
+
+    handleShow() {
+        this.setState({show: true});
+    }
+
     render() {
+        // TODO goes to constructor
         let importantLinks = [];
         let olderLinks = [];
 
@@ -25,6 +46,50 @@ class Navigation extends Component {
             importantLinks = renderedLinks.slice(0, 3);
             olderLinks = renderedLinks.slice(3);
         }
+        // TODO ---------
+
+        const popover = (
+            <Popover id="modal-popover" title="popover">
+                very popover. such engagement
+            </Popover>
+        );
+        const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
+        const modalHelp = (
+            <Modal show={this.state.show} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Explanations</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {/*<h4> ...Work in progress</h4>*/}
+                    <p>
+                        <a class="btn label label-success"><span class="glyphicon glyphicon-ok-circle"/></a> - all test
+                        were successful
+                    </p>
+                    <p>
+                        <a class="btn label label-warning">14</a> - warnings
+                    </p>
+                    <p>
+                        <a class="btn label label-danger">14</a> - errors
+                    </p>
+                    <p>
+                        <a class="btn label label-success">130*</a> <a class="btn label label-warning">130*</a> <a
+                        class="btn label label-danger">130*</a> - results are still updating
+
+                    </p>
+                    <p>
+                        <span class="glyphicon glyphicon-refresh"/><span> HLT Validation </span> - test results are not
+                        ready
+                    </p>
+                    <p>
+                        <a><span class="glyphicon glyphicon-list-alt"/><span> HLT Validation </span></a>- test results
+                        are ready
+                    </p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        );
 
         return (
             <Navbar fixedTop id={'navigation'}>
@@ -41,6 +106,15 @@ class Navigation extends Component {
                             {olderLinks}
                         </NavDropdown>
                     </Nav>
+                    <Nav pullRight>
+                        <button className="btn btn-default navbar-btn" onClick={this.handleShow}>
+                            Help <Glyphicon glyph="question-sign"/>
+                        </button>
+                        {' '}
+                        <a href={urls.projectIssue} className="btn btn-default navbar-btn">
+                            Report an issue <Glyphicon glyph="exclamation-sign"/>
+                        </a>
+                    </Nav>
                     <Row>
                         <Col xs={12}>
                             <Nav>
@@ -54,6 +128,7 @@ class Navigation extends Component {
                         </Col>
                     </Row>
                 </Navbar.Collapse>
+                {modalHelp}
             </Navbar>
         );
     }

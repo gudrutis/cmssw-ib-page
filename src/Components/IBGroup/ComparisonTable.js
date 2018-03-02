@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import config from '../../config';
 import ShowArchStore from "../../Stores/ShowArchStore";
 
-const {archShowCodes, tooltipDelayInMs, urls} = config;
+const {tooltipDelayInMs, urls} = config;
 
 function renderTooltip(cellContent, tooltipContent) {
     return (
