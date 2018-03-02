@@ -57,7 +57,8 @@ class ComparisonTable extends Component {
         this.state = {
             ibComparison: data,
             archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(data, ShowArchStore.getActiveArchsForQue(releaseQue)),
-            releaseQue
+            releaseQue,
+            colorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         };
     }
 
@@ -73,6 +74,7 @@ class ComparisonTable extends Component {
         const {ibComparison, releaseQue} = this.state;
         this.setState({
             archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(ibComparison, ShowArchStore.getActiveArchsForQue(releaseQue)),
+            colorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         })
     }
 
@@ -323,7 +325,7 @@ class ComparisonTable extends Component {
                                 const cellContent = () => {
                                     return (
                                         arch.split("_").map(str => {
-                                            const {color} = archShowCodes;
+                                            const color = this.state.colorScheme;
                                             return (
                                                 <div style={{backgroundColor: color[str], paddingLeft: 6.3}}
                                                      key={uuid.v4()}>
@@ -357,7 +359,7 @@ class ComparisonTable extends Component {
                                 return (
                                     <th key={uuid.v4()}>
                                         {(link) ? renderTooltip(linkWrapper(link, cellContent()), tooltipText) : cellContent()}
-                                        <Label bsStyle="info"> {patchOrFullBuild}</Label>
+                                        <Label bsStyle="default"> {patchOrFullBuild}</Label>
                                     </th>
                                 );
                             })
@@ -473,7 +475,7 @@ class ComparisonTable extends Component {
                                     renderCell(
                                         renderLabel(
                                             {
-                                                colorType: "info",
+                                                colorType: "default",
                                                 glyphicon: "glyphicon-search",
                                                 link: urls.q_a(arch, item.name)
                                             }

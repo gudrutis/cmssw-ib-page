@@ -18,23 +18,25 @@ export default {
     },
     archShowCodes: {
         color: {
-            slc7: "#48c9b0",
             slc6: "#5cb85c",
+            slc7: "#777",
 
             amd64: "#5cb85c",
-            aarch64: "#f1ad4f",
+            aarch64: "#777",
 
-            gcc700: "#48c9b0",
-            gcc630: "#5cb85c"
+            gcc630: "#5cb85c",
+            gcc700: "#777"
         }
     },
-    colorCoding: [
-        '#5cb85c', // production arch
-        '#48c9b0',
-        '#f1ad4f',
-        '#d9534f',
-        '#777' // default
-    ],
+    colorCoding: {
+        prodColor: '#5cb85c', // production arch
+        alternatingColors: [
+            '#777',
+            '#999',
+            '#CCC'
+        ],
+        defaultColor: '#555', // default
+    },
     statusLabelsConfigs: [
         // functions  [found|not-found|inProgress]
         /**

@@ -5,7 +5,7 @@ import config from "../config";
 import {extractInfoFromArchs} from "../Utils/processing";
 import {getMultipleFiles, getSingleFile} from "../Utils/ajax";
 
-const {urls} = config;
+const {urls, colorCoding} = config;
 
 class ShowArchStore extends EventEmitter {
     constructor() {
@@ -13,16 +13,9 @@ class ShowArchStore extends EventEmitter {
         this.emptyConfig = {
             'os': [], 'cpu': [], 'compiler': []
         };
-        this.allArchs = {
-            'os': [], 'cpu': [], 'compiler': []
-        };
-        this.activeArchs = {
-            'os': [], 'cpu': [], 'compiler': []
-        };
         this.queConfig = {};
         this.getData();
     }
-
 
     toggleArch(archName) {
         // const index = _.findIndex(this.archs, (i) => {
@@ -36,11 +29,10 @@ class ShowArchStore extends EventEmitter {
         getMultipleFiles({
             fileUrlList: [urls.releaseStructure, urls.latestIBSummary],
             onSuccessCallback: function (responseList) {
-                // console.log(responseList[0].data, responseList[1].data)
                 const structureData = responseList[0].data;
                 const ibSummary = responseList[1].data;
                 const {all_prefixes, all_release_queues} = structureData;
-                const {prod_archs} = ibSummary; // TODO
+                const {prod_archs} = ibSummary;
                 let archListByRealise = {}, config = {};
                 all_release_queues.map((que) => {
                     if (!ibSummary[que]) {
@@ -63,11 +55,33 @@ class ShowArchStore extends EventEmitter {
                     if (!config[que]) {
                         return
                     }
+                    // TODO maybe just make seperate colors for archs
+                    // TODO if 1 color per combination, add logic here
                     let results = extractInfoFromArchs(config[que]);
+                    const [os, cpu, compiler] = prod_archs[que].split('_');
                     config[que] = {
-                        allArchs: results,
-                        activeArchs: Object.assign({}, results)
-                    }
+                        allArchs: Object.assign({}, results),
+                        activeArchs: Object.assign({}, results),
+                        colorCoding: {}
+                    };
+                    const colorFunction = (prodField) => {
+                        let counter = 0;
+                        return (field) => {
+                            const {prodColor, alternatingColors, defaultColor} = colorCoding;
+                            let queColorConfig = config[que].colorCoding;
+                            if (field === prodField) {
+                                queColorConfig[field] = prodColor;
+                            } else if (counter < alternatingColors.length){
+                                queColorConfig[field] = alternatingColors[counter];
+                                counter++;
+                            } else {
+                                queColorConfig[field] = defaultColor;
+                            }
+                        }
+                    };
+                    results.os.map(colorFunction(os));
+                    results.cpu.map(colorFunction(cpu));
+                    results.compiler.map(colorFunction(compiler));
                 });
                 this.queConfig = config;
             }.bind(this)
@@ -80,14 +94,6 @@ class ShowArchStore extends EventEmitter {
                 this.emit("change");
             }.bind(this)
         });
-    }
-
-    getAll() {
-        return this.allArchs;
-    }
-
-    getActive() {
-        return this.activeArchs;
     }
 
     getAllArchsForQue(releaseQue) {
@@ -105,6 +111,15 @@ class ShowArchStore extends EventEmitter {
             return archsConfig['activeArchs'];
         } else {
             return this.emptyConfig;
+        }
+    }
+
+    getColorsSchemeForQue(releaseQue) {
+        const archsConfig = this.queConfig[releaseQue];
+        if (archsConfig) {
+            return archsConfig['colorCoding'];
+        } else {
+            return {};
         }
     }
 
