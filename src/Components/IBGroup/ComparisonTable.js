@@ -475,7 +475,7 @@ class ComparisonTable extends Component {
                                     renderCell(
                                         renderLabel(
                                             {
-                                                colorType: "default",
+                                                colorType: "success",
                                                 glyphicon: "glyphicon-search",
                                                 link: urls.q_a(arch, item.name)
                                             }

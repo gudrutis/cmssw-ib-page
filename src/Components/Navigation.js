@@ -5,8 +5,9 @@ import Nav from "react-bootstrap/es/Nav";
 import NavItem from "react-bootstrap/es/NavItem";
 import {LinkContainer} from "react-router-bootstrap";
 import uuid from "uuid";
-import {Button, Col, Glyphicon, Modal, OverlayTrigger, Popover, Row, Tooltip} from "react-bootstrap";
+import {Button, Col, DropdownButton, Glyphicon, MenuItem, Modal, Popover, Row, Tooltip} from "react-bootstrap";
 import config from '../config';
+import Dropdown from "react-bootstrap/es/Dropdown";
 
 const {urls} = config;
 
@@ -108,12 +109,19 @@ class Navigation extends Component {
                     </Nav>
                     <Nav pullRight>
                         <button className="btn btn-default navbar-btn" onClick={this.handleShow}>
-                            Help <Glyphicon glyph="question-sign"/>
+                            <Glyphicon glyph="question-sign"/> Help
                         </button>
                         {' '}
-                        <a href={urls.projectIssue} className="btn btn-default navbar-btn">
-                            Report an issue <Glyphicon glyph="exclamation-sign"/>
-                        </a>
+                        <Dropdown id="dropdown-custom-2">
+                            <Dropdown.Toggle>
+                                <Glyphicon glyph="exclamation-sign"/> Report an issue with ...
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="super-colors">
+                                {urls.issues.map((el) => {
+                                    return <MenuItem href={el.url}>{el.name}</MenuItem>
+                                })}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </Nav>
                     <Row>
                         <Col xs={12}>
