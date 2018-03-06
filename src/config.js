@@ -124,6 +124,15 @@ export default {
             }
         },
         {
+            //add_lizard_tests_link
+            // Lizard
+            key: "flawfinder",
+            name: "Flaw finder",
+            getUrl: function (ib) {
+                return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/flawfinder/" + getCurrentIbTag(ib);
+            }
+        },
+        {
             //add_igprof_tests_link
             key: "igprof",
             name: "IgProf",
