@@ -137,7 +137,7 @@ export default {
             key: "igprof",
             name: "IgProf",
             getUrl: function (ib) {
-                return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/igprof/" + getCurrentIbTag(ib);
+                return "https://cmssdt.cern.ch/SDT/cgi-bin/igprof-navigator/" + getCurrentIbTag(ib);
             }
         },
         {
