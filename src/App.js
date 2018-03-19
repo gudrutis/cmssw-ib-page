@@ -2,8 +2,10 @@ import React, {Component} from 'react';
 import './App.css';
 import {Redirect, Route, Switch} from "react-router-dom";
 import Layout from './Components/Layout'
+import RelValLayout from './Components/RelValLayout'
 import config from './config';
 import {getSingleFile} from "./Utils/ajax";
+import Jumbotron from "react-bootstrap/es/Jumbotron";
 
 // TODO: go through imports and check which ones we do not need
 //------------------------
@@ -11,13 +13,7 @@ import {getSingleFile} from "./Utils/ajax";
 // TODO-project set
 // project create layout .json where layout is defined
 // project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits }
-// TODO-project from structure.json select which ib flavors show by default
-// TODO-architecturu custom icons
-// TODO-color coding results with with pop-ups for explanation
 // TODO-relvals expanding explation on click
-// TODO-project old IB without build data will be cleaned,
-// TODO-project if there is no arch, display only commits (that is if it is commits)
-// TODO-project color code archs with images
 
 //------------------------------------------
 //      Main entry component
@@ -45,14 +41,28 @@ class App extends Component {
     }
 
     defaultPage() {
+        const ib = "/ib/";
         if (this.state.structure.default_release) {
-            return this.state.structure.default_release;
+            return ib + this.state.structure.default_release;
         } else if (this.state.structure.all_prefixes.length > 0) {
             let lastPrefix = this.state.structure.all_prefixes.length - 1;
-            return this.state.structure.all_prefixes[lastPrefix];
+            return ib + this.state.structure.all_prefixes[lastPrefix];
         } else {
-            return '/'
+            return ib
         }
+    }
+
+    static errorWrongRoute = (
+        <Jumbotron>
+            <h1>Incorrect route specified</h1>
+            <p>The route needs to be "/release_date/release_que"</p>
+        </Jumbotron>
+    );
+
+    static containerWraper(content) {
+        return (
+            <div className={'container'}>{content}</div>
+        )
     }
 
     render() {
@@ -63,12 +73,18 @@ class App extends Component {
             <div>
                 <Switch>
                     <Redirect exact from="/" to={this.defaultPage()} push/>
-                    <Route path="/:prefix"
+                    <Route path="/ib/:prefix"
                            render={(props) => (
                                <Layout {...props}
                                        toLinks={this.state.structure.all_prefixes}
                                        structure={this.state.structure}/>)}
                     />
+                    <Route path="/relVal/:que/:date"
+                           render={(props) => (<RelValLayout {...props}/>)}
+                    />
+                    <Route>
+                        {App.containerWraper(App.errorWrongRoute)}
+                    </Route>
                 </Switch>
             </div>
         );

@@ -139,3 +139,41 @@ export function getDisplayName(name) {
 }
 
 
+export function getStructureFromAvalableRelVals(relvalInfoObject) {
+    let re = /^([a-zA-Z]+_[0-9]+_[0-9])+_(.*)_(\d{4}-\d{2}-\d{2}-\d{4})/;  //CMSSW_5_3 _X _ 2018-03-04-0000
+    const keysList = Object.keys(relvalInfoObject);
+    let config = {};
+    keysList.map((key) => {
+        const [fullMatch, que, flavor, date] = key.match(re);
+        const archs = relvalInfoObject[key].split(',');
+        if (!config[date]) {
+            config[date] = {}
+        }
+        if (!config[date][que]) {
+            config[date][que] = {
+                flavors: {},
+                allArchs: [],
+                dataLoaded: false
+            }
+        }
+        config[date][que].flavors[flavor] = {};
+        archs.map(arch => {
+            config[date][que].flavors[flavor][arch] = {date, que, flavor, arch};
+        });
+        config[date][que].allArchs = _.uniq(config[date][que].allArchs.concat(archs));
+    });
+    return config;
+}
+
+export function transforListToObject(relValList) {
+    /**
+     * Will transform RelVal list to object where relVal id is the key
+     */
+    let relValObj = {};
+    relValList.map(i => {
+        relValObj[i.id] = i;
+    });
+    return relValObj;
+}
+
+
