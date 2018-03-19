@@ -82,10 +82,14 @@ class LayoutWrapper extends Component {
         window.removeEventListener('resize', this.getNavigationHeight.bind(this));
     }
 
+    getTopPadding() {
+        return this.state.navigationHeight + 20
+    }
+
     render() {
-        const {releaseQue, toLinks, navigationHeight, nameList, all_release_queues} = this.state;
+        const {releaseQue, toLinks, nameList, all_release_queues} = this.state;
         return (
-            <div className={'container'} style={{paddingTop: navigationHeight + 20}}>
+            <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
                 <Navigation toLinks={toLinks}
                             flaworControl={
                                 <ToggleButtonGroupControlled nameList={nameList}
