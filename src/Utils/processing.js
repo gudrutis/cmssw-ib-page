@@ -35,11 +35,11 @@ export function getAllArchitecturesFromIBGroup(IBGroup) {
     return a;
 }
 
-function _filterArchs(archs, activeArchs) {
+function _filterArchs(archs, activeArchsConfig) {
     return _.filter(archs, (arch) => {
         const [os, cpu, compiler] = arch.split('_');
-        return activeArchs['os'].indexOf(os) > -1 && activeArchs['cpu'].indexOf(cpu) > -1
-            && activeArchs['compiler'].indexOf(compiler) > -1;
+        return activeArchsConfig['os'].indexOf(os) > -1 && activeArchsConfig['cpu'].indexOf(cpu) > -1
+            && activeArchsConfig['compiler'].indexOf(compiler) > -1;
     });
 }
 

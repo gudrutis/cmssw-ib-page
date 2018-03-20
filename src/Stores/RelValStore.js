@@ -113,13 +113,6 @@ class RelValStore extends EventEmitter {
 
 }
 
-const
-    relValStore = new RelValStore;
-dispatcher
-    .register(relValStore
-
-        .handleActions
-        .bind(relValStore)
-    )
-;
+const relValStore = new RelValStore;
+dispatcher.register(relValStore.handleActions.bind(relValStore));
 export default relValStore;

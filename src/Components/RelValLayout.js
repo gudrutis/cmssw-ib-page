@@ -6,6 +6,7 @@ import TogglesShowRow from "./TogglesShowRow";
 import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Utils/commons";
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import JSONPretty from 'react-json-pretty';
 
 const NAV_CONTROLS_ENUM = {
     SELECTED_ARCHS: "selectedArchs",
@@ -97,37 +98,70 @@ class RelValLayout extends Component {
     render() {
         const {allArchs = [], allFlavors = []} = this.state;
         const {selectedArchs, selectedFlavors, selectedStatus} = queryString.parse(this.props.location.search);
-        let data;
+        let allRelValsStatus;
         const {structure = {}} = this.state;
+        let tableConfig = [];
+
         if (structure.dataLoaded) {
-            // data = <JSONPretty json={this.state.structure.allRelvals}/>;
-            data = this.state.structure.allRelvals;
+            allRelValsStatus = this.state.structure.allRelvals;
+            // TODO filter flavors
+            // TODO similary filter archs
+            let flavorKeys = Object.keys(structure.flavors);
+            flavorKeys.map(flavorKey => {
+                let configObject = {
+                    Header: flavorKey,
+                    columns: []
+                };
+                let archsConfig = structure.flavors[flavorKey];
+                let archKeys = Object.keys(archsConfig);
+                archKeys.map(archKey => {
+                    // TODO since columns access the same field,
+                    // there is glitch with resizing
+                    configObject.columns.push({
+                        Header: archKey,
+                        accessor: "id",
+                        sortable: false,
+                        Cell: props => {
+                            let id = props.value;
+                            let data ;
+                            if (structure.flavors[flavorKey][archKey]){
+                                data = structure.flavors[flavorKey][archKey][id];
+                            }
+                            // return <JSONPretty json={data}/>
+                            return data ? data.name : ""
+                        },
+                        resizable: false
+                    })
+                });
+                tableConfig.push(configObject)
+            })
         } else {
-            data = [];
+            allRelValsStatus = [];
         }
 
         const columns = [
             {
-                Header: "",
                 columns: [
                     {
                         Header: "#",
                         accessor: "index",
                         maxWidth: 100,
-                        // filterable: true
-                    }
+                        Cell: props => <b>{props.value}</b>,
+                        filterable: true
+                    },
+                    {
+                        Header: "Workflow #",
+                        accessor: "id",
+                        maxWidth: 100,
+                        filterable: true,
+                        sortMethod: (a, b) => parseFloat(a) > parseFloat(b) ? 1 : -1,
+
+                    },
                 ]
             },
-            {
-                Header: "Name",
-                columns: [
-                    {
-                        Header: "First Name",
-                        accessor: "id",
-                        // filterable: true
-                    }]
-            }
+            ...tableConfig
         ];
+
 
         const controlList = [
             <TogglesShowRow
@@ -163,7 +197,7 @@ class RelValLayout extends Component {
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
                 <RelValNavigation controlList={controlList}/>
                 <ReactTable
-                    data={data}
+                    data={allRelValsStatus}
                     columns={columns}
                     defaultPageSize={50}
                     style={{

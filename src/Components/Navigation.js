@@ -39,7 +39,7 @@ class Navigation extends Component {
             let reversed = this.props.toLinks.slice(0).reverse();
             let renderedLinks = reversed.map(item => {
                 return (
-                    <LinkContainer key={uuid.v4()} to={'/' + item} activeClassName="active">
+                    <LinkContainer key={uuid.v4()} to={'/ib/' + item} activeClassName="active">
                         <NavItem>{item}</NavItem>
                     </LinkContainer>
                 )
