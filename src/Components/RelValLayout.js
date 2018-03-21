@@ -120,17 +120,26 @@ class RelValLayout extends Component {
                     configObject.columns.push({
                         Header: archKey,
                         accessor: "id",
+                        id: flavorKey + "-" + archKey,
                         sortable: false,
+                        // Pivot: cellInfo => ( // Used to render a pivoted cell
+                        //     <span> </span>
+                        //
+                        // ),
                         Cell: props => {
-                            let id = props.value;
-                            let data ;
-                            if (structure.flavors[flavorKey][archKey]){
+                            const id = props.value;
+                            const {isExpanded} = props;
+                            let data;
+                            if (structure.flavors[flavorKey][archKey]) {
                                 data = structure.flavors[flavorKey][archKey][id];
                             }
-                            // return <JSONPretty json={data}/>
-                            return data ? data.name : ""
+                            if (isExpanded) {
+                                return <JSONPretty json={data}/>
+                            }
+                            // return data ? data.name : ""
                         },
-                        resizable: false
+
+                        // resizable: false
                     })
                 });
                 tableConfig.push(configObject)
@@ -143,6 +152,11 @@ class RelValLayout extends Component {
             {
                 columns: [
                     {
+                        expander: true,
+
+                    },
+                    {
+                        // expander: true,
                         Header: "#",
                         accessor: "index",
                         maxWidth: 100,
@@ -197,12 +211,14 @@ class RelValLayout extends Component {
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
                 <RelValNavigation controlList={controlList}/>
                 <ReactTable
+                    // SubComponent={row => {}}
                     data={allRelValsStatus}
                     columns={columns}
                     defaultPageSize={50}
                     style={{
                         height: this.getSizeForTable()
                     }}
+
                 />
             </div>
         );
