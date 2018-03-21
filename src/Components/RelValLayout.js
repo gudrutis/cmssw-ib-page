@@ -121,11 +121,19 @@ class RelValLayout extends Component {
                         Header: archKey,
                         accessor: "id",
                         id: flavorKey + "-" + archKey,
-                        sortable: false,
-                        // Pivot: cellInfo => ( // Used to render a pivoted cell
-                        //     <span> </span>
-                        //
-                        // ),
+                        // sortable: false,
+                        sortMethod: (a, b) => {
+                            let codeA, codeB;
+                            if (structure.flavors[flavorKey][archKey]) {
+                                codeA = structure.flavors[flavorKey][archKey][a];
+                                codeB = structure.flavors[flavorKey][archKey][b];
+                            }
+                            codeA = codeA ? codeA.exitcode : -1;
+                            codeB = codeB ? codeB.exitcode : -1;
+                            // console.log(codeA, codeB);
+
+                            return codeA > codeB ? 1 : -1
+                        },
                         Cell: props => {
                             const id = props.value;
                             const {isExpanded} = props;
@@ -133,9 +141,18 @@ class RelValLayout extends Component {
                             if (structure.flavors[flavorKey][archKey]) {
                                 data = structure.flavors[flavorKey][archKey][id];
                             }
-                            if (isExpanded) {
-                                return <JSONPretty json={data}/>
+                            if (data) {
+                                if (isExpanded) {
+                                    return [
+                                        <div>1</div>,
+                                        <div>2</div>,
+                                        <div>3</div>
+                                    ]
+                                } else {
+                                    return data.exitcode;
+                                }
                             }
+
                             // return data ? data.name : ""
                         },
 
@@ -153,7 +170,6 @@ class RelValLayout extends Component {
                 columns: [
                     {
                         expander: true,
-
                     },
                     {
                         // expander: true,
