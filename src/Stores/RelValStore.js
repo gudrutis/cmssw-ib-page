@@ -14,10 +14,9 @@ class RelValStore extends EventEmitter {
 
     _getStructure() {
         getMultipleFiles({
-            fileUrlList: [urls.RelvalsAvailableResults, urls.exitcodes],
+            fileUrlList: [urls.RelvalsAvailableResults],
             onSuccessCallback: function (responseList) {
                 const relvalsAvailableResults = responseList[0].data;
-                const exitCodes = responseList[1].data;
                 this.structure = getStructureFromAvalableRelVals(relvalsAvailableResults);
                 this.emit("change");
             }.bind(this)
@@ -51,7 +50,6 @@ class RelValStore extends EventEmitter {
     getFlavorStructure({date, que}) {
         if (this.structure) {
             try {
-
                 if (!this.structure[date][que].dataLoaded) {
                     let archsToLoad = [];
                     let allRelValIDObject = {};
@@ -92,7 +90,7 @@ class RelValStore extends EventEmitter {
                                 allRelValIDObject[i]['index'] = index + 1;
                                 return allRelValIDObject[i];
                             });
-                            this.structure[date][que].dataLoaded = true; //set that data is loaded
+                            this.structure[date][que].dataLoaded = true;
                             this.emit("change");
                         }.bind(this)
                     });

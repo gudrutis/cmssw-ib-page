@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import RelValNavigation from "./RelValNavigation";
 import RelValStore from "../Stores/RelValStore";
+import ExitCodeStore from "../Stores/ExitCodeStore";
 import queryString from 'query-string';
 import TogglesShowRow from "./TogglesShowRow";
 import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Utils/commons";
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import JSONPretty from 'react-json-pretty';
+
 
 const NAV_CONTROLS_ENUM = {
     SELECTED_ARCHS: "selectedArchs",
@@ -35,6 +37,7 @@ class RelValLayout extends Component {
 
     componentWillMount() {
         RelValStore.on("change", this.doUpdateData);
+        ExitCodeStore.on("change", this.forceUpdate);
     }
 
     doUpdateData() {
@@ -122,6 +125,8 @@ class RelValLayout extends Component {
                         accessor: "id",
                         id: flavorKey + "-" + archKey,
                         // sortable: false,
+                        filterable: true,
+
                         sortMethod: (a, b) => {
                             let codeA, codeB;
                             if (structure.flavors[flavorKey][archKey]) {
@@ -130,8 +135,6 @@ class RelValLayout extends Component {
                             }
                             codeA = codeA ? codeA.exitcode : -1;
                             codeB = codeB ? codeB.exitcode : -1;
-                            // console.log(codeA, codeB);
-
                             return codeA > codeB ? 1 : -1
                         },
                         Cell: props => {
@@ -142,21 +145,16 @@ class RelValLayout extends Component {
                                 data = structure.flavors[flavorKey][archKey][id];
                             }
                             if (data) {
+                                const {steps, exitcode} = data;
                                 if (isExpanded) {
-                                    return [
-                                        <div>1</div>,
-                                        <div>2</div>,
-                                        <div>3</div>
-                                    ]
+                                    let render_step = steps.map((step, index) => <div>{index}</div>);
+                                    return render_step
                                 } else {
-                                    return data.exitcode;
+                                    let exitName = ExitCodeStore.getExitCodeName(exitcode);
+                                    return exitName + " " + exitcode + " " + steps.length;
                                 }
                             }
-
-                            // return data ? data.name : ""
                         },
-
-                        // resizable: false
                     })
                 });
                 tableConfig.push(configObject)
@@ -227,7 +225,19 @@ class RelValLayout extends Component {
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
                 <RelValNavigation controlList={controlList}/>
                 <ReactTable
-                    // SubComponent={row => {}}
+                    // TODO makes everything red
+                    // getTrProps={(state, rowInfo, column) => {
+                    //     console.log()
+                    //     if (rowInfo) {
+                    //         return {
+                    //             style: {
+                    //                 background: rowInfo.row._original.passed ? 'green' : 'red'
+                    //             }
+                    //         }
+                    //     } else {
+                    //         return {style: {}};
+                    //     }
+                    // }}
                     data={allRelValsStatus}
                     columns={columns}
                     defaultPageSize={50}
