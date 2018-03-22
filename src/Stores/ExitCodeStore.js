@@ -6,6 +6,7 @@ import {getMultipleFiles} from "../Utils/ajax";
 const {urls} = config;
 
 class ExitCodeStore extends EventEmitter {
+    // TODO show statistics can be calculated here
     constructor() {
         super();
         this._getData()

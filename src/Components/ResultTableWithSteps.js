@@ -6,20 +6,44 @@ import {LABEL_COLOR, LABELS_TEXT} from "../relValConfig";
 import uuid from 'uuid';
 
 
+/**
+ * returns the link address for a given Ib and an arch
+ */
+function getLogAddress(arch, ib, step, workflowName, workflowID, wasDASErr) {
+
+    let filename = '';
+    if (!wasDASErr) {
+        filename = 'step' + step + '_' + workflowName + '.log'
+    } else {
+        filename = 'step1_dasquery.log';
+    }
+
+    return 'http://cmssdt.cern.ch/SDT/cgi-bin/buildlogs/' + arch + '/' + ib + '/pyRelValMatrixLogs/run/' + workflowID + '_' + workflowName + '/' + filename;
+
+}
+
 function getLabelName(name) {
     return LABELS_TEXT[name] ? LABELS_TEXT[name] : name;
 }
 
 
-function rowWithLabel(text, number) {
+function rowWithLabel(text, number, logUrl) {
     // TODO modal window to code
     return <div key={uuid.v4()}>
         <span className="label label-default">
             {number}
         </span>
-        <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}}
-              className="label">{getLabelName(text)}</span>
+        <a target="_blank" href={logUrl}>
+        <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="label">
+            {text}
+        </span>
+        </a>
     </div>
+}
+
+function getIb(date, que, flavor) {
+    // CMSSW_10_1_X_2018-03-21-2300
+    return `${que}_${flavor}_${date}`;
 }
 
 class ResultTableWithSteps extends Component {
@@ -33,7 +57,7 @@ class ResultTableWithSteps extends Component {
         let allRelValsStatus;
         const {allArchs = [], allFlavors = [], style} = this.props;
         const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
-        const {structure = {}} = this.props;
+        const {structure = {}, ibDate, ibQue} = this.props;
 
         if (structure.dataLoaded) {
             allRelValsStatus = structure.allRelvals;
@@ -58,7 +82,9 @@ class ResultTableWithSteps extends Component {
                             }
                             if (data) {
                                 let {exitcode} = data;
-                                return ExitCodeStore.getExitCodeName(exitcode);
+                                return getLabelName(
+                                    ExitCodeStore.getExitCodeName(exitcode)
+                                );
                             } else {
                                 return null
                             }
@@ -74,25 +100,32 @@ class ResultTableWithSteps extends Component {
                                 data = structure.flavors[flavorKey][archKey][id];
                             }
                             if (data) {
-                                const {steps, exitcode} = data;
-                                const exitName = ExitCodeStore.getExitCodeName(exitcode);
+                                const ib = getIb(ibDate,ibQue,flavorKey);
+                                const {id, name, steps} = data;
+                                const exitName = props.value;
                                 if (isExpanded) {
                                     let render_step = [];
                                     for (let i = steps.length; i > 0; i--) {
+                                        let logUrl = getLogAddress(
+                                            archKey, ib, i, name, id, false // TODO wasDasErr fix it
+                                        );
                                         if (i === steps.length) {
                                             render_step.push(
-                                                rowWithLabel(exitName, steps.length)
+                                                rowWithLabel(exitName, steps.length, logUrl)
                                             )
                                         } else {
                                             let step = steps[i - 1];
                                             render_step.push(
-                                                rowWithLabel(step.status, i)
+                                                rowWithLabel(getLabelName(step.status), i, logUrl)
                                             )
                                         }
                                     }
                                     return render_step;
                                 } else {
-                                    return rowWithLabel(exitName, steps.length);
+                                    let logUrl = getLogAddress(
+                                        archKey, ib, steps.length, name, id, false // TODO wasDasErr fix it
+                                    );
+                                    return rowWithLabel(exitName, steps.length, logUrl);
                                 }
                             }
                         },

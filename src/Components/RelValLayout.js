@@ -101,7 +101,7 @@ class RelValLayout extends Component {
         const {allArchs = [], allFlavors = []} = this.state;
         const {selectedArchs, selectedFlavors, selectedStatus} = queryString.parse(this.props.location.search);
         const {structure = {}} = this.state;
-
+        const {date, que} = this.props.match.params;
         const controlList = [
             <TogglesShowRow
                 rowName={'Flavors'}
@@ -139,7 +139,9 @@ class RelValLayout extends Component {
             selectedArchs,
             selectedFlavors,
             selectedStatus,
-            structure
+            structure,
+            ibDate: date,
+            ibQue: que
         };
 
         return (
