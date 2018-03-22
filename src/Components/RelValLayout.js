@@ -5,8 +5,8 @@ import ExitCodeStore from "../Stores/ExitCodeStore";
 import queryString from 'query-string';
 import TogglesShowRow from "./TogglesShowRow";
 import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Utils/commons";
-import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import ResultTableWithSteps from "./ResultTableWithSteps";
 
 
 const NAV_CONTROLS_ENUM = {
@@ -100,107 +100,7 @@ class RelValLayout extends Component {
     render() {
         const {allArchs = [], allFlavors = []} = this.state;
         const {selectedArchs, selectedFlavors, selectedStatus} = queryString.parse(this.props.location.search);
-        let allRelValsStatus;
         const {structure = {}} = this.state;
-        let tableConfig = [];
-
-        if (structure.dataLoaded) {
-            allRelValsStatus = this.state.structure.allRelvals;
-            // TODO filter flavors
-            // TODO similary filter archs
-            let flavorKeys = Object.keys(structure.flavors);
-            flavorKeys.map(flavorKey => {
-                let configObject = {
-                    Header: flavorKey,
-                    columns: []
-                };
-                let archsConfig = structure.flavors[flavorKey];
-                let archKeys = Object.keys(archsConfig);
-                archKeys.map(archKey => {
-                    // TODO since columns access the same field,
-                    // there is glitch with resizing
-                    configObject.columns.push({
-                        Header: archKey,
-                        // accessor: "id",
-                        accessor: relVal => {
-                            let data;
-                            if (structure.flavors[flavorKey][archKey]) {
-                                data = structure.flavors[flavorKey][archKey][relVal.id];
-                            }
-                            if (data) {
-                                let {exitcode} = data;
-                                return ExitCodeStore.getExitCodeName(exitcode);
-                            } else {
-                                return null
-                            }
-                        },
-                        id: flavorKey + "-" + archKey,
-                        // sortable: false,
-                        filterable: true,
-                        // sortMethod: (a, b) => {
-                        //     let codeA, codeB;
-                        //     if (structure.flavors[flavorKey][archKey]) {
-                        //         codeA = structure.flavors[flavorKey][archKey][a];
-                        //         codeB = structure.flavors[flavorKey][archKey][b];
-                        //     }
-                        //     codeA = codeA ? codeA.exitcode : -1;
-                        //     codeB = codeB ? codeB.exitcode : -1;
-                        //     return codeA > codeB ? 1 : -1
-                        // },
-                        Cell: props => {
-                            // const id = props.value;
-                            const id = props.row.id;
-                            const {isExpanded} = props;
-                            let data;
-                            if (structure.flavors[flavorKey][archKey]) {
-                                data = structure.flavors[flavorKey][archKey][id];
-                            }
-                            if (data) {
-                                const {steps, exitcode} = data;
-                                if (isExpanded) {
-                                    let render_step = steps.map((step, index) => <div>{index}</div>);
-                                    return render_step
-                                } else {
-                                    let exitName = ExitCodeStore.getExitCodeName(exitcode);
-                                    return exitName + " " + exitcode + " " + steps.length;
-                                }
-                            }
-                        },
-                    })
-                });
-                tableConfig.push(configObject)
-            })
-        } else {
-            allRelValsStatus = [];
-        }
-
-        const columns = [
-            {
-                columns: [
-                    {
-                        expander: true,
-                    },
-                    {
-                        // expander: true,
-                        Header: "#",
-                        accessor: "index",
-                        maxWidth: 100,
-                        Cell: props => <b>{props.value}</b>,
-                        filterable: true
-                    },
-                    {
-                        Header: "Workflow #",
-                        accessor: "id",
-                        maxWidth: 100,
-                        filterable: true,
-                        sortMethod: (a, b) => parseFloat(a) > parseFloat(b) ? 1 : -1,
-
-                    },
-                ]
-            },
-            ...tableConfig
-        ];
-
 
         const controlList = [
             <TogglesShowRow
@@ -232,30 +132,21 @@ class RelValLayout extends Component {
                 }}/>
         ];
 
+        const ResultTableWithStepsSettings = {
+            style: {height: this.getSizeForTable()},
+            allArchs,
+            allFlavors,
+            selectedArchs,
+            selectedFlavors,
+            selectedStatus,
+            structure
+        };
+
         return (
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
                 <RelValNavigation controlList={controlList}/>
-                <ReactTable
-                    // TODO makes everything red
-                    // getTrProps={(state, rowInfo, column) => {
-                    //     console.log()
-                    //     if (rowInfo) {
-                    //         return {
-                    //             style: {
-                    //                 background: rowInfo.row._original.passed ? 'green' : 'red'
-                    //             }
-                    //         }
-                    //     } else {
-                    //         return {style: {}};
-                    //     }
-                    // }}
-                    data={allRelValsStatus}
-                    columns={columns}
-                    defaultPageSize={50}
-                    style={{
-                        height: this.getSizeForTable()
-                    }}
-
+                <ResultTableWithSteps
+                    {...ResultTableWithStepsSettings}
                 />
             </div>
         );

@@ -7,7 +7,6 @@ const {urls} = config;
 
 class ExitCodeStore extends EventEmitter {
     constructor() {
-        console.log("called");
         super();
         this._getData()
     }
