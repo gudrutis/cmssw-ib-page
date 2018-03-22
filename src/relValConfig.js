@@ -1,4 +1,5 @@
 import * as React from "react";
+import uuid from 'uuid';
 
 export const LABEL_COLOR = {
     PASSED_COLOR: 'rgb(92, 184, 92)',
@@ -23,8 +24,6 @@ export const urls = {
     relValsResult:
         (arch, date, que, flavor) => `https://cms-sw.github.io/data/relvals/${arch}/${date}/${que}_${flavor}.json`
 };
-export const tooltipDelayInMs = 200;
-
 const _legendConf = [
     {color: LABEL_COLOR.PASSED_COLOR, code: LABELS_TEXT.PASSED, text: 'Passed without error or warning messages'},
     {color: LABEL_COLOR.PASSED_ERRORS_COLOR, code: LABELS_TEXT['PASSED'], text: 'Passed with error messages'},
@@ -36,7 +35,7 @@ const _legendConf = [
 ];
 // TODO could be made better
 export const legend = [_legendConf.map(i => (
-    <p>
+    <p key={uuid.v4()}>
         <span style={{backgroundColor: i.color}}
               className="label"><samp>{i.code} </samp></span> {i.text}
 

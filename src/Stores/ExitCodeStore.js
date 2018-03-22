@@ -16,7 +16,6 @@ class ExitCodeStore extends EventEmitter {
             fileUrlList: [urls.exitcodes],
             onSuccessCallback: function (responseList) {
                 const exitCodes = responseList[0].data;
-                console.log(exitCodes);
                 this.exitCodes = exitCodes;
                 this.emit("change");
             }.bind(this)
