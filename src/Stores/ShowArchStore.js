@@ -84,13 +84,6 @@ class ShowArchStore extends EventEmitter {
                     results.compiler.map(colorFunction(compiler));
                 });
                 this.queConfig = config;
-            }.bind(this)
-        });
-        getSingleFile({
-            fileUrl: urls.latestIBSummary,
-            onSuccessCallback: function (response) {
-                this.allArchs = extractInfoFromArchs(response.data.all_archs);
-                this.activeArchs = Object.assign({}, this.allArchs);
                 this.emit("change");
             }.bind(this)
         });
