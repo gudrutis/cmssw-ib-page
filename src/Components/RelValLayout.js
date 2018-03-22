@@ -7,7 +7,6 @@ import TogglesShowRow from "./TogglesShowRow";
 import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Utils/commons";
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import JSONPretty from 'react-json-pretty';
 
 
 const NAV_CONTROLS_ENUM = {
@@ -122,23 +121,35 @@ class RelValLayout extends Component {
                     // there is glitch with resizing
                     configObject.columns.push({
                         Header: archKey,
-                        accessor: "id",
+                        // accessor: "id",
+                        accessor: relVal => {
+                            let data;
+                            if (structure.flavors[flavorKey][archKey]) {
+                                data = structure.flavors[flavorKey][archKey][relVal.id];
+                            }
+                            if (data) {
+                                let {exitcode} = data;
+                                return ExitCodeStore.getExitCodeName(exitcode);
+                            } else {
+                                return null
+                            }
+                        },
                         id: flavorKey + "-" + archKey,
                         // sortable: false,
                         filterable: true,
-
-                        sortMethod: (a, b) => {
-                            let codeA, codeB;
-                            if (structure.flavors[flavorKey][archKey]) {
-                                codeA = structure.flavors[flavorKey][archKey][a];
-                                codeB = structure.flavors[flavorKey][archKey][b];
-                            }
-                            codeA = codeA ? codeA.exitcode : -1;
-                            codeB = codeB ? codeB.exitcode : -1;
-                            return codeA > codeB ? 1 : -1
-                        },
+                        // sortMethod: (a, b) => {
+                        //     let codeA, codeB;
+                        //     if (structure.flavors[flavorKey][archKey]) {
+                        //         codeA = structure.flavors[flavorKey][archKey][a];
+                        //         codeB = structure.flavors[flavorKey][archKey][b];
+                        //     }
+                        //     codeA = codeA ? codeA.exitcode : -1;
+                        //     codeB = codeB ? codeB.exitcode : -1;
+                        //     return codeA > codeB ? 1 : -1
+                        // },
                         Cell: props => {
-                            const id = props.value;
+                            // const id = props.value;
+                            const id = props.row.id;
                             const {isExpanded} = props;
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {
