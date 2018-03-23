@@ -5,6 +5,9 @@ import {getMultipleFiles} from "../Utils/ajax";
 
 const {urls} = config;
 
+/**
+ * Store keeps mapping of RelVal exitcode to its name
+ */
 class ExitCodeStore extends EventEmitter {
     // TODO show statistics can be calculated here
     constructor() {

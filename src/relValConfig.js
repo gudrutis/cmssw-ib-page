@@ -22,7 +22,10 @@ export const urls = {
     exitcodes: "https://cms-sw.github.io/exitcodes.json",
     RelvalsAvailableResults: "https://cms-sw.github.io/data/RelvalsAvailableResults.json",
     relValsResult:
-        (arch, date, que, flavor) => `https://cms-sw.github.io/data/relvals/${arch}/${date}/${que}_${flavor}.json`
+        (arch, date, que, flavor) => `https://cms-sw.github.io/data/relvals/${arch}/${date}/${que}_${flavor}.json`,
+    relValWorkFlowToIdHash:
+        (arch, date, que, flavor) => `https://cms-sw.github.io/data/commands/${arch}/${date}/${que}_${flavor}.json`
+
 };
 const _legendConf = [
     {color: LABEL_COLOR.PASSED_COLOR, code: LABELS_TEXT.PASSED, text: 'Passed without error or warning messages'},

@@ -46,6 +46,7 @@ function getIb(date, que, flavor) {
     return `${que}_${flavor}_${date}`;
 }
 
+
 class ResultTableWithSteps extends Component {
 
     constructor(props) {
@@ -58,11 +59,11 @@ class ResultTableWithSteps extends Component {
         const {allArchs = [], allFlavors = [], style} = this.props;
         const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
         const {structure = {}, ibDate, ibQue} = this.props;
-
         if (structure.dataLoaded) {
             allRelValsStatus = structure.allRelvals;
             // TODO filter flavors
             // TODO similary filter archs
+
             let flavorKeys = Object.keys(structure.flavors);
             flavorKeys.map(flavorKey => {
                 let configObject = {
@@ -107,7 +108,7 @@ class ResultTableWithSteps extends Component {
                                     let render_step = [];
                                     for (let i = steps.length; i > 0; i--) {
                                         let logUrl = getLogAddress(
-                                            archKey, ib, i, name, id, false // TODO wasDasErr fix it
+                                            archKey, ib, i, name, id, false // TODO wasDasErr? fix it
                                         );
                                         if (i === steps.length) {
                                             render_step.push(
@@ -123,7 +124,7 @@ class ResultTableWithSteps extends Component {
                                     return render_step;
                                 } else {
                                     let logUrl = getLogAddress(
-                                        archKey, ib, steps.length, name, id, false // TODO wasDasErr fix it
+                                        archKey, ib, steps.length, name, id, false // TODO wasDasErr? fix it
                                     );
                                     return rowWithLabel(exitName, steps.length, logUrl);
                                 }
@@ -170,6 +171,26 @@ class ResultTableWithSteps extends Component {
                 columns={columns}
                 defaultPageSize={50}
                 style={style}
+                // getTdProps={(state, rowInfo, column, instance) => {
+                //     return {
+                //         onClick: (e, handleOriginal) => {
+                //             console.log('A Td Element was clicked!')
+                //             console.log('it produced this event:', e)
+                //             console.log('It was in this column:', column)
+                //             console.log('It was in this row:', rowInfo)
+                //             console.log('It was in this table instance:', instance)
+                //
+                //             // IMPORTANT! React-Table uses onClick internally to trigger
+                //             // events like expanding SubComponents and pivots.
+                //             // By default a custom 'onClick' handler will override this functionality.
+                //             // If you want to fire the original onClick handler, call the
+                //             // 'handleOriginal' function.
+                //             if (handleOriginal) {
+                //                 handleOriginal()
+                //             }
+                //         }
+                //     }
+                // }}
             />
         )
 

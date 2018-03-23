@@ -7,6 +7,9 @@ import {getMultipleFiles, getSingleFile} from "../Utils/ajax";
 
 const {urls, colorCoding} = config;
 
+/**
+ * Store used to keep information about selected archs in IB page clicked in NavBar
+ */
 class ShowArchStore extends EventEmitter {
     constructor() {
         super();
