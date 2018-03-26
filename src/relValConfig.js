@@ -24,7 +24,9 @@ export const urls = {
     relValsResult:
         (arch, date, que, flavor) => `https://cms-sw.github.io/data/relvals/${arch}/${date}/${que}_${flavor}.json`,
     relValWorkFlowToIdHash:
-        (arch, date, que, flavor) => `https://cms-sw.github.io/data/commands/${arch}/${date}/${que}_${flavor}.json`
+        (arch, date, que, flavor) => `https://cms-sw.github.io/data/commands/${arch}/${date}/${que}_${flavor}.json`,
+    relValCmd:
+        (digit1, digitsRest) => `https://cms-sw.github.io/data/commands/objs/${digit1}/${digitsRest}`
 
 };
 const _legendConf = [

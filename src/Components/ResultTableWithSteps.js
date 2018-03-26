@@ -4,7 +4,9 @@ import 'react-table/react-table.css';
 import ExitCodeStore from "../Stores/ExitCodeStore";
 import {LABEL_COLOR, LABELS_TEXT} from "../relValConfig";
 import uuid from 'uuid';
-
+import Button from "react-bootstrap/es/Button";
+import {Modal} from "react-bootstrap";
+import CommandStore from "../Stores/CommandStore";
 
 /**
  * returns the link address for a given Ib and an arch
@@ -27,20 +29,6 @@ function getLabelName(name) {
 }
 
 
-function rowWithLabel(text, number, logUrl) {
-    // TODO modal window to code
-    return <div key={uuid.v4()}>
-        <span className="label label-default">
-            {number}
-        </span>
-        <a target="_blank" href={logUrl}>
-        <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="label">
-            {text}
-        </span>
-        </a>
-    </div>
-}
-
 function getIb(date, que, flavor) {
     // CMSSW_10_1_X_2018-03-21-2300
     return `${que}_${flavor}_${date}`;
@@ -51,9 +39,75 @@ class ResultTableWithSteps extends Component {
 
     constructor(props) {
         super(props);
+        this.loadCmdToShow = this.loadCmdToShow.bind(this);
+        this.state = {
+            show: false,
+            workFlowsToShow: []
+        }
+    }
+
+    componentWillMount() {
+        CommandStore.on("change", this.loadCmdToShow);
+    }
+
+    componentWillUnmount() {
+        CommandStore.removeListener("change", this.loadCmdToShow);
+    }
+
+    handleClose() {
+        this.setState({show: false});
+    }
+
+    loadCmdToShow() {
+        let workflowHashes = this.state.workflowHashes;
+        this.setState({
+            workFlowsToShow: CommandStore.getWorkFlowList(workflowHashes)
+        })
+    }
+
+    handleShow(steps) {
+        return () => {
+            this.setState({
+                show: true,
+                workflowHashes: steps.map(i => i.workflowHash),
+                workFlowsToShow: CommandStore.getWorkFlowList(steps.map(i => i.workflowHash))
+            });
+        }
+    }
+
+    rowWithLabel(text, number, logUrl, steps) {
+        return (
+            <div key={uuid.v4()}>
+                <span className="btn label label-default" onClick={this.handleShow(steps).bind(this)}>
+                    {number}
+                </span>
+                <a target="_blank" href={logUrl}>
+                <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="btn label">
+                    {text}
+                </span>
+                </a>
+            </div>
+        )
     }
 
     render() {
+        const modalCmd = (
+            <Modal show={this.state.show} onHide={this.handleClose.bind(this)} bsSize="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Legend</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div style={{overflow: 'auto'}}>
+                        {this.state.workFlowsToShow.map((i, index) => {
+                            return <p><b>Step {index + 1}</b><br/><code>{i.command}</code></p>
+                        })}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.handleClose.bind(this)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+        );
         let tableConfig = [];
         let allRelValsStatus;
         const {allArchs = [], allFlavors = [], style} = this.props;
@@ -63,7 +117,6 @@ class ResultTableWithSteps extends Component {
             allRelValsStatus = structure.allRelvals;
             // TODO filter flavors
             // TODO similary filter archs
-
             let flavorKeys = Object.keys(structure.flavors);
             flavorKeys.map(flavorKey => {
                 let configObject = {
@@ -101,7 +154,7 @@ class ResultTableWithSteps extends Component {
                                 data = structure.flavors[flavorKey][archKey][id];
                             }
                             if (data) {
-                                const ib = getIb(ibDate,ibQue,flavorKey);
+                                const ib = getIb(ibDate, ibQue, flavorKey);
                                 const {id, name, steps} = data;
                                 const exitName = props.value;
                                 if (isExpanded) {
@@ -112,12 +165,12 @@ class ResultTableWithSteps extends Component {
                                         );
                                         if (i === steps.length) {
                                             render_step.push(
-                                                rowWithLabel(exitName, steps.length, logUrl)
+                                                this.rowWithLabel(exitName, steps.length, logUrl, steps)
                                             )
                                         } else {
                                             let step = steps[i - 1];
                                             render_step.push(
-                                                rowWithLabel(getLabelName(step.status), i, logUrl)
+                                                this.rowWithLabel(getLabelName(step.status), i, logUrl, steps)
                                             )
                                         }
                                     }
@@ -126,7 +179,7 @@ class ResultTableWithSteps extends Component {
                                     let logUrl = getLogAddress(
                                         archKey, ib, steps.length, name, id, false // TODO wasDasErr? fix it
                                     );
-                                    return rowWithLabel(exitName, steps.length, logUrl);
+                                    return this.rowWithLabel(exitName, steps.length, logUrl, steps);
                                 }
                             }
                         },
@@ -166,34 +219,16 @@ class ResultTableWithSteps extends Component {
         ];
 
         return (
-            <ReactTable
-                data={allRelValsStatus}
-                columns={columns}
-                defaultPageSize={50}
-                style={style}
-                // getTdProps={(state, rowInfo, column, instance) => {
-                //     return {
-                //         onClick: (e, handleOriginal) => {
-                //             console.log('A Td Element was clicked!')
-                //             console.log('it produced this event:', e)
-                //             console.log('It was in this column:', column)
-                //             console.log('It was in this row:', rowInfo)
-                //             console.log('It was in this table instance:', instance)
-                //
-                //             // IMPORTANT! React-Table uses onClick internally to trigger
-                //             // events like expanding SubComponents and pivots.
-                //             // By default a custom 'onClick' handler will override this functionality.
-                //             // If you want to fire the original onClick handler, call the
-                //             // 'handleOriginal' function.
-                //             if (handleOriginal) {
-                //                 handleOriginal()
-                //             }
-                //         }
-                //     }
-                // }}
-            />
+            <div>
+                {modalCmd}
+                <ReactTable
+                    data={allRelValsStatus}
+                    columns={columns}
+                    defaultPageSize={50}
+                    style={style}
+                />
+            </div>
         )
-
     }
 }
 

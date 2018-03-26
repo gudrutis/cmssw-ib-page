@@ -86,6 +86,7 @@ class RelValLayout extends Component {
 
     componentWillUnmount() {
         RelValStore.removeListener("change", this.doUpdateData);
+        ExitCodeStore.removeListener("change", this.forceUpdate);
         window.removeEventListener('resize', this.getNavigationHeight.bind(this));
     }
 
@@ -132,7 +133,7 @@ class RelValLayout extends Component {
                 }}/>
         ];
 
-        const ResultTableWithStepsSettings = {
+        const resultTableWithStepsSettings = {
             style: {height: this.getSizeForTable()},
             allArchs,
             allFlavors,
@@ -148,7 +149,7 @@ class RelValLayout extends Component {
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
                 <RelValNavigation controlList={controlList}/>
                 <ResultTableWithSteps
-                    {...ResultTableWithStepsSettings}
+                    {...resultTableWithStepsSettings}
                 />
             </div>
         );

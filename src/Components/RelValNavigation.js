@@ -26,7 +26,6 @@ class RelValNavigation extends Component {
     }
 
     render() {
-
         const modalHelp = (
             <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
@@ -40,7 +39,6 @@ class RelValNavigation extends Component {
                 </Modal.Footer>
             </Modal>
         );
-
         return (
             <Navbar fixedTop id={'navigation'}>
                 <Navbar.Header>
@@ -51,8 +49,6 @@ class RelValNavigation extends Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        {/*<NavDropdown eventKey={3} title="Older releases" id="basic-nav-dropdown">*/}
-                        {/*</NavDropdown>*/}
                     </Nav>
                     <Nav pullRight>
                         <button className="btn btn-default navbar-btn" onClick={this.handleShow}>
