@@ -9,6 +9,7 @@ import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../Stores/CommandStore";
 import {getDisplayName} from "../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import ShowArchStore from '../Stores/ShowArchStore';
 
 /**
  * returns the link address for a given Ib and an arch
@@ -35,29 +36,37 @@ function getIb(date, que, flavor) {
 class ResultTableWithSteps extends Component {
     constructor(props) {
         super(props);
-        this.loadCmdToShow = this.loadCmdToShow.bind(this);
+        this.loadData = this.loadData.bind(this);
+        const {ibQue} = props;
+        const releaseQue = ibQue + '_X';
         this.state = {
             show: false,
-            workFlowsToShow: []
+            workFlowsToShow: [],
+            releaseQue,
+            archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         }
     }
 
     componentWillMount() {
-        CommandStore.on("change", this.loadCmdToShow);
+        CommandStore.on("change", this.loadData);
+        ShowArchStore.on("change", this.loadData);
     }
 
     componentWillUnmount() {
-        CommandStore.removeListener("change", this.loadCmdToShow);
+        CommandStore.removeListener("change", this.loadData);
+        ShowArchStore.removeListener("change", this.loadData);
     }
 
     handleClose() {
         this.setState({show: false});
     }
 
-    loadCmdToShow() {
+    loadData() {
+        const {releaseQue} = this.state;
         let workflowHashes = this.state.workflowHashes;
         this.setState({
-            workFlowsToShow: CommandStore.getWorkFlowList(workflowHashes)
+            workFlowsToShow: CommandStore.getWorkFlowList(workflowHashes),
+            archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         })
     }
 
@@ -87,10 +96,9 @@ class ResultTableWithSteps extends Component {
     }
 
     render() {
-
         const popoverClickRootClose = (
             <Popover id="popover-trigger-click-root-close">
-                 Copied!
+                Copied!
             </Popover>
         );
 
@@ -133,7 +141,8 @@ class ResultTableWithSteps extends Component {
         let allRelValsStatus;
         const {allArchs = [], allFlavors = [], style} = this.props;
         const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
-        const {structure = {}, ibDate, ibQue} = this.props;
+        const {structure = {}, ibDate, ibQue,} = this.props;
+        const {archColorScheme} = this.state;
         if (structure.dataLoaded) {
             allRelValsStatus = structure.allRelvals;
             // TODO filter flavors
@@ -148,7 +157,19 @@ class ResultTableWithSteps extends Component {
                 let archKeys = Object.keys(archsConfig);
                 archKeys.map(archKey => {
                     configObject.columns.push({
-                        Header: () => <div>{getDisplayName(archKey)}</div>,
+                        Header: () => {
+                            return (
+                                archKey.split("_").map(str => {
+                                    const color = archColorScheme[str];
+                                    return (
+                                        <div style={{backgroundColor: color, paddingLeft: 6.3}}
+                                             key={uuid.v4()}>
+                                            <span style={{color: "white"}}>{" " + str}</span>
+                                        </div>
+                                    )
+                                })
+                            )
+                        },
                         accessor: relVal => {
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {

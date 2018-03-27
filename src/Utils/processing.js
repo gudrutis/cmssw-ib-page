@@ -3,7 +3,6 @@ import _ from 'underscore';
 /**
  *  In this modules functions for pre-processing data are stored.
  */
-
 export function groupAndTransformIBDataList(data) {
     // TODO-prep: could be done in python
     let x = _.map(data, _getComparisons);
@@ -46,7 +45,6 @@ function _filterArchs(archs, activeArchsConfig) {
 export function getAllActiveArchitecturesFromIBGroupByFlavor(IBGroup, activeArchs) {
     let a = _.map(IBGroup, function (ib) {
         const filteredArchs = _filterArchs(ib.tests_archs, activeArchs);
-
         return {
             flavor: ib.release_queue,
             name: ib.release_name,
@@ -134,7 +132,6 @@ export function getDisplayName(name) {
             displayNameCache[name] = result;
             return result;
         }
-
     }
 }
 

@@ -57,8 +57,8 @@ class ComparisonTable extends Component {
         this.state = {
             ibComparison: data,
             archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(data, ShowArchStore.getActiveArchsForQue(releaseQue)),
-            releaseQue,
-            colorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
+            releaseQue: releaseQue,
+            archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         };
     }
 
@@ -74,7 +74,7 @@ class ComparisonTable extends Component {
         const {ibComparison, releaseQue} = this.state;
         this.setState({
             archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(ibComparison, ShowArchStore.getActiveArchsForQue(releaseQue)),
-            colorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
+            archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         })
     }
 
@@ -319,7 +319,7 @@ class ComparisonTable extends Component {
                                 const cellContent = () => {
                                     return (
                                         arch.split("_").map(str => {
-                                            const color = this.state.colorScheme;
+                                            const color = this.state.archColorScheme;
                                             return (
                                                 <div style={{backgroundColor: color[str], paddingLeft: 6.3}}
                                                      key={uuid.v4()}>
