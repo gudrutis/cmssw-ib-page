@@ -134,7 +134,6 @@ class ComparisonTable extends Component {
             })
         })
     }
-
     renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
@@ -157,7 +156,6 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells(config);
     }
-
     renderRelVals({resultType, getUrl, showLabelConfig}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
@@ -169,7 +167,6 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells(config);
     }
-
     showGeneralResults(showLabelConfig, getUrl) {
         return function (result, ib) {
             const {details, done} = result;
@@ -196,7 +193,6 @@ class ComparisonTable extends Component {
                     break;
                 }
             }
-
             if (done === false) {
                 labelConfig.value = '' + labelConfig.value + '*';
             }
@@ -212,7 +208,6 @@ class ComparisonTable extends Component {
 
         };
     }
-
     renderOtherTestResults({resultType, getUrl, showLabelConfig}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
@@ -246,7 +241,6 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells(config);
     }
-
     render() {
         const {archsByIb} = this.state;
         // TODO refactor and put to configs

@@ -5,38 +5,34 @@ import ExitCodeStore from "../Stores/ExitCodeStore";
 import {LABEL_COLOR, LABELS_TEXT} from "../relValConfig";
 import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
-import {Modal} from "react-bootstrap";
+import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../Stores/CommandStore";
+import {getDisplayName} from "../Utils/processing";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 /**
  * returns the link address for a given Ib and an arch
  */
 function getLogAddress(arch, ib, step, workflowName, workflowID, wasDASErr) {
-
     let filename = '';
     if (!wasDASErr) {
         filename = 'step' + step + '_' + workflowName + '.log'
     } else {
         filename = 'step1_dasquery.log';
     }
-
     return 'http://cmssdt.cern.ch/SDT/cgi-bin/buildlogs/' + arch + '/' + ib + '/pyRelValMatrixLogs/run/' + workflowID + '_' + workflowName + '/' + filename;
-
 }
 
 function getLabelName(name) {
     return LABELS_TEXT[name] ? LABELS_TEXT[name] : name;
 }
 
-
 function getIb(date, que, flavor) {
     // CMSSW_10_1_X_2018-03-21-2300
     return `${que}_${flavor}_${date}`;
 }
 
-
 class ResultTableWithSteps extends Component {
-
     constructor(props) {
         super(props);
         this.loadCmdToShow = this.loadCmdToShow.bind(this);
@@ -91,6 +87,13 @@ class ResultTableWithSteps extends Component {
     }
 
     render() {
+
+        const popoverClickRootClose = (
+            <Popover id="popover-trigger-click-root-close">
+                 Copied!
+            </Popover>
+        );
+
         const modalCmd = (
             <Modal show={this.state.show} onHide={this.handleClose.bind(this)} bsSize="lg">
                 <Modal.Header closeButton>
@@ -99,7 +102,25 @@ class ResultTableWithSteps extends Component {
                 <Modal.Body>
                     <div style={{overflow: 'auto'}}>
                         {this.state.workFlowsToShow.map((i, index) => {
-                            return <p><b>Step {index + 1}</b><br/><code>{i.command}</code></p>
+                            return (
+                                <p>
+                                    <b>Step {index + 1}  </b>
+                                    <CopyToClipboard text={i.command}>
+                                        <OverlayTrigger
+                                            trigger="click"
+                                            rootClose
+                                            placement="bottom"
+                                            overlay={popoverClickRootClose}
+                                        >
+                                            <Button bsStyle="primary" bsSize="small">
+                                                Copy to clipboard
+                                            </Button>
+                                        </OverlayTrigger>
+                                    </CopyToClipboard>
+                                    <br/>
+                                    <code>{i.command}</code>
+                                </p>
+                            )
                         })}
                     </div>
                 </Modal.Body>
@@ -120,15 +141,14 @@ class ResultTableWithSteps extends Component {
             let flavorKeys = Object.keys(structure.flavors);
             flavorKeys.map(flavorKey => {
                 let configObject = {
-                    Header: flavorKey,
+                    Header: () => <div>{getDisplayName(flavorKey)}</div>,
                     columns: []
                 };
                 let archsConfig = structure.flavors[flavorKey];
                 let archKeys = Object.keys(archsConfig);
                 archKeys.map(archKey => {
                     configObject.columns.push({
-                        Header: archKey,
-                        // accessor: "id",
+                        Header: () => <div>{getDisplayName(archKey)}</div>,
                         accessor: relVal => {
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {
@@ -190,7 +210,6 @@ class ResultTableWithSteps extends Component {
         } else {
             allRelValsStatus = [];
         }
-
         const columns = [
             {
                 columns: [
@@ -217,7 +236,6 @@ class ResultTableWithSteps extends Component {
             },
             ...tableConfig
         ];
-
         return (
             <div>
                 {modalCmd}

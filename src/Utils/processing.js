@@ -138,7 +138,6 @@ export function getDisplayName(name) {
     }
 }
 
-
 export function getStructureFromAvalableRelVals(relvalInfoObject) {
     let re = /^([a-zA-Z]+_[0-9]+_[0-9])+_(.*)_(\d{4}-\d{2}-\d{2}-\d{4})/;  //CMSSW_5_3 _X _ 2018-03-04-0000
     const keysList = Object.keys(relvalInfoObject);

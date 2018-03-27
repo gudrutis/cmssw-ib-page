@@ -11,7 +11,7 @@ export function getSingleFile({fileUrl, onSuccessCallback}) {
     axios.get(fileUrl)
         .then(onSuccessCallback)
         .catch(function (error) {
-            console.log(error);
+            console.error(error);
         });
 }
 
@@ -23,6 +23,6 @@ export function getMultipleFiles({fileUrlList, onSuccessCallback}) {
     axios.all(callbacks)
         .then(onSuccessCallback)
         .catch(function (error) {
-            console.log(error);
+            console.error(error);
         });
 }

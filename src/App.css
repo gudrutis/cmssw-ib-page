@@ -38,3 +38,7 @@ to { transform: rotate(360deg); }
   width: 100px;
 }
 
+.ReactTable .rt-tbody {
+  /*overflow-x: hidden!important;*/
+  /*overflow-y: hidden!important;*/
+}
