@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
-import RelValNavigation from "./RelValNavigation";
+import RelValNavigation from "./RelValComponents/RelValNavigation";
 import RelValStore from "../Stores/RelValStore";
 import ExitCodeStore from "../Stores/ExitCodeStore";
 import queryString from 'query-string';
 import TogglesShowRow from "./TogglesShowRow";
 import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Utils/commons";
 import 'react-table/react-table.css';
-import ResultTableWithSteps from "./ResultTableWithSteps";
-
+import ResultTableWithSteps from "./RelValComponents/ResultTableWithSteps";
 
 const NAV_CONTROLS_ENUM = {
     SELECTED_ARCHS: "selectedArchs",

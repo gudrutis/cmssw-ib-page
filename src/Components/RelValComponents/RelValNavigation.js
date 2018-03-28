@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/es/Nav";
 import {Button, Col, Glyphicon, Modal, Row} from "react-bootstrap";
 import Dropdown from "react-bootstrap/es/Dropdown";
 
-import {legend, urls} from '../relValConfig';
+import {legend, urls} from '../../relValConfig';
 
 class RelValNavigation extends Component {
 

@@ -1,19 +1,16 @@
 import React, {Component} from 'react';
 import './App.css';
 import {Redirect, Route, Switch} from "react-router-dom";
-import Layout from './Components/Layout'
+import IBLayout from './Components/IBLayout'
 import RelValLayout from './Components/RelValLayout'
 import config from './config';
 import {getSingleFile} from "./Utils/ajax";
 import Jumbotron from "react-bootstrap/es/Jumbotron";
 
-// TODO: go through imports and check which ones we do not need
 //------------------------
 // TODO-project set most visited IB-flavor in cookie in then show in the future
-// TODO-project set
 // project create layout .json where layout is defined
 // project {ib - comparison + hidden commits, nextIB - commits of first flavor, release - commits }
-// TODO-relvals expanding explation on click
 
 //------------------------------------------
 //      Main entry component
@@ -75,9 +72,9 @@ class App extends Component {
                     <Redirect exact from="/" to={this.defaultPage()} push/>
                     <Route path="/ib/:prefix"
                            render={(props) => (
-                               <Layout {...props}
-                                       toLinks={this.state.structure.all_prefixes}
-                                       structure={this.state.structure}/>)}
+                               <IBLayout {...props}
+                                         toLinks={this.state.structure.all_prefixes}
+                                         structure={this.state.structure}/>)}
                     />
                     <Route path="/relVal/:que/:date"
                            render={(props) => (<RelValLayout {...props}/>)}

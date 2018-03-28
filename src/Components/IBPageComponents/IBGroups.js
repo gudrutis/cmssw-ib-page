@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import uuid from 'uuid';
 import _ from 'underscore';
-import IBGroupFrame from './IBGroup/IBGroupFrame';
-import {groupAndTransformIBDataList} from '../Utils/processing';
+import IBGroupFrame from './IBGroupFrame';
+import {groupAndTransformIBDataList} from '../../Utils/processing';
 import PropTypes from 'prop-types';
 
 // This class prepossess data before giving to following components

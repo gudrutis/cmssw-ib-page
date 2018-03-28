@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import ExitCodeStore from "../Stores/ExitCodeStore";
-import {LABEL_COLOR, LABELS_TEXT} from "../relValConfig";
+import ExitCodeStore from "../../Stores/ExitCodeStore";
+import {LABEL_COLOR, LABELS_TEXT} from "../../relValConfig";
 import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
-import CommandStore from "../Stores/CommandStore";
-import {getDisplayName} from "../Utils/processing";
+import CommandStore from "../../Stores/CommandStore";
+import {getDisplayName} from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import ShowArchStore from '../Stores/ShowArchStore';
+import ShowArchStore from '../../Stores/ShowArchStore';
 
 /**
  * returns the link address for a given Ib and an arch
@@ -141,7 +141,7 @@ class ResultTableWithSteps extends Component {
         let allRelValsStatus;
         const {allArchs = [], allFlavors = [], style} = this.props;
         const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
-        const {structure = {}, ibDate, ibQue,} = this.props;
+        const {structure = {}, ibDate, ibQue} = this.props;
         const {archColorScheme} = this.state;
         if (structure.dataLoaded) {
             allRelValsStatus = structure.allRelvals;

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'underscore';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
-import IBGroups from './IBGroups';
+import IBGroups from './IBPageComponents/IBGroups';
 import config from '../config';
 import Navigation from "./Navigation";
 import TogglesShowIBFlawors from "./TogglesShowArchs";
@@ -10,7 +10,7 @@ import {getMultipleFiles} from "../Utils/ajax";
 const {urls} = config;
 
 // This class gets data
-class LayoutWrapper extends Component {
+class IBLayout extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -107,4 +107,4 @@ class LayoutWrapper extends Component {
     }
 }
 
-export default LayoutWrapper;
+export default IBLayout;

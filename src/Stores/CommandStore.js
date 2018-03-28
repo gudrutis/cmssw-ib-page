@@ -58,7 +58,6 @@ class CommandStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
-            // TODO
         }
     }
 
