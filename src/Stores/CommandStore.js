@@ -3,7 +3,7 @@ import dispatcher from "../dispatcher";
 import {getMultipleFiles} from "../Utils/ajax";
 import * as config from "../relValConfig";
 
-const { urls} = config;
+const {urls} = config;
 
 /**
  * Store keeps mapping of RelVal exitcode to its name
@@ -43,7 +43,9 @@ class CommandStore extends EventEmitter {
         let notLoadedCmd = [];
         for (let i = 0; i < hashCodeList.length; i++) {
             const hashcode = hashCodeList[i];
-            if (!(hashcode in this.commandMap)) {
+            if ( !hashcode ) {
+                loadedCmd[i] = {} // empty object as placeholder
+            } else if (!(hashcode in this.commandMap)) {
                 notLoadedCmd.push(hashcode);
                 loadedCmd[i] = i;
             } else {
