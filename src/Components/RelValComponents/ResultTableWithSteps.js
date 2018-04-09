@@ -81,16 +81,28 @@ class ResultTableWithSteps extends Component {
     }
 
     rowWithLabel(text, number, logUrl, steps) {
+        let logComponent;
+        if (logUrl) {
+            logComponent = (
+                <a target="_blank" href={logUrl}>
+                    <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="btn label">
+                        {text}
+                    </span>
+                </a>
+            )
+        } else {
+            logComponent = (
+                <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="btn label disabled">
+                        {text}
+                    </span>
+            )
+        }
         return (
             <div key={uuid.v4()}>
                 <span className="btn label label-default" onClick={this.handleShow(steps).bind(this)}>
                     {number}
                 </span>
-                <a target="_blank" href={logUrl}>
-                <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="btn label">
-                    {text}
-                </span>
-                </a>
+                {logComponent}
             </div>
         )
     }
@@ -197,31 +209,24 @@ class ResultTableWithSteps extends Component {
                             if (data) {
                                 const ib = getIb(ibDate, ibQue, flavorKey);
                                 const {id, name, steps} = data;
-                                const exitName = props.value;
-                                if (isExpanded) {
-                                    let render_step = [];
-                                    for (let i = steps.length; i > 0; i--) {
-                                        let logUrl = getLogAddress(
+                                // const exitName = props.value;
+                                let render_step = [];
+                                for (let i = steps.length; i > 0; i--) {
+                                    let logUrl;
+                                    let step = steps[i - 1];
+                                    if (!(step.status === "NOTRUN")) {
+                                        logUrl = getLogAddress(
                                             archKey, ib, i, name, id, false // TODO wasDasErr? fix it
                                         );
-                                        if (i === steps.length) {
-                                            render_step.push(
-                                                this.rowWithLabel(exitName, steps.length, logUrl, steps)
-                                            )
-                                        } else {
-                                            let step = steps[i - 1];
-                                            render_step.push(
-                                                this.rowWithLabel(getLabelName(step.status), i, logUrl, steps)
-                                            )
-                                        }
                                     }
-                                    return render_step;
-                                } else {
-                                    let logUrl = getLogAddress(
-                                        archKey, ib, steps.length, name, id, false // TODO wasDasErr? fix it
+                                    render_step.push(
+                                        this.rowWithLabel(getLabelName(step.status), i, logUrl, steps)
                                     );
-                                    return this.rowWithLabel(exitName, steps.length, logUrl, steps);
+                                    if (!isExpanded) { // if not expanded
+                                        break;
+                                    }
                                 }
+                                return render_step;
                             }
                         },
                     })
@@ -251,7 +256,6 @@ class ResultTableWithSteps extends Component {
                         maxWidth: 100,
                         filterable: true,
                         sortMethod: (a, b) => parseFloat(a) > parseFloat(b) ? 1 : -1,
-
                     },
                 ]
             },
