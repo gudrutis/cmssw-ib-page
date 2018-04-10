@@ -1,7 +1,7 @@
 import _ from 'underscore';
 
 /**
- *  In this modules functions for pre-processing data are stored.
+ *  In this module functions for pre-processing data are stored.
  */
 export function groupAndTransformIBDataList(data) {
     // TODO-prep: could be done in python
@@ -37,8 +37,8 @@ export function getAllArchitecturesFromIBGroup(IBGroup) {
 function _filterArchs(archs, activeArchsConfig) {
     return _.filter(archs, (arch) => {
         const [os, cpu, compiler] = arch.split('_');
-        return activeArchsConfig['os'].indexOf(os) > -1 && activeArchsConfig['cpu'].indexOf(cpu) > -1
-            && activeArchsConfig['compiler'].indexOf(compiler) > -1;
+        return valueInTheList(activeArchsConfig['os'], os) && valueInTheList(activeArchsConfig['cpu'], cpu)
+            && valueInTheList(activeArchsConfig['compiler'], compiler);
     });
 }
 
@@ -59,7 +59,7 @@ export function getAllActiveArchitecturesFromIBGroupByFlavor(IBGroup, activeArch
 }
 
 export function extractInfoFromArchs(archList) {
-    archList = _.filter(archList, (arch) => arch !== undefined);
+    archList = filterUndefinedFromList(archList);
     let infoObject = {
         'os': [],
         'cpu': [],
@@ -184,5 +184,31 @@ export function filterNameList(originalList, whiteList) {
         return _.filter(originalList, (item) => {
             return item === whiteList
         })
+    }
+}
+
+export function filterUndefinedFromList(list) {
+    return _.filter(list, (i) => i !== undefined);
+}
+
+export function getObjectKeys(obj) {
+    return Object.keys(obj);
+}
+
+export function valueInTheList(list, value) {
+    return list.indexOf(value) > -1;
+}
+
+export function filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus}) {
+    let filteredRelvals = [];
+    let {allRelvals, flavors} = structure;
+    const filteredFlavorKeys = filterNameList(getObjectKeys(flavors), selectedFlavors);
+    for (let i = 0; i < allRelvals.length; i++) {
+        let relVal = allRelvals[i];
+        for (let z = 0; i < filteredFlavorKeys.length; i++) {
+            let archKeys = getObjectKeys(filteredFlavorKeys[z]);
+            let filteredArchKeys = filterNameList(archKeys, selectedFlavors);
+
+        }
     }
 }

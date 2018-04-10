@@ -82,7 +82,7 @@ class RelValStore extends EventEmitter {
                                 workflowKeys.map(wf => {
                                     let {steps} = relValObject[wf];
                                     for (let s = 0; s < steps.length; s++) {
-                                        let workflowHash = workflowHashes[wf + "-" + (s+1)];
+                                        let workflowHash = workflowHashes[wf + "-" + (s + 1)];
                                         steps[s]['workflowHash'] = workflowHash;
                                     }
                                 });
@@ -112,7 +112,6 @@ class RelValStore extends EventEmitter {
                             this.emit("change");
                         }.bind(this)
                     });
-
 
                 }
                 return this.structure[date][que];

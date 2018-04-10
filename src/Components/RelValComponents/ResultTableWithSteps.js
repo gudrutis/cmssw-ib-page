@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../../Stores/CommandStore";
-import {filterNameList, getDisplayName} from "../../Utils/processing";
+import {filterNameList, getDisplayName, getObjectKeys} from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ShowArchStore from '../../Stores/ShowArchStore';
 
@@ -159,14 +159,14 @@ class ResultTableWithSteps extends Component {
             allRelValsStatus = structure.allRelvals;
             // TODO filter flavors
             // TODO similary filter archs
-            let flavorKeys = Object.keys(structure.flavors);
+            let flavorKeys = getObjectKeys(structure.flavors);
             filterNameList(flavorKeys, selectedFlavors).map(flavorKey => {
                 let configObject = {
                     Header: () => <div>{getDisplayName(flavorKey)}</div>,
                     columns: []
                 };
                 let archsConfig = structure.flavors[flavorKey];
-                let archKeys = Object.keys(archsConfig);
+                let archKeys = getObjectKeys(archsConfig);
                 filterNameList(archKeys, selectedArchs).map(archKey => {
                     configObject.columns.push({
                         Header: () => {

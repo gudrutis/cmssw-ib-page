@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
-import {getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName} from '../../Utils/processing';
+import {getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName, valueInTheList} from '../../Utils/processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 import config from '../../config';
@@ -134,6 +134,7 @@ class ComparisonTable extends Component {
             })
         })
     }
+
     renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
@@ -156,6 +157,7 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells(config);
     }
+
     renderRelVals({resultType, getUrl, showLabelConfig}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
@@ -167,6 +169,7 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells(config);
     }
+
     showGeneralResults(showLabelConfig, getUrl) {
         return function (result, ib) {
             const {details, done} = result;
@@ -183,7 +186,7 @@ class ComparisonTable extends Component {
                             }
                         });
                     } else {
-                        if (resultKeys.indexOf(predicate) > -1) {
+                        if (valueInTheList(resultKeys, predicate)) {
                             labelConfig.value += details[predicate] * 1;
                         }
                     }
@@ -208,6 +211,7 @@ class ComparisonTable extends Component {
 
         };
     }
+
     renderOtherTestResults({resultType, getUrl, showLabelConfig}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
@@ -241,6 +245,7 @@ class ComparisonTable extends Component {
         };
         return this.renderRowCells(config);
     }
+
     render() {
         const {archsByIb} = this.state;
         // TODO refactor and put to configs
