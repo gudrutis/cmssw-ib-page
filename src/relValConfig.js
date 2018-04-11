@@ -18,6 +18,10 @@ export const LABELS_TEXT = {
     TIMEOUT: 'TimeOut',
     STARTED: 'Started'
 };
+export const STATUS_ENUM = {
+    PASSED: 'passed',
+    FAILED: 'failed'
+};
 export const urls = {
     exitcodes: "https://cms-sw.github.io/exitcodes.json",
     RelvalsAvailableResults: "https://cms-sw.github.io/data/RelvalsAvailableResults.json",

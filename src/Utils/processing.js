@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import {STATUS_ENUM} from "../relValConfig";
 
 /**
  *  In this module functions for pre-processing data are stored.
@@ -192,23 +193,49 @@ export function filterUndefinedFromList(list) {
 }
 
 export function getObjectKeys(obj) {
-    return Object.keys(obj);
+    return obj ? Object.keys(obj) : [];
 }
 
-export function valueInTheList(list, value) {
-    return list.indexOf(value) > -1;
+export function valueInTheList(list = [], value) {
+    if (Array.isArray(list)) {
+        return list.indexOf(value) > -1;
+    } else {
+        // if the 'list' is actually not a list
+        return list === value;
+    }
 }
 
 export function filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus}) {
+    /**
+     * This will return selected relvals .
+     */
     let filteredRelvals = [];
-    let {allRelvals, flavors} = structure;
+    let {allRelvals = [], flavors} = structure;
     const filteredFlavorKeys = filterNameList(getObjectKeys(flavors), selectedFlavors);
     for (let i = 0; i < allRelvals.length; i++) {
         let relVal = allRelvals[i];
-        for (let z = 0; i < filteredFlavorKeys.length; i++) {
-            let archKeys = getObjectKeys(filteredFlavorKeys[z]);
-            let filteredArchKeys = filterNameList(archKeys, selectedFlavors);
-
+        let status = null;
+        for (let z = 0; z < filteredFlavorKeys.length; z++) {
+            let flavor = filteredFlavorKeys[z];
+            let archKeys = getObjectKeys(flavors[flavor]);
+            let filteredArchKeys = filterNameList(archKeys, selectedArchs);
+            for (let x = 0; x < filteredArchKeys.length; x++) {
+                const archKey = archKeys[x];
+                const {id} = relVal;
+                const fullRelVal = flavors[flavor][archKey][id];
+                if (fullRelVal) {
+                    const {exitcode} = fullRelVal;
+                    if (exitcode !== 0) {
+                        status = STATUS_ENUM.FAILED;
+                    } else if (!(status === STATUS_ENUM.FAILED)) {
+                        status = STATUS_ENUM.PASSED;
+                    }
+                }
+            }
+        }
+        if (valueInTheList(selectedStatus, status)) {
+            filteredRelvals.push(relVal);
         }
     }
+    return filteredRelvals;
 }

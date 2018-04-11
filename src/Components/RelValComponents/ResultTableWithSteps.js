@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../../Stores/CommandStore";
-import {filterNameList, getDisplayName, getObjectKeys} from "../../Utils/processing";
+import {filterNameList, filterRelValStructure, getDisplayName, getObjectKeys} from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ShowArchStore from '../../Stores/ShowArchStore';
 
@@ -156,7 +156,7 @@ class ResultTableWithSteps extends Component {
         const {structure = {}, ibDate, ibQue} = this.props;
         const {archColorScheme} = this.state;
         if (structure.dataLoaded) {
-            allRelValsStatus = structure.allRelvals;
+            allRelValsStatus = filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus});
             // TODO filter flavors
             // TODO similary filter archs
             let flavorKeys = getObjectKeys(structure.flavors);
