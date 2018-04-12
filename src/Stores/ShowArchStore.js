@@ -3,7 +3,7 @@ import dispatcher from "../dispatcher";
 import ShowArchActionTypes from "../Actions/ShowArchActionTypes";
 import config from "../config";
 import {extractInfoFromArchs} from "../Utils/processing";
-import {getMultipleFiles, getSingleFile} from "../Utils/ajax";
+import {getMultipleFiles} from "../Utils/ajax";
 
 const {urls, colorCoding} = config;
 
@@ -74,7 +74,7 @@ class ShowArchStore extends EventEmitter {
                             let queColorConfig = config[que].colorCoding;
                             if (field === prodField) {
                                 queColorConfig[field] = prodColor;
-                            } else if (counter < alternatingColors.length){
+                            } else if (counter < alternatingColors.length) {
                                 queColorConfig[field] = alternatingColors[counter];
                                 counter++;
                             } else {

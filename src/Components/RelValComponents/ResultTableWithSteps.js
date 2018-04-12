@@ -33,28 +33,28 @@ function getIb(date, que, flavor) {
     return `${que}_${flavor}_${date}`;
 }
 
+function getReleaseQue(ibQue) {
+    return ibQue + '_X';
+}
+
 class ResultTableWithSteps extends Component {
     constructor(props) {
         super(props);
         this.loadData = this.loadData.bind(this);
-        const {ibQue} = props;
-        const releaseQue = ibQue + '_X';
         this.state = {
             show: false,
             workFlowsToShow: [],
-            releaseQue,
-            archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
-        }
+        };
     }
 
     componentWillMount() {
         CommandStore.on("change", this.loadData);
-        ShowArchStore.on("change", this.loadData);
+        ShowArchStore.on("change", this.forceUpdate);
     }
 
     componentWillUnmount() {
         CommandStore.removeListener("change", this.loadData);
-        ShowArchStore.removeListener("change", this.loadData);
+        ShowArchStore.removeListener("change", this.forceUpdate);
     }
 
     handleClose() {
@@ -62,11 +62,9 @@ class ResultTableWithSteps extends Component {
     }
 
     loadData() {
-        const {releaseQue} = this.state;
         let workflowHashes = this.state.workflowHashes;
         this.setState({
             workFlowsToShow: CommandStore.getWorkFlowList(workflowHashes),
-            archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         })
     }
 
@@ -108,12 +106,20 @@ class ResultTableWithSteps extends Component {
     }
 
     render() {
+        let tableConfig = [];
+        let allRelValsStatus;
+        const {allArchs = [], allFlavors = [], style} = this.props;
+        const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
+        const {structure = {}, ibDate, ibQue} = this.props;
+        const archColorScheme = ShowArchStore.getColorsSchemeForQue(
+            getReleaseQue(ibQue)
+        );
+
         const popoverClickRootClose = (
             <Popover id="popover-trigger-click-root-close">
                 Copied!
             </Popover>
         );
-
         const modalCmd = (
             <Modal show={this.state.show} onHide={this.handleClose.bind(this)} bsSize="lg">
                 <Modal.Header closeButton>
@@ -149,12 +155,8 @@ class ResultTableWithSteps extends Component {
                 </Modal.Footer>
             </Modal>
         );
-        let tableConfig = [];
-        let allRelValsStatus;
-        const {allArchs = [], allFlavors = [], style} = this.props;
-        const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
-        const {structure = {}, ibDate, ibQue} = this.props;
-        const {archColorScheme} = this.state;
+
+
         if (structure.dataLoaded) {
             allRelValsStatus = filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus});
             // TODO filter flavors

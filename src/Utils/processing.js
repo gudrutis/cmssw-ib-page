@@ -177,7 +177,6 @@ export function filterNameList(originalList, whiteList) {
     if (Array.isArray(whiteList)) {
         // if whiteList is a list
         return _.filter(originalList, (item) => {
-            // console.log(_.contains(whiteList, item))
             return _.contains(whiteList, item)
         })
     } else {
