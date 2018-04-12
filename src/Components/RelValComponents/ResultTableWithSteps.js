@@ -249,7 +249,8 @@ class ResultTableWithSteps extends Component {
                         Header: "#",
                         accessor: "index",
                         maxWidth: 100,
-                        Cell: props => <b>{props.value}</b>,
+                        // Cell: props => <b>{props.value}</b>, // shows index in unfiltered list
+                        Cell: props => <b>{props.index + 1}</b>, // Shows index in table
                         filterable: true
                     },
                     {
