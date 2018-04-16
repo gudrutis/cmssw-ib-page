@@ -44,6 +44,7 @@ class ResultTableWithSteps extends Component {
         this.state = {
             show: false,
             workFlowsToShow: [],
+            data:[{},{},{},{},{},{},{},{},{},{},{}]
         };
     }
 
@@ -309,6 +310,8 @@ class ResultTableWithSteps extends Component {
         return (
             [modalCmd,
                 <ReactTable
+                    //TODO even if data does not change, it close on every re-render
+                    collapseOnDataChange={false}
                     data={allRelValsStatus}
                     columns={columns}
                     defaultPageSize={50}
