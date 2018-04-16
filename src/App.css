@@ -38,7 +38,12 @@ to { transform: rotate(360deg); }
   width: 100px;
 }
 
-.ReactTable .rt-tbody {
+/*.ReactTable .rt-tbody {*/
   /*overflow-x: hidden!important;*/
   /*overflow-y: hidden!important;*/
+/*}*/
+
+/* RelVal table customization*/
+.rt-td {
+    padding: 0px 0px !important;
 }

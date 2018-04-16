@@ -22,6 +22,13 @@ export const STATUS_ENUM = {
     PASSED: 'passed',
     FAILED: 'failed'
 };
+export const RELVAL_STATUS_ENUM = {
+    PASSED: 'PASSED',
+    FAILED: 'FAILED',
+    DAS_ERROR: 'DAS_ERROR',
+    TIMEOUT: 'TIMEOUT',
+    NOTRUN: 'NOTRUN'
+};
 export const urls = {
     exitcodes: "https://cms-sw.github.io/exitcodes.json",
     RelvalsAvailableResults: "https://cms-sw.github.io/data/RelvalsAvailableResults.json",
@@ -50,12 +57,12 @@ export const legend = [_legendConf.map(i => (
 
     </p>
 )),
-     <hr key={uuid.v4()}/>,
+    <hr key={uuid.v4()}/>,
     <p key={uuid.v4()}>TODO additional help comes here</p>
 ];
 
 // Color coding
 // Help message config
-// Default hidden archs
+// TODO Default hidden archs
 
 

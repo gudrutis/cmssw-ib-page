@@ -17,11 +17,10 @@ class CommandStore extends EventEmitter {
 
     _getData(hashCodeList) {
         const cmdUrlList = hashCodeList.map(i => {
-                const digit1 = i.charAt(0);
-                const digitRest = i.substring(1, i.length);
-                return urls.relValCmd(digit1, digitRest)
-            })
-        ;
+            const digit1 = i.charAt(0);
+            const digitRest = i.substring(1, i.length);
+            return urls.relValCmd(digit1, digitRest)
+        });
         getMultipleFiles({
             fileUrlList: cmdUrlList,
             onSuccessCallback: function (responseList) {
@@ -43,7 +42,7 @@ class CommandStore extends EventEmitter {
         let notLoadedCmd = [];
         for (let i = 0; i < hashCodeList.length; i++) {
             const hashcode = hashCodeList[i];
-            if ( !hashcode ) {
+            if (!hashcode) {
                 loadedCmd[i] = {} // empty object as placeholder
             } else if (!(hashcode in this.commandMap)) {
                 notLoadedCmd.push(hashcode);
@@ -57,14 +56,12 @@ class CommandStore extends EventEmitter {
         }
         return loadedCmd;
     }
-
     handleActions(action) {
         switch (action.type) {
         }
     }
-
 }
 
-const commandStore = new CommandStore;
+const commandStore = new CommandStore();
 dispatcher.register(commandStore.handleActions.bind(commandStore));
 export default commandStore;

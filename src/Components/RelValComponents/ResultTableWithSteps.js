@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import ExitCodeStore from "../../Stores/ExitCodeStore";
-import {LABEL_COLOR, LABELS_TEXT} from "../../relValConfig";
+import {LABEL_COLOR, LABELS_TEXT, RELVAL_STATUS_ENUM} from "../../relValConfig";
 import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
@@ -78,19 +78,19 @@ class ResultTableWithSteps extends Component {
         }
     }
 
-    rowWithLabel(text, number, logUrl, steps) {
+    rowWithLabel(text, number, logUrl, steps, backgroundColor) {
         let logComponent;
         if (logUrl) {
             logComponent = (
                 <a target="_blank" href={logUrl}>
-                    <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="btn label">
+                    <span style={{backgroundColor: backgroundColor}} className="btn label">
                         {text}
                     </span>
                 </a>
             )
         } else {
             logComponent = (
-                <span style={{backgroundColor: LABEL_COLOR.PASSED_COLOR}} className="btn label disabled">
+                <span style={{backgroundColor: backgroundColor}} className="btn label disabled">
                         {text}
                     </span>
             )
@@ -105,11 +105,60 @@ class ResultTableWithSteps extends Component {
         )
     }
 
+
+    renderSteps({isExpanded, ib, archKey, data}) {
+        /**
+         * Return rendered content for the cell
+         */
+        let render_step = [];
+        const {id, name, steps} = data;
+        for (let i = steps.length; i > 0; i--) {
+            let logUrl, label;
+            let step = steps[i - 1];
+            const {status, errors, warnings} = step;
+            // if (!(status === RELVAL_STATUS_ENUM.NOTRUN)) {
+            // }
+
+            if (status === RELVAL_STATUS_ENUM.PASSED) {
+                let labelColor;
+                if (errors > 0) {
+                    labelColor = LABEL_COLOR.PASSED_ERRORS_COLOR
+                } else if (warnings > 0) {
+                    labelColor = LABEL_COLOR.PASSED_WARNINGS_COLOR
+                } else {
+                    labelColor = LABEL_COLOR.PASSED_COLOR
+                }
+                logUrl = getLogAddress(archKey, ib, i, name, id, false);
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor)
+            } else if (status === RELVAL_STATUS_ENUM.FAILED) {
+                logUrl = getLogAddress(archKey, ib, i, name, id, false);
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR)
+            } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
+                logUrl = getLogAddress(archKey, ib, i, name, id, true);
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR)
+            } else if (status === RELVAL_STATUS_ENUM.NOTRUN) {
+                logUrl = getLogAddress(archKey, ib, i, name, id, false);
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR)
+            } else if (status === RELVAL_STATUS_ENUM.TIMEOUT) {
+                logUrl = getLogAddress(archKey, ib, i, name, id, false);
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.TIMEOUT_COLOR)
+            } else {
+                console.error('Unknown status')
+            }
+
+            render_step.push(label);
+            if (!isExpanded) {
+                // if row is not expanded
+                break;
+            }
+        }
+        return render_step;
+    }
+
     render() {
         let tableConfig = [];
         let allRelValsStatus;
-        const {allArchs = [], allFlavors = [], style} = this.props;
-        const {selectedArchs, selectedFlavors, selectedStatus} = this.props;
+        const {selectedArchs, selectedFlavors, selectedStatus, style} = this.props;
         const {structure = {}, ibDate, ibQue} = this.props;
         const archColorScheme = ShowArchStore.getColorsSchemeForQue(
             getReleaseQue(ibQue)
@@ -123,7 +172,7 @@ class ResultTableWithSteps extends Component {
         const modalCmd = (
             <Modal show={this.state.show} onHide={this.handleClose.bind(this)} bsSize="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title>Legend</Modal.Title>
+                    <Modal.Title> TODO CMD name </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div style={{overflow: 'auto'}}>
@@ -156,11 +205,8 @@ class ResultTableWithSteps extends Component {
             </Modal>
         );
 
-
         if (structure.dataLoaded) {
             allRelValsStatus = filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus});
-            // TODO filter flavors
-            // TODO similary filter archs
             let flavorKeys = getObjectKeys(structure.flavors);
             filterNameList(flavorKeys, selectedFlavors).map(flavorKey => {
                 let configObject = {
@@ -210,25 +256,21 @@ class ResultTableWithSteps extends Component {
                             }
                             if (data) {
                                 const ib = getIb(ibDate, ibQue, flavorKey);
-                                const {id, name, steps} = data;
-                                // const exitName = props.value;
-                                let render_step = [];
-                                for (let i = steps.length; i > 0; i--) {
-                                    let logUrl;
-                                    let step = steps[i - 1];
-                                    if (!(step.status === "NOTRUN")) {
-                                        logUrl = getLogAddress(
-                                            archKey, ib, i, name, id, false // TODO wasDasErr? fix it
-                                        );
-                                    }
-                                    render_step.push(
-                                        this.rowWithLabel(getLabelName(step.status), i, logUrl, steps)
-                                    );
-                                    if (!isExpanded) { // if not expanded
-                                        break;
-                                    }
-                                }
-                                return render_step;
+                                let renderedStep = this.renderSteps({isExpanded, ib, archKey, data});
+                                return <div style={{
+                                    // backgroundColor: 'red',
+                                    width: `${props.value}%`,
+                                    height: '100%',
+                                    padding: '2px 20px',
+                                }}>{renderedStep}</div>;
+                            } else {
+                                // Render empty div
+                                return <div style={{
+                                    // width: `${props.value}%`,
+                                    // height: '100%',
+                                    textAlign: 'center',
+                                    // margin: 'auto',
+                                }}> --- </div>
                             }
                         },
                     })
@@ -265,15 +307,15 @@ class ResultTableWithSteps extends Component {
             ...tableConfig
         ];
         return (
-            <div>
-                {modalCmd}
+            [modalCmd,
                 <ReactTable
                     data={allRelValsStatus}
                     columns={columns}
                     defaultPageSize={50}
                     style={style}
+                    className={'-striped -highlight'}
                 />
-            </div>
+            ]
         )
     }
 }
