@@ -174,7 +174,11 @@ class ResultTableWithSteps extends Component {
         const modalCmd = (
             <Modal show={this.state.showModal} onHide={this.handleClose.bind(this)} bsSize="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title>{this.state.cmdName}</Modal.Title>
+                    <Modal.Title>
+                        <div style={{overflow: 'auto'}}>
+                            {this.state.cmdName}
+                        </div>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div style={{overflow: 'auto'}}>
@@ -250,7 +254,7 @@ class ResultTableWithSteps extends Component {
                         filterable: true,
                         Cell: props => {
                             // const id = props.value;
-                            const id = props.row.id;
+                            const id = props.original.id;
                             const {isExpanded} = props;
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {
@@ -293,9 +297,9 @@ class ResultTableWithSteps extends Component {
                         Header: "#",
                         accessor: "index",
                         maxWidth: 100,
+                        filterable: true,
                         // Cell: props => <b>{props.value}</b>, // shows index in unfiltered list
                         Cell: props => <b>{props.index + 1}</b>, // Shows index in table
-                        filterable: true
                     },
                     {
                         Header: "Workflow #",
@@ -303,6 +307,23 @@ class ResultTableWithSteps extends Component {
                         maxWidth: 100,
                         filterable: true,
                         sortMethod: (a, b) => parseFloat(a) > parseFloat(b) ? 1 : -1,
+                        Cell: (props) => {
+
+                            const popoverShowCmdName = (
+                                <Popover id="popover-trigger-click-root-close">
+                                    <div style={{overflow: 'auto'}}>
+                                        {props.original.cmdName}
+                                    </div>
+                                </Popover>
+                            );
+                            return (
+                                <OverlayTrigger
+                                    placement="top"
+                                    overlay={popoverShowCmdName}>
+                                    <b>{props.value}</b>
+                                </OverlayTrigger>
+                            )
+                        }
                     },
                 ]
             },

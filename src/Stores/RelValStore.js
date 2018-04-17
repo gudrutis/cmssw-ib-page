@@ -94,11 +94,13 @@ class RelValStore extends EventEmitter {
                                         allRelValIDObject[id] = {
                                             id,
                                             passed: false,
+                                            cmdName: relValObject[id].name
                                         }
                                     } else if (!allRelValIDObject[id]) {
                                         allRelValIDObject[id] = {
                                             id,
                                             passed: true,
+                                            cmdName: relValObject[id].name
                                         }
                                     }
                                 })
