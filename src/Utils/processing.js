@@ -219,7 +219,7 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
             let archKeys = getObjectKeys(flavors[flavor]);
             let filteredArchKeys = filterNameList(archKeys, selectedArchs);
             for (let x = 0; x < filteredArchKeys.length; x++) {
-                const archKey = archKeys[x];
+                const archKey = filteredArchKeys[x];
                 const {id} = relVal;
                 const fullRelVal = flavors[flavor][archKey][id];
                 if (fullRelVal) {

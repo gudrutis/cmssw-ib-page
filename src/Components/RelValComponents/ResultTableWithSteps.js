@@ -44,7 +44,6 @@ class ResultTableWithSteps extends Component {
         this.state = {
             show: false,
             workFlowsToShow: [],
-            data:[{},{},{},{},{},{},{},{},{},{},{}]
         };
     }
 
@@ -111,6 +110,7 @@ class ResultTableWithSteps extends Component {
         /**
          * Return rendered content for the cell
          */
+        // TODO finish
         let render_step = [];
         const {id, name, steps} = data;
         for (let i = steps.length; i > 0; i--) {
