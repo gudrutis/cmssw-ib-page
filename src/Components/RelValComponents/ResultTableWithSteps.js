@@ -42,7 +42,7 @@ class ResultTableWithSteps extends Component {
         super(props);
         this.loadData = this.loadData.bind(this);
         this.state = {
-            show: false,
+            showModal: false,
             workFlowsToShow: [],
         };
     }
@@ -58,7 +58,7 @@ class ResultTableWithSteps extends Component {
     }
 
     handleClose() {
-        this.setState({show: false});
+        this.setState({showModal: false});
     }
 
     loadData() {
@@ -68,17 +68,18 @@ class ResultTableWithSteps extends Component {
         })
     }
 
-    handleShow(steps) {
+    handleShow(steps, cmdName) {
         return () => {
             this.setState({
-                show: true,
+                cmdName,
+                showModal: true,
                 workflowHashes: steps.map(i => i.workflowHash),
                 workFlowsToShow: CommandStore.getWorkFlowList(steps.map(i => i.workflowHash))
             });
         }
     }
 
-    rowWithLabel(text, number, logUrl, steps, backgroundColor) {
+    rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName) {
         let logComponent;
         if (logUrl) {
             logComponent = (
@@ -97,7 +98,7 @@ class ResultTableWithSteps extends Component {
         }
         return (
             <div key={uuid.v4()}>
-                <span className="btn label label-default" onClick={this.handleShow(steps).bind(this)}>
+                <span className="btn label label-default" onClick={this.handleShow(steps, cmdName).bind(this)}>
                     {number}
                 </span>
                 {logComponent}
@@ -110,7 +111,7 @@ class ResultTableWithSteps extends Component {
         /**
          * Return rendered content for the cell
          */
-        // TODO finish
+            // TODO finish
         let render_step = [];
         const {id, name, steps} = data;
         for (let i = steps.length; i > 0; i--) {
@@ -130,19 +131,19 @@ class ResultTableWithSteps extends Component {
                     labelColor = LABEL_COLOR.PASSED_COLOR
                 }
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor)
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name)
             } else if (status === RELVAL_STATUS_ENUM.FAILED) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR)
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, true);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR)
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.NOTRUN) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR)
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.TIMEOUT) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.TIMEOUT_COLOR)
+                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.TIMEOUT_COLOR, name)
             } else {
                 console.error('Unknown status')
             }
@@ -171,9 +172,9 @@ class ResultTableWithSteps extends Component {
             </Popover>
         );
         const modalCmd = (
-            <Modal show={this.state.show} onHide={this.handleClose.bind(this)} bsSize="lg">
+            <Modal show={this.state.showModal} onHide={this.handleClose.bind(this)} bsSize="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title> TODO CMD name </Modal.Title>
+                    <Modal.Title>{this.state.cmdName}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div style={{overflow: 'auto'}}>
