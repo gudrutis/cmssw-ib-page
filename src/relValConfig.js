@@ -8,7 +8,7 @@ export const LABEL_COLOR = {
     FAILED_COLOR: 'rgb(217, 83, 79)',
     NOT_RUN_COLOR: 'rgb(153, 153, 153)',
     DAS_ERROR_COLOR: 'rgb(255, 153, 204)',
-    TIMEOUT_COLOR: 'rgb(0, 128, 255)'
+    // TIMEOUT_COLOR: 'rgb(0, 128, 255)'
 };
 export const LABELS_TEXT = {
     PASSED: 'Passed',
@@ -47,7 +47,7 @@ const _legendConf = [
     {color: LABEL_COLOR.PASSED_WARNINGS_COLOR, code: LABELS_TEXT['PASSED'], text: 'Passed with warning messages'},
     {color: LABEL_COLOR.FAILED_COLOR, code: LABELS_TEXT['FAILED'], text: 'Failed'},
     {color: LABEL_COLOR.DAS_ERROR_COLOR, code: LABELS_TEXT['DAS_ERROR'], text: 'DAS error'},
-    {color: LABEL_COLOR.TIMEOUT_COLOR, code: LABELS_TEXT['TIMEOUT'], text: 'Timed Out'}
+    // {color: LABEL_COLOR.TIMEOUT_COLOR, code: LABELS_TEXT['TIMEOUT'], text: 'Timed Out'}
 ];
 // TODO could be made better
 export const legend = [_legendConf.map(i => (

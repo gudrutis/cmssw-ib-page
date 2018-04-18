@@ -101,15 +101,13 @@ class ResultTableWithSteps extends Component {
          * Return rendered content for the cell
          */
             // TODO finish
-        let render_step = [];
-        const {id, name, steps} = data;
+        let renderedStepList = [];
+        const {id, name, steps, exitcode} = data;
         for (let i = steps.length; i > 0; i--) {
             let logUrl, label;
             let step = steps[i - 1];
             const {status, errors, warnings} = step;
-            // if (!(status === RELVAL_STATUS_ENUM.NOTRUN)) {
-            // }
-
+            //             ExitCodeStore.getExitCodeName(exitcode)
             if (status === RELVAL_STATUS_ENUM.PASSED) {
                 let labelColor;
                 if (errors > 0) {
@@ -123,7 +121,7 @@ class ResultTableWithSteps extends Component {
                 label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name)
             } else if (status === RELVAL_STATUS_ENUM.FAILED) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
+                label = this._rowWithLabel(ExitCodeStore.getExitCodeName(exitcode), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, true);
                 label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name)
@@ -132,18 +130,18 @@ class ResultTableWithSteps extends Component {
                 label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.TIMEOUT) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.TIMEOUT_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
             } else {
                 console.error('Unknown status')
             }
 
-            render_step.push(label);
+            renderedStepList.push(label);
             if (!isExpanded) {
                 // if row is not expanded
                 break;
             }
         }
-        return render_step;
+        return {renderedStepList};
     }
 
     componentWillMount() {
@@ -232,25 +230,26 @@ class ResultTableWithSteps extends Component {
                                 })
                             )
                         },
-                        accessor: relVal => {
-                            let data;
-                            if (structure.flavors[flavorKey][archKey]) {
-                                data = structure.flavors[flavorKey][archKey][relVal.id];
-                            }
-                            if (data) {
-                                let {exitcode} = data;
-                                return getLabelName(
-                                    ExitCodeStore.getExitCodeName(exitcode)
-                                );
-                            } else {
-                                return null
-                            }
-                        },
+                        // accessor: relVal => {
+                        //     let data;
+                        //     if (structure.flavors[flavorKey][archKey]) {
+                        //         data = structure.flavors[flavorKey][archKey][relVal.id];
+                        //     }
+                        //     if (data) {
+                        //         let {exitcode} = data;
+                        //         return getLabelName(
+                        //             ExitCodeStore.getExitCodeName(exitcode)
+                        //         );
+                        //     } else {
+                        //         return null
+                        //     }
+                        // },
+                        accessor : "id",
                         id: flavorKey + "-" + archKey,
                         filterable: true,
                         Cell: props => {
-                            // const id = props.value;
-                            const id = props.original.id;
+                            const id = props.value;
+                            // const id = props.original.id;
                             const {isExpanded} = props;
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {
@@ -258,13 +257,13 @@ class ResultTableWithSteps extends Component {
                             }
                             if (data) {
                                 const ib = getIb(ibDate, ibQue, flavorKey);
-                                let renderedStep = this._renderSteps({isExpanded, ib, archKey, data});
+                                let {renderedStepList, cellCollor} = this._renderSteps({isExpanded, ib, archKey, data});
                                 return <div style={{
                                     // backgroundColor: 'red',
                                     width: `${props.value}%`,
                                     height: '100%',
                                     padding: '2px 20px',
-                                }}>{renderedStep}</div>;
+                                }}>{renderedStepList}</div>;
                             } else {
                                 // Render empty div
                                 return <div style={{
@@ -277,7 +276,7 @@ class ResultTableWithSteps extends Component {
                         },
                     })
                 });
-                tableConfig.push(configObject)
+                tableConfig.push(configObject);
             })
         }
         const columns = [
