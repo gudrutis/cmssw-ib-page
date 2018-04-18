@@ -40,35 +40,25 @@ function getReleaseQue(ibQue) {
 class ResultTableWithSteps extends Component {
     constructor(props) {
         super(props);
-        this.loadData = this.loadData.bind(this);
+        this._loadData = this._loadData.bind(this);
         this.state = {
             showModal: false,
             workFlowsToShow: [],
         };
     }
 
-    componentWillMount() {
-        CommandStore.on("change", this.loadData);
-        ShowArchStore.on("change", this.forceUpdate);
-    }
-
-    componentWillUnmount() {
-        CommandStore.removeListener("change", this.loadData);
-        ShowArchStore.removeListener("change", this.forceUpdate);
-    }
-
-    handleClose() {
+    _handleClose() {
         this.setState({showModal: false});
     }
 
-    loadData() {
+    _loadData() {
         let workflowHashes = this.state.workflowHashes;
         this.setState({
             workFlowsToShow: CommandStore.getWorkFlowList(workflowHashes),
         })
     }
 
-    handleShow(steps, cmdName) {
+    _handleShow(steps, cmdName) {
         return () => {
             this.setState({
                 cmdName,
@@ -79,7 +69,7 @@ class ResultTableWithSteps extends Component {
         }
     }
 
-    rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName) {
+    _rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName) {
         let logComponent;
         if (logUrl) {
             logComponent = (
@@ -98,7 +88,7 @@ class ResultTableWithSteps extends Component {
         }
         return (
             <div key={uuid.v4()}>
-                <span className="btn label label-default" onClick={this.handleShow(steps, cmdName).bind(this)}>
+                <span className="btn label label-default" onClick={this._handleShow(steps, cmdName).bind(this)}>
                     {number}
                 </span>
                 {logComponent}
@@ -106,8 +96,7 @@ class ResultTableWithSteps extends Component {
         )
     }
 
-
-    renderSteps({isExpanded, ib, archKey, data}) {
+    _renderSteps({isExpanded, ib, archKey, data}) {
         /**
          * Return rendered content for the cell
          */
@@ -131,19 +120,19 @@ class ResultTableWithSteps extends Component {
                     labelColor = LABEL_COLOR.PASSED_COLOR
                 }
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name)
             } else if (status === RELVAL_STATUS_ENUM.FAILED) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, true);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.NOTRUN) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR, name)
             } else if (status === RELVAL_STATUS_ENUM.TIMEOUT) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this.rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.TIMEOUT_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.TIMEOUT_COLOR, name)
             } else {
                 console.error('Unknown status')
             }
@@ -157,10 +146,19 @@ class ResultTableWithSteps extends Component {
         return render_step;
     }
 
+    componentWillMount() {
+        CommandStore.on("change", this._loadData);
+        ShowArchStore.on("change", this.forceUpdate);
+    }
+
+    componentWillUnmount() {
+        CommandStore.removeListener("change", this._loadData);
+        ShowArchStore.removeListener("change", this.forceUpdate);
+    }
+
     render() {
         let tableConfig = [];
-        let allRelValsStatus;
-        const {selectedArchs, selectedFlavors, selectedStatus, style} = this.props;
+        const {filteredRelVals, selectedArchs, selectedFlavors, style} = this.props;
         const {structure = {}, ibDate, ibQue} = this.props;
         const archColorScheme = ShowArchStore.getColorsSchemeForQue(
             getReleaseQue(ibQue)
@@ -172,7 +170,7 @@ class ResultTableWithSteps extends Component {
             </Popover>
         );
         const modalCmd = (
-            <Modal show={this.state.showModal} onHide={this.handleClose.bind(this)} bsSize="lg">
+            <Modal show={this.state.showModal} onHide={this._handleClose.bind(this)} bsSize="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <div style={{overflow: 'auto'}}>
@@ -184,7 +182,7 @@ class ResultTableWithSteps extends Component {
                     <div style={{overflow: 'auto'}}>
                         {this.state.workFlowsToShow.map((i, index) => {
                             return (
-                                <p>
+                                <p key={uuid.v4()}>
                                     <b>Step {index + 1}  </b>
                                     <CopyToClipboard text={i.command}>
                                         <OverlayTrigger
@@ -206,13 +204,11 @@ class ResultTableWithSteps extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={this.handleClose.bind(this)}>Close</Button>
+                    <Button onClick={this._handleClose.bind(this)}>Close</Button>
                 </Modal.Footer>
             </Modal>
         );
-
         if (structure.dataLoaded) {
-            allRelValsStatus = filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus});
             let flavorKeys = getObjectKeys(structure.flavors);
             filterNameList(flavorKeys, selectedFlavors).map(flavorKey => {
                 let configObject = {
@@ -262,7 +258,7 @@ class ResultTableWithSteps extends Component {
                             }
                             if (data) {
                                 const ib = getIb(ibDate, ibQue, flavorKey);
-                                let renderedStep = this.renderSteps({isExpanded, ib, archKey, data});
+                                let renderedStep = this._renderSteps({isExpanded, ib, archKey, data});
                                 return <div style={{
                                     // backgroundColor: 'red',
                                     width: `${props.value}%`,
@@ -283,8 +279,6 @@ class ResultTableWithSteps extends Component {
                 });
                 tableConfig.push(configObject)
             })
-        } else {
-            allRelValsStatus = [];
         }
         const columns = [
             {
@@ -308,9 +302,8 @@ class ResultTableWithSteps extends Component {
                         filterable: true,
                         sortMethod: (a, b) => parseFloat(a) > parseFloat(b) ? 1 : -1,
                         Cell: (props) => {
-
                             const popoverShowCmdName = (
-                                <Popover id="popover-trigger-click-root-close">
+                                <Popover id={'popover-' + props.original.cmdName}>
                                     <div style={{overflow: 'auto'}}>
                                         {props.original.cmdName}
                                     </div>
@@ -318,6 +311,8 @@ class ResultTableWithSteps extends Component {
                             );
                             return (
                                 <OverlayTrigger
+                                    // trigger="click"
+                                    // rootClose
                                     placement="top"
                                     overlay={popoverShowCmdName}>
                                     <b>{props.value}</b>
@@ -334,7 +329,7 @@ class ResultTableWithSteps extends Component {
                 <ReactTable
                     //TODO even if data does not change, it close on every re-render
                     collapseOnDataChange={false}
-                    data={allRelValsStatus}
+                    data={filteredRelVals}
                     columns={columns}
                     defaultPageSize={50}
                     style={style}

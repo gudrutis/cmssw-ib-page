@@ -7,6 +7,7 @@ import TogglesShowRow from "./TogglesShowRow";
 import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Utils/commons";
 import 'react-table/react-table.css';
 import ResultTableWithSteps from "./RelValComponents/ResultTableWithSteps";
+import {filterRelValStructure} from "../Utils/processing";
 
 const NAV_CONTROLS_ENUM = {
     SELECTED_ARCHS: "selectedArchs",
@@ -141,7 +142,8 @@ class RelValLayout extends Component {
             selectedStatus,
             structure,
             ibDate: date,
-            ibQue: que
+            ibQue: que,
+            filteredRelVals: filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus})
         };
 
         return (

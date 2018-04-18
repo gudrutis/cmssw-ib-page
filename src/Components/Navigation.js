@@ -49,12 +49,12 @@ class Navigation extends Component {
         }
         // TODO ---------
 
-        const popover = (
-            <Popover id="modal-popover" title="popover">
-                very popover. such engagement
-            </Popover>
-        );
-        const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
+        // const popover = (
+        //     <Popover id="modal-popover" title="popover">
+        //         very popover. such engagement
+        //     </Popover>
+        // );
+        // const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
         const modalHelp = (
             <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
