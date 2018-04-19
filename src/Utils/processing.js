@@ -136,12 +136,18 @@ export function getDisplayName(name) {
     }
 }
 
+
+export function getInfoFromRelease(releseName){
+    const reReleaseInfo = /^([a-zA-Z]+_[0-9]+_[0-9])+_(.*)_(\d{4}-\d{2}-\d{2}-\d{4})/;  //CMSSW_5_3 _X _ 2018-03-04-0000
+    return releseName.match(reReleaseInfo) // fullMatch, que, flavor, date
+}
+
 export function getStructureFromAvalableRelVals(relvalInfoObject) {
-    let re = /^([a-zA-Z]+_[0-9]+_[0-9])+_(.*)_(\d{4}-\d{2}-\d{2}-\d{4})/;  //CMSSW_5_3 _X _ 2018-03-04-0000
+
     const keysList = Object.keys(relvalInfoObject);
     let config = {};
     keysList.map((key) => {
-        const [fullMatch, que, flavor, date] = key.match(re);
+        const [fullMatch, que, flavor, date] = getInfoFromRelease(key);
         const archs = relvalInfoObject[key].split(',');
         if (!config[date]) {
             config[date] = {}

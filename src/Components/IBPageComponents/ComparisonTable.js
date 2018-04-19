@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
-import {getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName, valueInTheList} from '../../Utils/processing';
+import {
+    getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName, getInfoFromRelease,
+    valueInTheList
+} from '../../Utils/processing';
 import _ from 'underscore';
 import uuid from 'uuid';
 import config from '../../config';
@@ -272,7 +275,9 @@ class ComparisonTable extends Component {
             } else {
                 const si = 4;
                 let link_parts = file.split('/');
-                return urls.relVals + link_parts[si] + ';' + link_parts[si + 4]
+                const [fullMatch, que, flavor, date] = getInfoFromRelease(ibName);
+                return urls.newRelVals(que, date);
+                // return urls.relVals + link_parts[si] + ';' + link_parts[si + 4];
             }
         };
 

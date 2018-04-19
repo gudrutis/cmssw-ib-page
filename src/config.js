@@ -18,7 +18,8 @@ export default {
         fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
         showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
         relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
-        commits: "https://github.com/cms-sw/cmsdist/commits/"
+        commits: "https://github.com/cms-sw/cmsdist/commits/",
+        newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`
     },
     colorCoding: {
         prodColor: '#5cb85c', // production arch
