@@ -1,7 +1,7 @@
 import queryString from 'query-string';
 
-export function goToLinkWithoutHistoryUpdate(history) {
-    history.replace(history.location);
+export function goToLinkWithoutHistoryUpdate(history,location) {
+    history.replace(location);
 }
 
 export function partiallyUpdateLocationQuery(location, queryKey, queryValues) {
