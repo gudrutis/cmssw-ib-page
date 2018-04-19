@@ -229,12 +229,26 @@ class ResultTableWithSteps extends Component {
                                 })
                             )
                         },
-                        accessor: "id",
+                        // accessor: "id",
+                        accessor: relVal => {
+                            let data;
+                            if (structure.flavors[flavorKey][archKey]) {
+                                data = structure.flavors[flavorKey][archKey][relVal.id];
+                            }
+                            if (data) {
+                                let {exitcode} = data;
+                                return getLabelName(
+                                    ExitCodeStore.getExitCodeName(exitcode)
+                                );
+                            } else {
+                                return null
+                            }
+                        },
                         id: flavorKey + "-" + archKey,
                         filterable: true,
                         Cell: props => {
-                            const id = props.value;
-                            // const id = props.original.id;
+                            // const id = props.value;
+                            const id = props.original.id;
                             const {isExpanded} = props;
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {
