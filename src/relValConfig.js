@@ -37,7 +37,10 @@ export const urls = {
     relValWorkFlowToIdHash:
         (arch, date, que, flavor) => `https://cms-sw.github.io/data/commands/${arch}/${date}/${que}_${flavor}.json`,
     relValCmd:
-        (digit1, digitsRest) => `https://cms-sw.github.io/data/commands/objs/${digit1}/${digitsRest}`
+        (digit1, digitsRest) => `https://cms-sw.github.io/data/commands/objs/${digit1}/${digitsRest}`,
+    relValLog:
+    // 'http://cmssdt.cern.ch/SDT/cgi-bin/buildlogs/' + arch + '/' + ib + '/pyRelValMatrixLogs/run/' + workflowID + '_' + workflowName + '/' + filename;
+        (arch, ib, workflowID, workflowName, filename) => 'http://cmssdt.cern.ch/SDT/cgi-bin/logreader/' + arch + '/' + ib + '/pyRelValMatrixLogs/run/' + workflowID + '_' + workflowName + '/' + filename
 
 };
 const _legendConf = [

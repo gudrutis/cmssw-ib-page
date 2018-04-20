@@ -10,6 +10,9 @@ import CommandStore from "../../Stores/CommandStore";
 import {filterNameList, getDisplayName, getObjectKeys, valueInTheList} from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ShowArchStore from '../../Stores/ShowArchStore';
+import * as config from "../../relValConfig";
+
+const {urls} = config;
 
 /**
  * returns the link address for a given Ib and an arch
@@ -21,7 +24,7 @@ function getLogAddress(arch, ib, step, workflowName, workflowID, wasDASErr) {
     } else {
         filename = 'step1_dasquery.log';
     }
-    return 'http://cmssdt.cern.ch/SDT/cgi-bin/buildlogs/' + arch + '/' + ib + '/pyRelValMatrixLogs/run/' + workflowID + '_' + workflowName + '/' + filename;
+    return urls.relValLog(arch, ib, workflowID, workflowName, filename)
 }
 
 function getLabelName(name) {
