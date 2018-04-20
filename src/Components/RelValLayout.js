@@ -121,24 +121,26 @@ class RelValLayout extends Component {
                     partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_ARCHS, v);
                     goToLinkWithoutHistoryUpdate(history, location);
                 }}/>,
-            <TogglesShowRow
-                rowName={'Status'}
-                nameList={STATUS_ENUM_LIST}
-                initSelections={selectedStatus}
-                callbackToParent={(v) => {
-                    const {location, history} = this.props;
-                    partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_STATUS, v);
-                    goToLinkWithoutHistoryUpdate(history, location);
-                }}/>,
-            <TogglesShowRow
-                rowName={'Column filter'}
-                nameList={['On']}
-                initSelections={selectedFilterStatus}
-                callbackToParent={(v) => {
-                    const {location, history} = this.props;
-                    partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_FILTER_STATUS, v);
-                    goToLinkWithoutHistoryUpdate(history, location);
-                }}/>
+            [
+                <TogglesShowRow
+                    rowName={'Status'}
+                    nameList={STATUS_ENUM_LIST}
+                    initSelections={selectedStatus}
+                    callbackToParent={(v) => {
+                        const {location, history} = this.props;
+                        partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_STATUS, v);
+                        goToLinkWithoutHistoryUpdate(history, location);
+                    }}/>,
+                <TogglesShowRow
+                    rowName={' Column filter'}
+                    nameList={['On']}
+                    initSelections={selectedFilterStatus}
+                    callbackToParent={(v) => {
+                        const {location, history} = this.props;
+                        partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_FILTER_STATUS, v);
+                        goToLinkWithoutHistoryUpdate(history, location);
+                    }}/>
+            ]
         ];
 
         const resultTableWithStepsSettings = {

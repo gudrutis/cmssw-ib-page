@@ -2,7 +2,6 @@ import {ToggleButton} from "react-bootstrap";
 import ToggleButtonGroup from "react-bootstrap/es/ToggleButtonGroup";
 import React, {Component} from 'react';
 import uuid from 'uuid';
-import FormGroup from "react-bootstrap/es/FormGroup";
 import {getDisplayName} from '../Utils/processing';
 
 class TogglesShowRow extends Component {
@@ -26,15 +25,14 @@ class TogglesShowRow extends Component {
 
     render() {
         const {initSelections, nameList, rowName} = this.state;
-        return (
-            <FormGroup>
-                <span>{rowName}: </span>
+        return ([
+                <span>{rowName}: </span>,
                 <ToggleButtonGroup bsSize="xsmall" type="checkbox" value={initSelections} onChange={this.onChange}>
                     {nameList.map(item => {
                         return <ToggleButton key={uuid.v4()} value={item}> {getDisplayName(item)} </ToggleButton>
                     })}
                 </ToggleButtonGroup>
-            </FormGroup>
+            ]
         );
     }
 }

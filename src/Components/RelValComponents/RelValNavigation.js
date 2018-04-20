@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import Navbar from "react-bootstrap/es/Navbar";
 import Nav from "react-bootstrap/es/Nav";
-import {Button, Col, Glyphicon, Modal, Row} from "react-bootstrap";
+import {Button, Col, FormGroup, Glyphicon, Modal, Row} from "react-bootstrap";
 import Dropdown from "react-bootstrap/es/Dropdown";
 
 import {legend} from '../../relValConfig';
@@ -48,8 +48,6 @@ class RelValNavigation extends Component {
                     <Navbar.Toggle/>
                 </Navbar.Header>
                 <Navbar.Collapse>
-                    <Nav>
-                    </Nav>
                     <Nav pullRight>
                         <button className="btn btn-default navbar-btn" onClick={this.handleShow}>
                             <Glyphicon glyph="question-sign"/> Legend
@@ -66,13 +64,15 @@ class RelValNavigation extends Component {
                     </Nav>
                     <Row>
                         {this.props.controlList.map(controls => {
-                            return (
+                            return ([
                                 <Col xs={12}>
                                     <Nav>
-                                        {controls}
+                                        <FormGroup>
+                                            {controls}
+                                        </FormGroup>
                                     </Nav>
                                 </Col>
-                            )
+                            ])
                         })}
                     </Row>
 
