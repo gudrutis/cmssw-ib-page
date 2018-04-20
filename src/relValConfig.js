@@ -20,8 +20,12 @@ export const LABELS_TEXT = {
 };
 export const STATUS_ENUM = {
     PASSED: 'passed',
-    FAILED: 'failed'
+    FAILED: 'failed',
+    KNOWN_FAILED: 'known_failed'
 };
+export const STATUS_ENUM_LIST = [
+    STATUS_ENUM.FAILED, STATUS_ENUM.KNOWN_FAILED, STATUS_ENUM.PASSED
+];
 export const RELVAL_STATUS_ENUM = {
     PASSED: 'PASSED',
     FAILED: 'FAILED',

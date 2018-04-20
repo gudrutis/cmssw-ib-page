@@ -7,7 +7,10 @@ import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../../Stores/CommandStore";
-import {filterNameList, getDisplayName, getObjectKeys, valueInTheList} from "../../Utils/processing";
+import {
+    filterNameList, getDisplayName, getObjectKeys, isRelValKnownFailed,
+    valueInTheList
+} from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ShowArchStore from '../../Stores/ShowArchStore';
 import * as config from "../../relValConfig";
@@ -121,9 +124,9 @@ class ResultTableWithSteps extends Component {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
                 label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name)
             } else if (status === RELVAL_STATUS_ENUM.FAILED) {
-                // TODO Found if known error 
+                let labelColor = isRelValKnownFailed(data) ? LABEL_COLOR.PASSED_COLOR : LABEL_COLOR.FAILED_COLOR;
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(ExitCodeStore.getExitCodeName(exitcode), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
+                label = this._rowWithLabel(ExitCodeStore.getExitCodeName(exitcode), i, logUrl, steps, labelColor, name)
             } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, true);
                 label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name)

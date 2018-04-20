@@ -8,6 +8,7 @@ import {goToLinkWithoutHistoryUpdate, partiallyUpdateLocationQuery} from "../Uti
 import 'react-table/react-table.css';
 import ResultTableWithSteps from "./RelValComponents/ResultTableWithSteps";
 import {filterRelValStructure} from "../Utils/processing";
+import {STATUS_ENUM, STATUS_ENUM_LIST} from "../relValConfig";
 
 const NAV_CONTROLS_ENUM = {
     SELECTED_ARCHS: "selectedArchs",
@@ -15,13 +16,6 @@ const NAV_CONTROLS_ENUM = {
     SELECTED_STATUS: "selectedStatus",
     SELECTED_FILTER_STATUS: "selectedFilterStatus"
 };
-const STATUS_ENUM = {
-    PASSED: 'passed',
-    FAILED: 'failed'
-};
-const STATUS_ENUM_LIST = [
-    STATUS_ENUM.FAILED, STATUS_ENUM.PASSED
-];
 
 // Smart component tracking data change and laying basic layout
 class RelValLayout extends Component {

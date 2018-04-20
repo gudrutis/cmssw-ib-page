@@ -137,7 +137,7 @@ export function getDisplayName(name) {
 }
 
 
-export function getInfoFromRelease(releseName){
+export function getInfoFromRelease(releseName) {
     const reReleaseInfo = /^([a-zA-Z]+_[0-9]+_[0-9])+_(.*)_(\d{4}-\d{2}-\d{2}-\d{4})/;  //CMSSW_5_3 _X _ 2018-03-04-0000
     return releseName.match(reReleaseInfo) // fullMatch, que, flavor, date
 }
@@ -230,9 +230,14 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
                 const fullRelVal = flavors[flavor][archKey][id];
                 if (fullRelVal) {
                     const {exitcode} = fullRelVal;
-                    if (exitcode !== 0) {
+                    if (exitcode !== 0 && !isRelValKnownFailed(fullRelVal)) {
+                        // if workflow is failed at least in one ib, mark all row failed
                         status = STATUS_ENUM.FAILED;
-                    } else if (!(status === STATUS_ENUM.FAILED)) {
+                    } else if (!(status === STATUS_ENUM.FAILED) && isRelValKnownFailed(fullRelVal)) {
+                        // if no failed
+                        status = STATUS_ENUM.KNOWN_FAILED;
+                    } else if (!(status === STATUS_ENUM.FAILED) && !(status === STATUS_ENUM.KNOWN_FAILED)){
+                        // if no failed and known_failed
                         status = STATUS_ENUM.PASSED;
                     }
                 }
@@ -243,4 +248,7 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
         }
     }
     return filteredRelvals;
+}
+export function isRelValKnownFailed(relVal) {
+    return (relVal.known_error === 1);
 }
