@@ -5,7 +5,7 @@ import Nav from "react-bootstrap/es/Nav";
 import NavItem from "react-bootstrap/es/NavItem";
 import {LinkContainer} from "react-router-bootstrap";
 import uuid from "uuid";
-import {Button, Col, DropdownButton, Glyphicon, MenuItem, Modal, Popover, Row, Tooltip} from "react-bootstrap";
+import {Button, Col, Glyphicon, MenuItem, Modal, Row} from "react-bootstrap";
 import config from '../config';
 import Dropdown from "react-bootstrap/es/Dropdown";
 

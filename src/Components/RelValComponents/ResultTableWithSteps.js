@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../../Stores/CommandStore";
-import {filterNameList, getDisplayName, getObjectKeys} from "../../Utils/processing";
+import {filterNameList, getDisplayName, getObjectKeys, valueInTheList} from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ShowArchStore from '../../Stores/ShowArchStore';
 
@@ -155,12 +155,12 @@ class ResultTableWithSteps extends Component {
 
     render() {
         let tableConfig = [];
-        const {filteredRelVals, selectedArchs, selectedFlavors, style} = this.props;
+        const {filteredRelVals, selectedArchs, selectedFlavors, style, selectedFilterStatus} = this.props;
         const {structure = {}, ibDate, ibQue} = this.props;
         const archColorScheme = ShowArchStore.getColorsSchemeForQue(
             getReleaseQue(ibQue)
         );
-
+        const doFilterColumn = valueInTheList(selectedFilterStatus, 'On');
         const popoverClickRootClose = (
             <Popover id="popover-trigger-click-root-close">
                 Copied!
@@ -245,7 +245,7 @@ class ResultTableWithSteps extends Component {
                             }
                         },
                         id: flavorKey + "-" + archKey,
-                        filterable: true,
+                        filterable: doFilterColumn,
                         Cell: props => {
                             // const id = props.value;
                             const id = props.original.id;
@@ -288,7 +288,7 @@ class ResultTableWithSteps extends Component {
                         Header: "#",
                         accessor: "index",
                         maxWidth: 100,
-                        filterable: true,
+                        // filterable: true,
                         // Cell: props => <b>{props.value}</b>, // shows index in unfiltered list
                         Cell: props => <b>{props.index + 1}</b>, // Shows index in table
                     },
@@ -296,7 +296,7 @@ class ResultTableWithSteps extends Component {
                         Header: "Workflow #",
                         accessor: "id",
                         maxWidth: 100,
-                        filterable: true,
+                        filterable: doFilterColumn,
                         sortMethod: (a, b) => parseFloat(a) > parseFloat(b) ? 1 : -1,
                         Cell: (props) => {
                             const popoverShowCmdName = (

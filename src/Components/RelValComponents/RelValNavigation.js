@@ -75,6 +75,7 @@ class RelValNavigation extends Component {
                             )
                         })}
                     </Row>
+
                 </Navbar.Collapse>
                 {modalHelp}
             </Navbar>

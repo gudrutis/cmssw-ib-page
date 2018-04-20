@@ -13,13 +13,12 @@ const NAV_CONTROLS_ENUM = {
     SELECTED_ARCHS: "selectedArchs",
     SELECTED_FLAVORS: "selectedFlavors",
     SELECTED_STATUS: "selectedStatus",
+    SELECTED_FILTER_STATUS: "selectedFilterStatus"
 };
-
 const STATUS_ENUM = {
     PASSED: 'passed',
     FAILED: 'failed'
 };
-
 const STATUS_ENUM_LIST = [
     STATUS_ENUM.FAILED, STATUS_ENUM.PASSED
 ];
@@ -100,7 +99,7 @@ class RelValLayout extends Component {
 
     render() {
         const {allArchs = [], allFlavors = []} = this.state;
-        const {selectedArchs, selectedFlavors, selectedStatus} = queryString.parse(this.props.location.search);
+        const {selectedArchs, selectedFlavors, selectedStatus, selectedFilterStatus} = queryString.parse(this.props.location.search);
         const {structure = {}} = this.state;
         const {date, que} = this.props.match.params;
         const controlList = [
@@ -130,6 +129,15 @@ class RelValLayout extends Component {
                     const {location, history} = this.props;
                     partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_STATUS, v);
                     goToLinkWithoutHistoryUpdate(history, location);
+                }}/>,
+            <TogglesShowRow
+                rowName={'Column filter'}
+                nameList={['On']}
+                initSelections={selectedFilterStatus}
+                callbackToParent={(v) => {
+                    const {location, history} = this.props;
+                    partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_FILTER_STATUS, v);
+                    goToLinkWithoutHistoryUpdate(history, location);
                 }}/>
         ];
 
@@ -141,6 +149,7 @@ class RelValLayout extends Component {
             selectedFlavors,
             selectedStatus,
             structure,
+            selectedFilterStatus,
             ibDate: date,
             ibQue: que,
             filteredRelVals: filterRelValStructure({structure, selectedArchs, selectedFlavors, selectedStatus})
