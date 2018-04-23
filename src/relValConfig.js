@@ -54,13 +54,14 @@ const _legendConf = [
     {color: LABEL_COLOR.PASSED_WARNINGS_COLOR, code: LABELS_TEXT['PASSED'], text: 'Passed with warning messages'},
     {color: LABEL_COLOR.FAILED_COLOR, code: LABELS_TEXT['FAILED'], text: 'Failed'},
     {color: LABEL_COLOR.DAS_ERROR_COLOR, code: LABELS_TEXT['DAS_ERROR'], text: 'DAS error'},
+    {color: LABEL_COLOR.PASSED_COLOR, code: "OtherCMS", text: 'Known failed'},
     // {color: LABEL_COLOR.TIMEOUT_COLOR, code: LABELS_TEXT['TIMEOUT'], text: 'Timed Out'}
 ];
 // TODO could be made better
 export const legend = [_legendConf.map(i => (
     <p key={uuid.v4()}>
         <span style={{backgroundColor: i.color}}
-              className="label"><samp>{i.code} </samp></span> {i.text}
+              className="label">{i.code}</span> {i.text}
 
     </p>
 )),
