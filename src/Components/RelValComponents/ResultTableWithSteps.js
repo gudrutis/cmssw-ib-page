@@ -208,7 +208,7 @@ class ResultTableWithSteps extends Component {
                                         </OverlayTrigger>
                                     </CopyToClipboard>
                                     <br/>
-                                    <code>{i.command}</code>
+                                    <code style={{whiteSpace: "pre-line"}} >{i.command}</code>
                                 </p>
                             )
                         })}
