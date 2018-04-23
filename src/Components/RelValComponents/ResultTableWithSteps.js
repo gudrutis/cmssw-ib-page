@@ -235,6 +235,7 @@ class ResultTableWithSteps extends Component {
                                 })
                             )
                         },
+                        // Used for filtering
                         // accessor: "id",
                         accessor: relVal => {
                             let data;
@@ -242,10 +243,22 @@ class ResultTableWithSteps extends Component {
                                 data = structure.flavors[flavorKey][archKey][relVal.id];
                             }
                             if (data) {
-                                let {exitcode} = data;
-                                return getLabelName(
-                                    ExitCodeStore.getExitCodeName(exitcode)
-                                );
+                                const {steps, exitcode} = data;
+                                const last_step = steps[steps.length - 1];
+                                const {status} = last_step;
+                                if (status === RELVAL_STATUS_ENUM.PASSED) {
+                                    return getLabelName(status);
+                                } else if (status === RELVAL_STATUS_ENUM.FAILED) {
+                                    return ExitCodeStore.getExitCodeName(exitcode);
+                                } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
+                                    return getLabelName(status);
+                                } else if (status === RELVAL_STATUS_ENUM.NOTRUN) {
+                                    return getLabelName(status);
+                                } else if (status === RELVAL_STATUS_ENUM.TIMEOUT) {
+                                    return getLabelName(status);
+                                } else {
+                                    return null
+                                }
                             } else {
                                 return null
                             }
