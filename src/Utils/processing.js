@@ -236,7 +236,7 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
                     } else if (!(status === STATUS_ENUM.FAILED) && isRelValKnownFailed(fullRelVal)) {
                         // if no failed
                         status = STATUS_ENUM.KNOWN_FAILED;
-                    } else if (!(status === STATUS_ENUM.FAILED) && !(status === STATUS_ENUM.KNOWN_FAILED)){
+                    } else if (!(status === STATUS_ENUM.FAILED) && !(status === STATUS_ENUM.KNOWN_FAILED)) {
                         // if no failed and known_failed
                         status = STATUS_ENUM.PASSED;
                     }
@@ -249,6 +249,28 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
     }
     return filteredRelvals;
 }
+
 export function isRelValKnownFailed(relVal) {
     return (relVal.known_error === 1);
+}
+
+export function relValStatistics(relValList) {
+    let statistics = {
+        size: relValList.length,
+        passed: 0,
+        known_failed: 0,
+        failed: 0
+    };
+    for (let i = 0; i < relValList.length; i++) {
+        const relVal = relValList[i];
+        const {exitcode} = relVal;
+        if (exitcode !== 0 && !isRelValKnownFailed(relVal)) {
+            statistics.failed += 1;
+        } else if (isRelValKnownFailed(relVal)) {
+            statistics.known_failed += 1;
+        } else {
+            statistics.passed += 1;
+        }
+    }
+    return statistics;
 }

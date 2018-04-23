@@ -2,7 +2,7 @@ import {EventEmitter} from "events";
 import dispatcher from "../dispatcher";
 import * as config from "../relValConfig";
 import {getMultipleFiles} from "../Utils/ajax";
-import {getStructureFromAvalableRelVals, transforListToObject} from "../Utils/processing";
+import {getStructureFromAvalableRelVals, relValStatistics, transforListToObject} from "../Utils/processing";
 
 const {urls} = config;
 
@@ -73,12 +73,11 @@ class RelValStore extends EventEmitter {
                         fileUrlList: [...relValsUrl, ...relValsIdToHashcodeUrl], // loaded data together
                         onSuccessCallback: function (responseList) {
                             for (let i = 0; i < archsToLoad.length; i++) {
-                                const {data} = responseList[i];
+                                const {data: relvals} = responseList[i];
                                 const workflowHashes = responseList[archsToLoad.length + i].data;
                                 const {que, date, arch, flavor} = archsToLoad[i];
-                                let relValObject = transforListToObject(data);
+                                let relValObject = transforListToObject(relvals);
                                 const workflowKeys = Object.keys(relValObject);
-
                                 workflowKeys.map(wf => {
                                     let {steps} = relValObject[wf];
                                     for (let s = 0; s < steps.length; s++) {
@@ -86,8 +85,16 @@ class RelValStore extends EventEmitter {
                                         steps[s]['workflowHash'] = workflowHash;
                                     }
                                 });
-
                                 this.structure[date][que].flavors[flavor][arch] = relValObject;
+                                // to add statistics to relVals
+                                if (!this.structure[date][que].relvalStatus) {
+                                    this.structure[date][que].relvalStatus = {};
+                                }
+                                if (!this.structure[date][que].relvalStatus[flavor]) {
+                                    this.structure[date][que].relvalStatus[flavor] = {};
+                                }
+                                this.structure[date][que].relvalStatus[flavor][arch] = relValStatistics(relvals);
+                                // ---
                                 workflowKeys.map((id) => {
                                     const exitCode = relValObject[id].exitcode;
                                     if (exitCode !== 0) {

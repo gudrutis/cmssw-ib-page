@@ -75,6 +75,14 @@ class ResultTableWithSteps extends Component {
         }
     }
 
+    _renderLabel(text, color) {
+        return (
+            <span style={{backgroundColor: color}} className="label">
+                        {text}
+                    </span>
+        )
+    }
+
     _rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName) {
         let logComponent;
         if (logUrl) {
@@ -223,9 +231,19 @@ class ResultTableWithSteps extends Component {
                 filterNameList(archKeys, selectedArchs).map(archKey => {
                     configObject.columns.push({
                         Header: () => {
-                            return (
+                            const statistics = structure.relvalStatus[flavorKey][archKey];
+                            const statuslabels =
+                                <p>
+                                    {this._renderLabel(statistics.passed, LABEL_COLOR.PASSED_COLOR)}
+                                    {this._renderLabel(statistics.known_failed, LABEL_COLOR.PASSED_ERRORS_COLOR)}
+                                    {this._renderLabel(statistics.failed, LABEL_COLOR.FAILED_COLOR)}
+                                    {/*{this._renderLabel(statistics.size, "grey")}*/}
+                                </p>;
+
+                            const archNames = (
                                 archKey.split("_").map(str => {
                                     const color = archColorScheme[str];
+
                                     return (
                                         <div style={{backgroundColor: color, paddingLeft: 6.3}}
                                              key={uuid.v4()}>
@@ -233,10 +251,11 @@ class ResultTableWithSteps extends Component {
                                         </div>
                                     )
                                 })
-                            )
+                            );
+                            return [...archNames, statuslabels]
                         },
-                        // Used for filtering
                         // accessor: "id",
+                        // Used for filtering
                         accessor: relVal => {
                             let data;
                             if (structure.flavors[flavorKey][archKey]) {
