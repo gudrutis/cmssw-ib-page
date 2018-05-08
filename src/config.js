@@ -236,8 +236,6 @@ export default {
         {
             name: "Header consistency",
             key: "check_headers",
-            glyphicon: "glyphicon-ok-sign",
-            glyphiconWarning: "glyphicon-warning-sign",
             getUrl: function (ib) {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/check_headers/" + getCurrentIbTag(ib);
             }
