@@ -1,10 +1,12 @@
 import React, {Component} from "react";
 import Navbar from "react-bootstrap/es/Navbar";
 import Nav from "react-bootstrap/es/Nav";
-import {Button, Col, FormGroup, Glyphicon, Modal, Row} from "react-bootstrap";
+import {Button, Col, FormGroup, Glyphicon, MenuItem, Modal, Row} from "react-bootstrap";
 import Dropdown from "react-bootstrap/es/Dropdown";
-
 import {legend} from '../../relValConfig';
+import config from "../../config";
+
+const {urls} = config;
 
 class RelValNavigation extends Component {
 
@@ -58,7 +60,9 @@ class RelValNavigation extends Component {
                                 <Glyphicon glyph="exclamation-sign"/> Report an issue with ...
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="super-colors">
-
+                                {urls.issues.map((el) => {
+                                    return <MenuItem href={el.url}>{el.name}</MenuItem>
+                                })}
                             </Dropdown.Menu>
                         </Dropdown>
                     </Nav>
