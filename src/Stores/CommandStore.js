@@ -12,7 +12,8 @@ class CommandStore extends EventEmitter {
     // TODO show statistics can be calculated here
     constructor(props) {
         super(props);
-        this.commandMap = {}
+        this.setMaxListeners(20);
+        this.commandMap = {};
     }
 
     _getData(hashCodeList) {

@@ -6,14 +6,12 @@ import {getStructureFromAvalableRelVals, relValStatistics, transforListToObject}
 
 const {urls} = config;
 
-/**
- *
- */
 class RelValStore extends EventEmitter {
     // TODO show statistics can be calculated here
     constructor() {
         super();
-        this._getStructure()
+        this.setMaxListeners(20);
+        this._getStructure();
     }
 
     _getStructure() {
@@ -139,6 +137,6 @@ class RelValStore extends EventEmitter {
 
 }
 
-const relValStore = new RelValStore;
+const relValStore = new RelValStore();
 dispatcher.register(relValStore.handleActions.bind(relValStore));
 export default relValStore;

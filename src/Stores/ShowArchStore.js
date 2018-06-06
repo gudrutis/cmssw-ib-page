@@ -13,6 +13,7 @@ const {urls, colorCoding} = config;
 class ShowArchStore extends EventEmitter {
     constructor() {
         super();
+        this.setMaxListeners(20);
         this.emptyConfig = {
             'os': [], 'cpu': [], 'compiler': []
         };
@@ -150,6 +151,6 @@ class ShowArchStore extends EventEmitter {
     }
 }
 
-const showArchStore = new ShowArchStore;
+const showArchStore = new ShowArchStore();
 dispatcher.register(showArchStore.handleActions.bind(showArchStore));
 export default showArchStore;

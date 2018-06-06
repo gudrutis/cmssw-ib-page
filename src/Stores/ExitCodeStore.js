@@ -12,7 +12,8 @@ class ExitCodeStore extends EventEmitter {
     // TODO show statistics can be calculated here
     constructor() {
         super();
-        this._getData()
+        this.setMaxListeners(20);
+        this._getData();
     }
 
     _getData() {
@@ -45,6 +46,6 @@ class ExitCodeStore extends EventEmitter {
 
 }
 
-const exitCodeStore = new ExitCodeStore;
+const exitCodeStore = new ExitCodeStore();
 dispatcher.register(exitCodeStore.handleActions.bind(exitCodeStore));
 export default exitCodeStore;
