@@ -7,7 +7,7 @@ import {HashRouter} from "react-router-dom";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 import { unregister } from './registerServiceWorker';
 
 ReactDOM.render(
