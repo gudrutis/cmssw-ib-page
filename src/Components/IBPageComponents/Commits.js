@@ -3,6 +3,12 @@ import {Panel, Tab, Tabs} from "react-bootstrap";
 import {getDisplayName, getPreviousIbTag} from "../../Utils/processing";
 import uuid from 'uuid';
 
+function isFromMergedCommit(pr) {
+    if (pr.from_merge_commit === true) {
+        return <span className={"glyphicon glyphicon-transfer"}/>
+    }
+}
+
 class Commits extends Component {
 
     constructor(props) {
@@ -31,8 +37,7 @@ class Commits extends Component {
                                     {ib.merged_prs.map(pr => {
                                         return (
                                             <li key={uuid.v4()}>
-                                                <a href={pr.url}>#{pr.number}</a> from
-                                                <b> {pr.author_login}</b>: {pr.title}
+                                                <a href={pr.url}>#{pr.number}</a> {isFromMergedCommit(pr)} from<b> {pr.author_login}</b>: {pr.title}
                                             </li>
                                         )
                                     })}
