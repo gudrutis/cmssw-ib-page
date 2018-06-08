@@ -24,11 +24,12 @@ export default {
     colorCoding: {
         prodColor: '#5cb85c', // production arch
         alternatingColors: [
-            '#777',
-            '#999',
-            '#CCC'
+            // '#777',
+            // '#999',
+            // '#CCC'
         ],
-        defaultColor: '#555', // default
+        // defaultColor: '#555', // default non production
+        defaultColor: '#777',
     },
     statusLabelsConfigs: [
         // functions  [found|not-found|inProgress]
