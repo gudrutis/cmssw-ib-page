@@ -2,18 +2,21 @@ import React, {Component} from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import ExitCodeStore from "../../Stores/ExitCodeStore";
+import * as config from "../../relValConfig";
 import {LABEL_COLOR, LABELS_TEXT, RELVAL_STATUS_ENUM} from "../../relValConfig";
 import uuid from 'uuid';
 import Button from "react-bootstrap/es/Button";
 import {Modal, OverlayTrigger, Popover} from "react-bootstrap";
 import CommandStore from "../../Stores/CommandStore";
 import {
-    filterNameList, getDisplayName, getObjectKeys, isRelValKnownFailed,
+    filterNameList,
+    getDisplayName,
+    getObjectKeys,
+    isRelValKnownFailed,
     valueInTheList
 } from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ShowArchStore from '../../Stores/ShowArchStore';
-import * as config from "../../relValConfig";
 
 const {urls} = config;
 
@@ -170,6 +173,7 @@ class ResultTableWithSteps extends Component {
     render() {
         let tableConfig = [];
         const {filteredRelVals, selectedArchs, selectedFlavors, style, selectedFilterStatus} = this.props;
+        console.log(filteredRelVals);
         const {structure = {}, ibDate, ibQue} = this.props;
         const archColorScheme = ShowArchStore.getColorsSchemeForQue(
             getReleaseQue(ibQue)
@@ -208,7 +212,7 @@ class ResultTableWithSteps extends Component {
                                         </OverlayTrigger>
                                     </CopyToClipboard>
                                     <br/>
-                                    <code style={{whiteSpace: "pre-line"}} >{i.command}</code>
+                                    <code style={{whiteSpace: "pre-line"}}>{i.command}</code>
                                 </p>
                             )
                         })}
@@ -233,7 +237,7 @@ class ResultTableWithSteps extends Component {
                         Header: () => {
                             const statistics = structure.relvalStatus[flavorKey][archKey];
                             const statuslabels =
-                                <p>
+                                <p key={uuid.v4()}>
                                     {this._renderLabel(statistics.passed, LABEL_COLOR.PASSED_COLOR)}
                                     {this._renderLabel(statistics.known_failed, LABEL_COLOR.PASSED_ERRORS_COLOR)}
                                     {this._renderLabel(statistics.failed, LABEL_COLOR.FAILED_COLOR)}

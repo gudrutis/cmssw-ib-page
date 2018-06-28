@@ -219,7 +219,7 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
     const filteredFlavorKeys = filterNameList(getObjectKeys(flavors), selectedFlavors);
     for (let i = 0; i < allRelvals.length; i++) {
         let relVal = allRelvals[i];
-        let status = null;
+        let statusMap = {}; // all available status for RelVal row
         for (let z = 0; z < filteredFlavorKeys.length; z++) {
             let flavor = filteredFlavorKeys[z];
             let archKeys = getObjectKeys(flavors[flavor]);
@@ -230,22 +230,29 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
                 const fullRelVal = flavors[flavor][archKey][id];
                 if (fullRelVal) {
                     const {exitcode} = fullRelVal;
+                    // check if RelVal is Failed | KNOWN_FAILED | PASSED
                     if (exitcode !== 0 && !isRelValKnownFailed(fullRelVal)) {
                         // if workflow is failed at least in one ib, mark all row failed
-                        status = STATUS_ENUM.FAILED;
-                    } else if (!(status === STATUS_ENUM.FAILED) && isRelValKnownFailed(fullRelVal)) {
+                        statusMap[STATUS_ENUM.FAILED] = true;
+                    } else if (!(statusMap === STATUS_ENUM.FAILED) && isRelValKnownFailed(fullRelVal)) {
                         // if no failed
-                        status = STATUS_ENUM.KNOWN_FAILED;
-                    } else if (!(status === STATUS_ENUM.FAILED) && !(status === STATUS_ENUM.KNOWN_FAILED)) {
+                        statusMap[STATUS_ENUM.KNOWN_FAILED] = true;
+                    } else if (!(statusMap === STATUS_ENUM.FAILED) && !(statusMap === STATUS_ENUM.KNOWN_FAILED)) {
                         // if no failed and known_failed
-                        status = STATUS_ENUM.PASSED;
+                        statusMap[STATUS_ENUM.PASSED] = true;
                     }
                 }
             }
         }
-        if (valueInTheList(selectedStatus, status)) {
-            filteredRelvals.push(relVal);
+
+        let statusList = getObjectKeys(statusMap);
+        for (let i = 0; i < statusList.length; i++){
+            if (valueInTheList(selectedStatus, statusList[i])) {
+                filteredRelvals.push(relVal);
+                break;
+            }
         }
+
     }
     return filteredRelvals;
 }
