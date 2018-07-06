@@ -126,8 +126,6 @@ export default {
             }
         },
         {
-            //add_lizard_tests_link
-            // Lizard
             key: "flawfinder",
             name: "Flaw finder",
             getUrl: function (ib) {
