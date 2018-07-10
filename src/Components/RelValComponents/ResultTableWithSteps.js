@@ -173,7 +173,6 @@ class ResultTableWithSteps extends Component {
     render() {
         let tableConfig = [];
         const {filteredRelVals, selectedArchs, selectedFlavors, style, selectedFilterStatus} = this.props;
-        console.log(filteredRelVals);
         const {structure = {}, ibDate, ibQue} = this.props;
         const archColorScheme = ShowArchStore.getColorsSchemeForQue(
             getReleaseQue(ibQue)
@@ -224,7 +223,7 @@ class ResultTableWithSteps extends Component {
             </Modal>
         );
         if (structure.dataLoaded) {
-            let flavorKeys = getObjectKeys(structure.flavors);
+            let flavorKeys = getObjectKeys(structure.flavors).sort().reverse();
             filterNameList(flavorKeys, selectedFlavors).map(flavorKey => {
                 let configObject = {
                     Header: () => <div>{getDisplayName(flavorKey)}</div>,

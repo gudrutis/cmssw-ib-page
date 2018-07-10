@@ -45,7 +45,7 @@ class RelValStore extends EventEmitter {
     getAllFlavorsForQue({date, que}) {
         const allQueInfo = this._getQueData({date, que});
         if (allQueInfo) {
-            return Object.keys(allQueInfo.flavors);
+            return Object.keys(allQueInfo.flavors).sort().reverse();
         }
     }
 

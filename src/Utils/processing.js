@@ -143,7 +143,6 @@ export function getInfoFromRelease(releseName) {
 }
 
 export function getStructureFromAvalableRelVals(relvalInfoObject) {
-
     const keysList = Object.keys(relvalInfoObject);
     let config = {};
     keysList.map((key) => {
@@ -162,6 +161,7 @@ export function getStructureFromAvalableRelVals(relvalInfoObject) {
         config[date][que].flavors[flavor] = {};
         archs.map(arch => {
             config[date][que].flavors[flavor][arch] = {date, que, flavor, arch};
+            // TODO sort config[date][que].flavors[flavor] somehow, for now it is sorted at 2 places
         });
         config[date][que].allArchs = _.uniq(config[date][que].allArchs.concat(archs));
     });
