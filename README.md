@@ -10,5 +10,5 @@ cd public/build
 ./updateData.sh
 cd [project root]
 npm install
-npm start 
+npm run start 
 ```

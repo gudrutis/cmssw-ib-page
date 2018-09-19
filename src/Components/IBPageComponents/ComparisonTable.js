@@ -456,7 +456,16 @@ class ComparisonTable extends Component {
                                 getUrl: getFWliteUrl,
                                 showLabelConfig: [
                                     {
-                                        groupFields: ["num_failed"],
+                                        groupFields: [
+                                            "num_failed",
+                                            "dictError",
+                                            "compError",
+                                            "linkError",
+                                            "pythonError",
+                                            "dwnlError",
+                                            "miscError",
+                                            "scram errors"
+                                        ],
                                         color: "danger"
                                     },
                                     {
