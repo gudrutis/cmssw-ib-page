@@ -45,7 +45,7 @@ class RelValNavigation extends Component {
             <Navbar fixedTop id={'navigation'}>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <p>RelVals</p>
+                        <p>RelVals: {this.props.relvalInfo}</p>
                     </Navbar.Brand>
                     <Navbar.Toggle/>
                 </Navbar.Header>
