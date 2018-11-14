@@ -86,13 +86,15 @@ class ResultTableWithSteps extends Component {
         )
     }
 
-    _rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName) {
+    _rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName, glyphicon) {
         let logComponent;
+        //<span class="glyphicon glyphicon-list-alt"/><span> HLT Validation </span>
+        let renderedGlyphicon = glyphicon ? (<span class={"glyphicon " + glyphicon}/> ): null;
         if (logUrl) {
             logComponent = (
                 <a target="_blank" href={logUrl}>
                     <span style={{backgroundColor: backgroundColor}} className="btn label">
-                        {text}
+                        {text} {renderedGlyphicon}
                     </span>
                 </a>
             )
@@ -123,6 +125,7 @@ class ResultTableWithSteps extends Component {
             let logUrl, label;
             let step = steps[i - 1];
             const {status, errors, warnings} = step;
+            let glyphicon = isRelValKnownFailed(data) ? "glyphicon-eye-open" : null
             if (status === RELVAL_STATUS_ENUM.PASSED) {
                 let labelColor;
                 if (errors > 0) {
@@ -133,20 +136,20 @@ class ResultTableWithSteps extends Component {
                     labelColor = LABEL_COLOR.PASSED_COLOR
                 }
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, labelColor, name, glyphicon)
             } else if (status === RELVAL_STATUS_ENUM.FAILED) {
                 let labelColor = isRelValKnownFailed(data) ? LABEL_COLOR.PASSED_COLOR : LABEL_COLOR.FAILED_COLOR;
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(ExitCodeStore.getExitCodeName(exitcode), i, logUrl, steps, labelColor, name)
+                label = this._rowWithLabel(ExitCodeStore.getExitCodeName(exitcode), i, logUrl, steps, labelColor, name, glyphicon)
             } else if (status === RELVAL_STATUS_ENUM.DAS_ERROR) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, true);
-                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.DAS_ERROR_COLOR, name, glyphicon)
             } else if (status === RELVAL_STATUS_ENUM.NOTRUN) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.NOT_RUN_COLOR, name, glyphicon)
             } else if (status === RELVAL_STATUS_ENUM.TIMEOUT) {
                 logUrl = getLogAddress(archKey, ib, i, name, id, false);
-                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name)
+                label = this._rowWithLabel(getLabelName(step.status), i, logUrl, steps, LABEL_COLOR.FAILED_COLOR, name, glyphicon)
             } else {
                 console.error('Unknown status')
             }
