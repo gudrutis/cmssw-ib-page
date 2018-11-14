@@ -96,13 +96,13 @@ class RelValLayout extends Component {
         const {selectedArchs, selectedFlavors, selectedStatus, selectedFilterStatus} = queryString.parse(this.props.location.search);
         const {structure = {}} = this.state;
         const {date, que} = this.props.match.params;
+        const {location, history} = this.props;
         const controlList = [
             <TogglesShowRow
                 rowName={'Flavors'}
                 nameList={allFlavors}
                 initSelections={selectedFlavors}
                 callbackToParent={(v) => {
-                    const {location, history} = this.props;
                     partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_FLAVORS, v);
                     goToLinkWithoutHistoryUpdate(history, location);
                 }}/>,
@@ -111,7 +111,6 @@ class RelValLayout extends Component {
                 nameList={allArchs}
                 initSelections={selectedArchs}
                 callbackToParent={(v) => {
-                    const {location, history} = this.props;
                     partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_ARCHS, v);
                     goToLinkWithoutHistoryUpdate(history, location);
                 }}/>,
@@ -121,7 +120,6 @@ class RelValLayout extends Component {
                     nameList={STATUS_ENUM_LIST}
                     initSelections={selectedStatus}
                     callbackToParent={(v) => {
-                        const {location, history} = this.props;
                         partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_STATUS, v);
                         goToLinkWithoutHistoryUpdate(history, location);
                     }}/>,
@@ -130,7 +128,7 @@ class RelValLayout extends Component {
                     nameList={['On']}
                     initSelections={selectedFilterStatus}
                     callbackToParent={(v) => {
-                        const {location, history} = this.props;
+                        
                         partiallyUpdateLocationQuery(location, NAV_CONTROLS_ENUM.SELECTED_FILTER_STATUS, v);
                         goToLinkWithoutHistoryUpdate(history, location);
                     }}/>
@@ -154,7 +152,7 @@ class RelValLayout extends Component {
         return (
             
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
-                <RelValNavigation relvalInfo={que + " " + date} controlList={controlList}/>
+                <RelValNavigation relvalInfo={que + " " + date} controlList={controlList} history={history}/>
                 <ResultTableWithSteps
                     {...resultTableWithStepsSettings}
                 />

@@ -45,9 +45,15 @@ class RelValNavigation extends Component {
             <Navbar fixedTop id={'navigation'}>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <p>RelVals: {this.props.relvalInfo}</p>
+                        <p>
+                        <Button bsSize="small" onClick={ ()=>{this.props.history.goBack()} }> 
+                            <Glyphicon glyph="chevron-left"/>
+                        </Button>
+                            {" "}RelVals: {this.props.relvalInfo}
+                        </p>
                     </Navbar.Brand>
                     <Navbar.Toggle/>
+                    
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav pullRight>
