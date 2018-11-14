@@ -19,7 +19,8 @@ export default {
         showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
         relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
         commits: "https://github.com/cms-sw/cmsdist/commits/",
-        newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`
+        newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`,
+        newRelValsSpecific: (releaseQue, date, flavor, arch ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}&selectedStatus=failed`
     },
     colorCoding: {
         prodColor: '#5cb85c', // production arch

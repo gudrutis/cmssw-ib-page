@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
+import { Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import {
     getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName, getInfoFromRelease,
     valueInTheList
@@ -57,12 +57,20 @@ class ComparisonTable extends Component {
         super(props);
         this.getArchSettings = this.getArchSettings.bind(this);
         const {data, releaseQue} = props;
+        let fullMatch, que, flavor, date;
+        if (data[0]){
+            [fullMatch, que, flavor, date] = getInfoFromRelease( data[0].release_name);
+            this.state = {date: date}
+        }
         this.state = {
             ibComparison: data,
+            que,
+            date,
             archsByIb: getAllActiveArchitecturesFromIBGroupByFlavor(data, ShowArchStore.getActiveArchsForQue(releaseQue)),
             releaseQue: releaseQue,
             archColorScheme: ShowArchStore.getColorsSchemeForQue(releaseQue)
         };
+
     }
 
     componentWillMount() {
@@ -273,10 +281,8 @@ class ComparisonTable extends Component {
             } else if (file === 'not-ready') {
                 return urls.relVals + arch + ';' + ibName
             } else {
-                const si = 4;
-                let link_parts = file.split('/');
                 const [fullMatch, que, flavor, date] = getInfoFromRelease(ibName);
-                return urls.newRelVals(que, date);
+                return urls.newRelValsSpecific(que, date, flavor, arch);
                 // return urls.relVals + link_parts[si] + ';' + link_parts[si + 4];
             }
         };
@@ -406,7 +412,11 @@ class ComparisonTable extends Component {
                         )}
                     </tr>
                     <tr>
-                        <td className={'name-column'}><b>RelVals</b></td>
+                        <td className={'name-column'}>
+
+                                <a  href={urls.newRelVals(this.state.que, this.state.date)}> <b>RelVals </b> </a>
+
+                        </td>
                         {this.renderRelVals({
                                 resultType: 'relvals',
                                 getUrl: getRelValUrl,

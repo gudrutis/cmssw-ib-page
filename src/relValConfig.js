@@ -67,8 +67,6 @@ export const legend = [_legendConf.map(i => {
         </p>
         )
     }),
-    <hr key={uuid.v4()}/>,
-    <p key={uuid.v4()}>TODO additional help comes here</p>
 ];
 
 // Color coding
