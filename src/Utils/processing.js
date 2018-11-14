@@ -229,9 +229,8 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
                 const {id} = relVal;
                 const fullRelVal = flavors[flavor][archKey][id];
                 if (fullRelVal) {
-                    const {exitcode} = fullRelVal;
                     // check if RelVal is Failed | KNOWN_FAILED | PASSED
-                    if (exitcode !== 0 && !isRelValKnownFailed(fullRelVal)) {
+                    if (doMarkAsFailed(fullRelVal)) {
                         // if workflow is failed at least in one ib, mark all row failed
                         statusMap[STATUS_ENUM.FAILED] = true;
                     } else if (!(statusMap === STATUS_ENUM.FAILED) && isRelValKnownFailed(fullRelVal)) {
@@ -257,8 +256,35 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
     return filteredRelvals;
 }
 
+/*
+    Relvals have these 'known_error' fields:
+    -1 - was known failed, but now started to pass
+     0 - is not known
+     1 - is known
+
+    RelVals have these 'exitcode' values:
+    != 0 failed
+    == 0 passed
+*/
+
+
+
 export function isRelValKnownFailed(relVal) {
-    return (relVal.known_error === 1);
+    return relVal.known_error === 1 ;
+}
+
+function isRelValPassingWhenKnownFailed(relval) {
+    return relval.known_error === -1 ;
+}
+
+export function isRelValTrackedForFailed(relVal) {
+    // Is relval tracked for being known_failed
+    return isRelValKnownFailed(relVal) || isRelValPassingWhenKnownFailed(relVal);
+}
+
+function doMarkAsFailed(relVal) {
+    //
+    return (relVal.exitcode !== 0 && !isRelValKnownFailed(relVal))  || isRelValPassingWhenKnownFailed(relVal);
 }
 
 export function relValStatistics(relValList) {
@@ -270,8 +296,7 @@ export function relValStatistics(relValList) {
     };
     for (let i = 0; i < relValList.length; i++) {
         const relVal = relValList[i];
-        const {exitcode} = relVal;
-        if (exitcode !== 0 && !isRelValKnownFailed(relVal)) {
+        if ( doMarkAsFailed(relVal) ) {
             statistics.failed += 1;
         } else if (isRelValKnownFailed(relVal)) {
             statistics.known_failed += 1;

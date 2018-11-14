@@ -12,7 +12,7 @@ import {
     filterNameList,
     getDisplayName,
     getObjectKeys,
-    isRelValKnownFailed,
+    isRelValKnownFailed, isRelValTrackedForFailed,
     valueInTheList
 } from "../../Utils/processing";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
@@ -88,7 +88,7 @@ class ResultTableWithSteps extends Component {
 
     _rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName, glyphicon) {
         let logComponent;
-        let renderedGlyphicon = glyphicon ? (<span class={"glyphicon " + glyphicon}/> ): null;
+        let renderedGlyphicon = glyphicon ? (<span className={"glyphicon " + glyphicon}/> ): null;
         if (logUrl) {
             logComponent = (
                 <a target="_blank" href={logUrl}>
@@ -124,7 +124,7 @@ class ResultTableWithSteps extends Component {
             let logUrl, label;
             let step = steps[i - 1];
             const {status, errors, warnings} = step;
-            let glyphicon = isRelValKnownFailed(data) ? "glyphicon-eye-open" : null
+            let glyphicon = isRelValTrackedForFailed(data) ? "glyphicon-eye-open" : null;
             if (status === RELVAL_STATUS_ENUM.PASSED) {
                 let labelColor;
                 if (errors > 0) {
@@ -371,8 +371,9 @@ class ResultTableWithSteps extends Component {
                     collapseOnDataChange={false}
                     data={filteredRelVals}
                     columns={columns}
-                    defaultPageSize={50}
+                    defaultPageSize={100}
                     style={style}
+                    pageSizeOptions= {[20, 50, 100, 500, 1000]}
                     className={'-striped -highlight'}
                 />
             ]
