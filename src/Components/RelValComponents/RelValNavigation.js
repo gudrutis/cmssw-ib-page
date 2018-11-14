@@ -28,6 +28,7 @@ class RelValNavigation extends Component {
     }
 
     render() {
+        const {relvalInfo, que} = this.props;
         const modalHelp = (
             <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
@@ -46,10 +47,10 @@ class RelValNavigation extends Component {
                 <Navbar.Header>
                     <Navbar.Brand>
                         <p>
-                        <Button bsSize="small" onClick={ ()=>{this.props.history.goBack()} }> 
+                        <Button bsSize="small" href={"#/ib/"+que+"_X"} >
                             <Glyphicon glyph="chevron-left"/>
                         </Button>
-                            {" "}RelVals: {this.props.relvalInfo}
+                            {" "}RelVals: {relvalInfo}
                         </p>
                     </Navbar.Brand>
                     <Navbar.Toggle/>

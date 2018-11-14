@@ -152,7 +152,7 @@ class RelValLayout extends Component {
         return (
             
             <div className={'container'} style={{paddingTop: this.getTopPadding()}}>
-                <RelValNavigation relvalInfo={que + " " + date} controlList={controlList} history={history}/>
+                <RelValNavigation que={que} relvalInfo={que + " " + date} controlList={controlList} history={history}/>
                 <ResultTableWithSteps
                     {...resultTableWithStepsSettings}
                 />
