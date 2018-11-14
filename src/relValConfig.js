@@ -54,17 +54,19 @@ const _legendConf = [
     {color: LABEL_COLOR.PASSED_WARNINGS_COLOR, code: LABELS_TEXT['PASSED'], text: 'Passed with warning messages'},
     {color: LABEL_COLOR.FAILED_COLOR, code: LABELS_TEXT['FAILED'], text: 'Failed'},
     {color: LABEL_COLOR.DAS_ERROR_COLOR, code: LABELS_TEXT['DAS_ERROR'], text: 'DAS error'},
-    {color: LABEL_COLOR.PASSED_COLOR, code: "OtherCMS", text: 'Known failed'},
+    {color: LABEL_COLOR.PASSED_COLOR, code: "OtherCMS", text: 'Known failed', glyphicon: "glyphicon-eye-open"},
     // {color: LABEL_COLOR.TIMEOUT_COLOR, code: LABELS_TEXT['TIMEOUT'], text: 'Timed Out'}
 ];
 // TODO could be made better
-export const legend = [_legendConf.map(i => (
-    <p key={uuid.v4()}>
-        <span style={{backgroundColor: i.color}}
-              className="label">{i.code}</span> {i.text}
-
-    </p>
-)),
+export const legend = [_legendConf.map(i => {
+        let renderedGlyphicon = i.glyphicon ? (<span class={"glyphicon " + i.glyphicon}/> ): null;
+        return (
+        <p key={uuid.v4()}>
+            <span style={{backgroundColor: i.color}}
+                className="label">{i.code} {renderedGlyphicon}</span> {i.text} 
+        </p>
+        )
+    }),
     <hr key={uuid.v4()}/>,
     <p key={uuid.v4()}>TODO additional help comes here</p>
 ];
@@ -72,5 +74,3 @@ export const legend = [_legendConf.map(i => (
 // Color coding
 // Help message config
 // TODO Default hidden archs
-
-

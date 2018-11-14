@@ -88,7 +88,6 @@ class ResultTableWithSteps extends Component {
 
     _rowWithLabel(text, number, logUrl, steps, backgroundColor, cmdName, glyphicon) {
         let logComponent;
-        //<span class="glyphicon glyphicon-list-alt"/><span> HLT Validation </span>
         let renderedGlyphicon = glyphicon ? (<span class={"glyphicon " + glyphicon}/> ): null;
         if (logUrl) {
             logComponent = (
