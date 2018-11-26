@@ -170,15 +170,71 @@ class ComparisonTable extends Component {
     }
 
     renderRelVals({resultType, getUrl, showLabelConfig}) {
-        const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
+        const showRelValsResults = this.showRelValsResults(showLabelConfig, getUrl);
         const config = {
             resultType: resultType,
-            ifPassed: showGeneralResults,
-            ifError: showGeneralResults,
-            ifFailed: showGeneralResults,
-            ifWarning: showGeneralResults
+            ifPassed: showRelValsResults,
+            ifError: showRelValsResults,
+            ifFailed: showRelValsResults,
+            ifWarning: showRelValsResults
         };
         return this.renderRowCells(config);
+    }
+
+    showRelValsResults(showLabelConfig, getUrl) {
+        return function (result, ib) {
+            const {details, done} = result;
+            const resultKeys = Object.keys(details); //get all object properties name
+            let labelConfig = {value: 0};
+
+            for (let i = 0; i < showLabelConfig.length; i++) {
+                let el = showLabelConfig[i];
+                el.groupFields.map((predicate) => {
+                    if (typeof predicate === "function") {
+                        resultKeys.map(key => {
+                            if (predicate(key)) {
+                                labelConfig.value += details[key] * 1;
+                            }
+                        });
+                    } else {
+                        if (valueInTheList(resultKeys, predicate)) {
+                            labelConfig.value += details[predicate] * 1;
+                        }
+                    }
+                });
+                if (labelConfig.value > 0) {
+                    labelConfig.colorType = el.color;
+                    break;
+                }
+            }
+            if (done === false) {
+                labelConfig.value = '' + labelConfig.value + '*';
+            }
+            const tooltipContent = resultKeys.map(key => {
+                return <p>{key}: {details[key]}</p>
+            });
+
+            let selectedStatus;
+            switch (labelConfig.colorType){
+                case "danger":
+                    selectedStatus = "&selectedStatus=failed";
+                    break;
+                case "warning":
+                    selectedStatus = "&selectedFlavors=X&selectedStatus=failed&selectedStatus=known_failed";
+                    break;
+                case "success":
+                    selectedStatus = "&selectedFlavors=X&selectedStatus=failed&selectedStatus=known_failed&selectedStatus=passed";
+                    break;
+            }
+
+            return renderCell(renderLabel(
+                {
+                    colorType: labelConfig.colorType, value: labelConfig.value, tooltipContent,
+                    link: getUrl({"file": result.file, "arch": result.arch, "ibName": ib, "selectedStatus": selectedStatus })
+                })
+            );
+
+        };
     }
 
     showGeneralResults(showLabelConfig, getUrl) {
@@ -275,14 +331,14 @@ class ComparisonTable extends Component {
         };
 
         const getRelValUrl = function (params) {
-            const {file, arch, ibName} = params;
+            const {file, arch, ibName, selectedStatus} = params;
             if (!file) {
                 // do nothing
             } else if (file === 'not-ready') {
                 return urls.relVals + arch + ';' + ibName
             } else {
                 const [fullMatch, que, flavor, date] = getInfoFromRelease(ibName);
-                return urls.newRelValsSpecific(que, date, flavor, arch);
+                return urls.newRelValsSpecific(que, date, flavor, arch, selectedStatus );
                 // return urls.relVals + link_parts[si] + ';' + link_parts[si + 4];
             }
         };
@@ -413,9 +469,7 @@ class ComparisonTable extends Component {
                     </tr>
                     <tr>
                         <td className={'name-column'}>
-
-                                <a  href={urls.newRelVals(this.state.que, this.state.date)}> <b>RelVals </b> </a>
-
+                                <a href={urls.newRelVals(this.state.que, this.state.date)}> <b>RelVals </b> </a>
                         </td>
                         {this.renderRelVals({
                                 resultType: 'relvals',
