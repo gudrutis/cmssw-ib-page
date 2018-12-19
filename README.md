@@ -4,9 +4,7 @@ This is source code for new [CMSSDT IB page](https://cmssdt.cern.ch/SDT/html/cms
 
 ## To start
 ```sh
-cd public
-./updateData.sh
-cd -
+npmcd -
 npm install
 npm run start
 ```

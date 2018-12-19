@@ -313,6 +313,29 @@ class ComparisonTable extends Component {
         return this.renderRowCells(config);
     }
 
+    shouldShowRow(resultType){
+        /**
+         checks if there is at least 1  field to show
+         ibField - the row
+
+         */
+        const {archsByIb, ibComparison} = this.state;
+        let result  =  ibComparison.map((ib, pos) => {
+            const el = archsByIb[pos];
+            // generate cell for each arch
+            return el.archs.map(arch => {
+                const results = _.findWhere(ib[resultType], {"arch": arch});
+                if (!results) {
+                    // if not found,
+                    return 0
+                }
+                return 1;
+            }).reduce((total, int ) => total + int, 0);
+        }).reduce((total, int ) => total + int, 0);
+        console.log(result);
+        return result  // 0 - false, 1 and more - true
+    }
+
     render() {
         const {archsByIb} = this.state;
         // TODO refactor and put to configs
@@ -513,6 +536,7 @@ class ComparisonTable extends Component {
                             }
                         )}
                     </tr>
+                {  this.shouldShowRow("fwlite") ?
                     <tr>
                         <td className={'name-column'}><b>FWLite</b></td>
                         {this.renderRowCellsWithDefaultPreConfig({
@@ -544,6 +568,7 @@ class ComparisonTable extends Component {
                             }
                         )}
                     </tr>
+                : null}
                     <tr>
                         <td className={'name-column'}><b>Q/A</b></td>
                         {archsByIb.map(item => {
