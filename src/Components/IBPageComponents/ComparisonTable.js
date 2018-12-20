@@ -455,7 +455,8 @@ class ComparisonTable extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
+                    {  this.shouldShowRow("builds") ?
+                        <tr>
                         <td className={'name-column'}>
                             <b>Builds</b>
                         </td>
@@ -476,7 +477,8 @@ class ComparisonTable extends Component {
                                 ],
                             }
                         )}
-                    </tr>
+                        </tr>
+                    : null}
                     {  this.shouldShowRow("utests") ?
                     <tr>
                         <td className={'name-column'}><b>Unit Tests</b></td>
@@ -504,86 +506,91 @@ class ComparisonTable extends Component {
                                 }
                             )}
                         </tr>
-                        : null}
-                    <tr>
-                        <td className={'name-column'}>
-                                <a href={urls.newRelVals(this.state.que, this.state.date)}> <b>RelVals </b> </a>
-                        </td>
-                        {this.renderRelVals({
-                                resultType: 'relvals',
-                                getUrl: getRelValUrl,
-                                showLabelConfig: [
-                                    {
-                                        groupFields: ["num_failed"],
-                                        color: "danger"
-                                    },
-                                    {
-                                        groupFields: ["known_failed"],
-                                        color: "warning"
-                                    },
-                                    {
-                                        groupFields: ["num_passed"],
-                                        color: "success"
-                                    }
-                                ]
-                            }
-                        )}
-                    </tr>
-                    <tr>
-                        <td className={'name-column'}><b>Other Tests</b></td>
-                        {this.renderOtherTestResults({
-                                resultType: 'addons',
-                                getUrl: getOtherTestUrl,
-                                showLabelConfig: [
-                                    {
-                                        groupFields: ["num_failed"],
-                                        color: "danger"
-                                    },
-                                    {
-                                        groupFields: ["known_failed"],
-                                        color: "info"
-                                    },
-                                    {
-                                        groupFields: ["num_passed"],
-                                        color: "success"
-                                    }
-                                ]
-                            }
-                        )}
-                    </tr>
-                {  this.shouldShowRow("fwlite") ?
-                    <tr>
-                        <td className={'name-column'}><b>FWLite</b></td>
-                        {this.renderRowCellsWithDefaultPreConfig({
-                                resultType: 'fwlite',
-                                getUrl: getFWliteUrl,
-                                showLabelConfig: [
-                                    {
-                                        groupFields: [
-                                            "num_failed",
-                                            "dictError",
-                                            "compError",
-                                            "linkError",
-                                            "pythonError",
-                                            "dwnlError",
-                                            "miscError",
-                                            "scram errors"
-                                        ],
-                                        color: "danger"
-                                    },
-                                    {
-                                        groupFields: ["known_failed"],
-                                        color: "info"
-                                    },
-                                    {
-                                        groupFields: ["num_passed"],
-                                        color: "success"
-                                    }
-                                ]
-                            }
-                        )}
-                    </tr>
-                : null}
+                    : null}
+                    { this.shouldShowRow("relvals") ?
+                        <tr>
+                            <td className={'name-column'}>
+                                    <a href={urls.newRelVals(this.state.que, this.state.date)}> <b>RelVals </b> </a>
+                            </td>
+                            {this.renderRelVals({
+                                    resultType: 'relvals',
+                                    getUrl: getRelValUrl,
+                                    showLabelConfig: [
+                                        {
+                                            groupFields: ["num_failed"],
+                                            color: "danger"
+                                        },
+                                        {
+                                            groupFields: ["known_failed"],
+                                            color: "warning"
+                                        },
+                                        {
+                                            groupFields: ["num_passed"],
+                                            color: "success"
+                                        }
+                                    ]
+                                }
+                            )}
+                        </tr>
+                    : null}
+                    {  this.shouldShowRow("addons") ?
+                        <tr>
+                            <td className={'name-column'}><b>Other Tests</b></td>
+                            {this.renderOtherTestResults({
+                                    resultType: 'addons',
+                                    getUrl: getOtherTestUrl,
+                                    showLabelConfig: [
+                                        {
+                                            groupFields: ["num_failed"],
+                                            color: "danger"
+                                        },
+                                        {
+                                            groupFields: ["known_failed"],
+                                            color: "info"
+                                        },
+                                        {
+                                            groupFields: ["num_passed"],
+                                            color: "success"
+                                        }
+                                    ]
+                                }
+                            )}
+                        </tr>
+                    : null}
+                    { this.shouldShowRow("fwlite") ?
+                        <tr>
+                            <td className={'name-column'}><b>FWLite</b></td>
+                            {this.renderRowCellsWithDefaultPreConfig({
+                                    resultType: 'fwlite',
+                                    getUrl: getFWliteUrl,
+                                    showLabelConfig: [
+                                        {
+                                            groupFields: [
+                                                "num_failed",
+                                                "dictError",
+                                                "compError",
+                                                "linkError",
+                                                "pythonError",
+                                                "dwnlError",
+                                                "miscError",
+                                                "scram errors"
+                                            ],
+                                            color: "danger"
+                                        },
+                                        {
+                                            groupFields: ["known_failed"],
+                                            color: "info"
+                                        },
+                                        {
+                                            groupFields: ["num_passed"],
+                                            color: "success"
+                                        }
+                                    ]
+                                }
+                            )}
+                        </tr>
+                    : null}
+                    {/* TODO check if the value exists*/}
                     <tr>
                         <td className={'name-column'}><b>Q/A</b></td>
                         {archsByIb.map(item => {
