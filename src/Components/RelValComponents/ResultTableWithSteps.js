@@ -24,6 +24,7 @@ const {urls} = config;
  * returns the link address for a given Ib and an arch
  */
 function getLogAddress(arch, ib, step, workflowName, workflowID, wasDASErr) {
+    // TODO fix relvals
     let filename = '';
     if (!wasDASErr) {
         filename = 'step' + step + '_' + workflowName + '.log'

@@ -332,7 +332,6 @@ class ComparisonTable extends Component {
                 return 1;
             }).reduce((total, int ) => total + int, 0);
         }).reduce((total, int ) => total + int, 0);
-        console.log(result);
         return result  // 0 - false, 1 and more - true
     }
 
@@ -478,6 +477,7 @@ class ComparisonTable extends Component {
                             }
                         )}
                     </tr>
+                    {  this.shouldShowRow("utests") ?
                     <tr>
                         <td className={'name-column'}><b>Unit Tests</b></td>
                         {this.renderRowCellsWithDefaultPreConfig({
@@ -490,6 +490,21 @@ class ComparisonTable extends Component {
                             }
                         )}
                     </tr>
+                    : null}
+                    {  this.shouldShowRow("gpu_utests") ?
+                        <tr>
+                            <td className={'name-column'}><b>GPU Unit Tests</b></td>
+                            {this.renderRowCellsWithDefaultPreConfig({
+                                    resultType: 'gpu_utests',
+                                    getUrl: getBuildOrUnitUrl,
+                                    showLabelConfig: [{
+                                        groupFields: ["num_fails"],
+                                        color: "danger"
+                                    }]
+                                }
+                            )}
+                        </tr>
+                        : null}
                     <tr>
                         <td className={'name-column'}>
                                 <a href={urls.newRelVals(this.state.que, this.state.date)}> <b>RelVals </b> </a>
