@@ -146,7 +146,7 @@ class ComparisonTable extends Component {
         })
     }
 
-    renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
+    renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig, urlParameter=''}) {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
         const config = {
             resultType: resultType,
@@ -157,7 +157,7 @@ class ComparisonTable extends Component {
                         colorType: 'success',
                         glyphicon: 'glyphicon-ok-circle',
                         tooltipContent,
-                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib})
+                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib, "urlParameter": urlParameter})
                     }
                 );
                 return renderCell(cellInfo);
@@ -339,7 +339,7 @@ class ComparisonTable extends Component {
         const {archsByIb} = this.state;
         // TODO refactor and put to configs
         const getBuildOrUnitUrl = function (params) {
-            const {file, arch, ibName} = params;
+            const {file, arch, ibName, urlParameter} = params;
             if (!file) {
                 // do nothing
             } else if (file === 'not-ready') {
@@ -348,7 +348,7 @@ class ComparisonTable extends Component {
                 let link_parts = file.split('/');
                 const si = 4;
                 link_parts = link_parts.slice(si, si + 5);
-                return urls.buildOrUnitTestUrl + link_parts.join('/');
+                return urls.buildOrUnitTestUrl + link_parts.join('/') + urlParameter;
             }
         };
 
@@ -474,7 +474,7 @@ class ComparisonTable extends Component {
                                         groupFields: ["compWarning"],
                                         color: "warning"
                                     }
-                                ],
+                                ]
                             }
                         )}
                         </tr>
@@ -488,7 +488,8 @@ class ComparisonTable extends Component {
                                 showLabelConfig: [{
                                     groupFields: ["num_fails"],
                                     color: "danger"
-                                }]
+                                }],
+                                urlParameter: '?utests'
                             }
                         )}
                     </tr>
@@ -502,7 +503,8 @@ class ComparisonTable extends Component {
                                     showLabelConfig: [{
                                         groupFields: ["num_fails"],
                                         color: "danger"
-                                    }]
+                                    }],
+                                    urlParameter: '?gpu_utests'
                                 }
                             )}
                         </tr>
