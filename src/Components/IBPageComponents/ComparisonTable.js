@@ -146,8 +146,8 @@ class ComparisonTable extends Component {
         })
     }
 
-    renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig}) {
-        const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl);
+    renderRowCellsWithDefaultPreConfig({resultType, getUrl, showLabelConfig, urlParameter=''}) {
+        const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl, urlParameter);
         const config = {
             resultType: resultType,
             ifPassed: function (details, ib) {
@@ -157,7 +157,7 @@ class ComparisonTable extends Component {
                         colorType: 'success',
                         glyphicon: 'glyphicon-ok-circle',
                         tooltipContent,
-                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib})
+                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib, "urlParameter": urlParameter})
                     }
                 );
                 return renderCell(cellInfo);
@@ -237,7 +237,7 @@ class ComparisonTable extends Component {
         };
     }
 
-    showGeneralResults(showLabelConfig, getUrl) {
+    showGeneralResults(showLabelConfig, getUrl, urlParameter) {
         return function (result, ib) {
             const {details, done} = result;
             const resultKeys = Object.keys(details); //get all object properties name
@@ -272,7 +272,7 @@ class ComparisonTable extends Component {
             return renderCell(renderLabel(
                 {
                     colorType: labelConfig.colorType, value: labelConfig.value, tooltipContent,
-                    link: getUrl({"file": result.file, "arch": result.arch, "ibName": ib})
+                    link: getUrl({"file": result.file, "arch": result.arch, "ibName": ib, "urlParameter": urlParameter })
                 })
             );
 
@@ -315,9 +315,8 @@ class ComparisonTable extends Component {
 
     shouldShowRow(resultType){
         /**
-         checks if there is at least 1  field to show
+         checks if there is at least 1 field to show
          ibField - the row
-
          */
         const {archsByIb, ibComparison} = this.state;
         let result  =  ibComparison.map((ib, pos) => {
@@ -340,6 +339,7 @@ class ComparisonTable extends Component {
         // TODO refactor and put to configs
         const getBuildOrUnitUrl = function (params) {
             const {file, arch, ibName} = params;
+            const urlParameter = params.urlParameter ? params.urlParameter : '';
             if (!file) {
                 // do nothing
             } else if (file === 'not-ready') {
@@ -348,7 +348,7 @@ class ComparisonTable extends Component {
                 let link_parts = file.split('/');
                 const si = 4;
                 link_parts = link_parts.slice(si, si + 5);
-                return urls.buildOrUnitTestUrl + link_parts.join('/');
+                return urls.buildOrUnitTestUrl + link_parts.join('/') + urlParameter;
             }
         };
 
@@ -474,24 +474,25 @@ class ComparisonTable extends Component {
                                         groupFields: ["compWarning"],
                                         color: "warning"
                                     }
-                                ],
+                                ]
                             }
                         )}
                         </tr>
                     : null}
                     {  this.shouldShowRow("utests") ?
-                    <tr>
-                        <td className={'name-column'}><b>Unit Tests</b></td>
-                        {this.renderRowCellsWithDefaultPreConfig({
-                                resultType: 'utests',
-                                getUrl: getBuildOrUnitUrl,
-                                showLabelConfig: [{
-                                    groupFields: ["num_fails"],
-                                    color: "danger"
-                                }]
-                            }
-                        )}
-                    </tr>
+                        <tr>
+                            <td className={'name-column'}><b>Unit Tests</b></td>
+                            {this.renderRowCellsWithDefaultPreConfig({
+                                    resultType: 'utests',
+                                    getUrl: getBuildOrUnitUrl,
+                                    showLabelConfig: [{
+                                        groupFields: ["num_fails"],
+                                        color: "danger"
+                                    }],
+                                    urlParameter: '?utests'
+                                }
+                            )}
+                        </tr>
                     : null}
                     {  this.shouldShowRow("gpu_utests") ?
                         <tr>
@@ -502,7 +503,8 @@ class ComparisonTable extends Component {
                                     showLabelConfig: [{
                                         groupFields: ["num_fails"],
                                         color: "danger"
-                                    }]
+                                    }],
+                                    urlParameter: '?gpu_utests'
                                 }
                             )}
                         </tr>
