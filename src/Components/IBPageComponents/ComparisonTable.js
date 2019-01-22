@@ -394,11 +394,12 @@ class ComparisonTable extends Component {
                     <tr>
                         <th className={'name-column'} rowSpan={2}/>
                         {/* IB flavors row*/}
-                        {archsByIb.forEach(item => {
+                        {archsByIb.map(item => {
                             if (item.archs.length > 0) {
                                 return <th key={uuid.v4()}
                                            colSpan={item.archs.length}>{getDisplayName(item.flavor)}</th>
                             }
+                            return null;
                         })}
                     </tr>
                     <tr>
