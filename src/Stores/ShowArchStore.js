@@ -45,10 +45,13 @@ class ShowArchStore extends EventEmitter {
                     archListByRealise[que] = Object.keys(ibSummary[que]);
                 });
                 all_prefixes.forEach((prefix) => {
-                    const realeaseFlavors = structureData[prefix];
-                    realeaseFlavors.forEach((flavor) => {
+                    const releaseFlavors = structureData[prefix];
+                    releaseFlavors.forEach((flavor) => {
                         if (!config[prefix]) {
                             config[prefix] = [];
+                        }
+                        if (! archListByRealise[flavor]){
+                            return; // workaround if arch is missing, all page will not crash
                         }
                         config[prefix] = config[prefix].concat(
                             archListByRealise[flavor]
@@ -58,6 +61,9 @@ class ShowArchStore extends EventEmitter {
                 all_prefixes.forEach(que => {
                     if (!config[que][0]) {
                         return
+                    }
+                    if (!prod_archs[que]){
+                        return // workaround if arch is missing, all page will not crash
                     }
                     // TODO maybe just make seperate colors for archs
                     // TODO if 1 color per combination, add logic here
