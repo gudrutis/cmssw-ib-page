@@ -10,7 +10,7 @@ class RelValStore extends EventEmitter {
     // TODO show statistics can be calculated here
     constructor() {
         super();
-        this.setMaxListeners(20);
+        this.setMaxListeners(50); // The more tables in the page are, the more listeners I need. Looks like its cleaning up properly on unmount, but this was not the right approach
         this._getStructure();
     }
 
@@ -57,9 +57,9 @@ class RelValStore extends EventEmitter {
                     let allRelValIDObject = {};
                     const {flavors} = this.structure[date][que];
                     const allFlavors = this.getAllFlavorsForQue({date, que});
-                    allFlavors.map(flavorName => {
+                    allFlavors.forEach(flavorName => {
                         const archs = Object.keys(flavors[flavorName]);
-                        archs.map(arch => {
+                        archs.forEach(arch => {
                             archsToLoad.push(flavors[flavorName][arch]);
                         })
                     });
@@ -76,7 +76,7 @@ class RelValStore extends EventEmitter {
                                 const {que, date, arch, flavor} = archsToLoad[i];
                                 let relValObject = transforListToObject(relvals);
                                 const workflowKeys = Object.keys(relValObject);
-                                workflowKeys.map(wf => {
+                                workflowKeys.forEach(wf => {
                                     let {steps} = relValObject[wf];
                                     for (let s = 0; s < steps.length; s++) {
                                         let workflowHash = workflowHashes[wf + "-" + (s + 1)];
@@ -93,7 +93,7 @@ class RelValStore extends EventEmitter {
                                 }
                                 this.structure[date][que].relvalStatus[flavor][arch] = relValStatistics(relvals);
                                 // ---
-                                workflowKeys.map((id) => {
+                                workflowKeys.forEach((id) => {
                                     const exitCode = relValObject[id].exitcode;
                                     if (exitCode !== 0) {
                                         allRelValIDObject[id] = {

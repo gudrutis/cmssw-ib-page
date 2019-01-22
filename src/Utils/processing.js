@@ -66,7 +66,7 @@ export function extractInfoFromArchs(archList) {
         'cpu': [],
         'compiler': []
     };
-    archList.map(
+    archList.forEach(
         (arch) => {
             const results = arch.split("_");
             infoObject['os'].push(results[0]);
@@ -145,8 +145,8 @@ export function getInfoFromRelease(releseName) {
 export function getStructureFromAvalableRelVals(relvalInfoObject) {
     const keysList = Object.keys(relvalInfoObject);
     let config = {};
-    keysList.map((key) => {
-        const [fullMatch, que, flavor, date] = getInfoFromRelease(key);
+    keysList.forEach((key) => {
+        const [, que, flavor, date] = getInfoFromRelease(key);  // first variable is fullMatch
         const archs = relvalInfoObject[key].split(',');
         if (!config[date]) {
             config[date] = {}
@@ -159,7 +159,7 @@ export function getStructureFromAvalableRelVals(relvalInfoObject) {
             }
         }
         config[date][que].flavors[flavor] = {};
-        archs.map(arch => {
+        archs.forEach(arch => {
             config[date][que].flavors[flavor][arch] = {date, que, flavor, arch};
             // TODO sort config[date][que].flavors[flavor] somehow, for now it is sorted at 2 places
         });
@@ -173,7 +173,7 @@ export function transforListToObject(relValList) {
      * Will transform RelVal list to object where relVal id is the key
      */
     let relValObj = {};
-    relValList.map(i => {
+    relValList.forEach(i => {
         relValObj[i.id] = i;
     });
     return relValObj;

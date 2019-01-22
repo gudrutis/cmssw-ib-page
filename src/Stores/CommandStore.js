@@ -12,7 +12,7 @@ class CommandStore extends EventEmitter {
     // TODO show statistics can be calculated here
     constructor(props) {
         super(props);
-        this.setMaxListeners(20);
+        this.setMaxListeners(50); // The more tables in the page are, the more listeners I need. Looks like its cleaning up properly on unmount, but this was not the right approach
         this.commandMap = {};
     }
 

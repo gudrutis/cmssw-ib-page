@@ -57,9 +57,9 @@ class ComparisonTable extends Component {
         super(props);
         this.getArchSettings = this.getArchSettings.bind(this);
         const {data, releaseQue} = props;
-        let fullMatch, que, flavor, date;
+        let  que,  date;
         if (data[0]){
-            [fullMatch, que, flavor, date] = getInfoFromRelease( data[0].release_name);
+            [, que, , date] = getInfoFromRelease( data[0].release_name);  // fullMatch, que, flavor, date
             this.state = {date: date}
         }
         this.state = {
@@ -189,9 +189,9 @@ class ComparisonTable extends Component {
 
             for (let i = 0; i < showLabelConfig.length; i++) {
                 let el = showLabelConfig[i];
-                el.groupFields.map((predicate) => {
+                el.groupFields.forEach((predicate) => {
                     if (typeof predicate === "function") {
-                        resultKeys.map(key => {
+                        resultKeys.forEach(key => {
                             if (predicate(key)) {
                                 labelConfig.value += details[key] * 1;
                             }
@@ -211,7 +211,7 @@ class ComparisonTable extends Component {
                 labelConfig.value = '' + labelConfig.value + '*';
             }
             const tooltipContent = resultKeys.map(key => {
-                return <p>{key}: {details[key]}</p>
+                return <p key={uuid.v4()} >{key}: {details[key]}</p>
             });
 
             let selectedStatus;
@@ -225,6 +225,8 @@ class ComparisonTable extends Component {
                 case "success":
                     selectedStatus = "&selectedFlavors=X&selectedStatus=failed&selectedStatus=known_failed&selectedStatus=passed";
                     break;
+                default:
+                    console.error("wrong 'labelConfig.colorType' value in switch statement:" + labelConfig.colorType)
             }
 
             return renderCell(renderLabel(
@@ -245,9 +247,9 @@ class ComparisonTable extends Component {
 
             for (let i = 0; i < showLabelConfig.length; i++) {
                 let el = showLabelConfig[i];
-                el.groupFields.map((predicate) => {
+                el.groupFields.forEach((predicate) => {
                     if (typeof predicate === "function") {
-                        resultKeys.map(key => {
+                        resultKeys.forEach(key => {
                             if (predicate(key)) {
                                 labelConfig.value += details[key] * 1;
                             }
@@ -267,7 +269,7 @@ class ComparisonTable extends Component {
                 labelConfig.value = '' + labelConfig.value + '*';
             }
             const tooltipContent = resultKeys.map(key => {
-                return <p>{key}: {details[key]}</p>
+                return <p key={uuid.v4()} >{key}: {details[key]}</p>
             });
             return renderCell(renderLabel(
                 {
@@ -359,7 +361,7 @@ class ComparisonTable extends Component {
             } else if (file === 'not-ready') {
                 return urls.relVals + arch + ';' + ibName
             } else {
-                const [fullMatch, que, flavor, date] = getInfoFromRelease(ibName);
+                const [ , que, flavor, date] = getInfoFromRelease(ibName);  // fullMatch, que, flavor, date
                 return urls.newRelValsSpecific(que, date, flavor, arch, selectedStatus );
                 // return urls.relVals + link_parts[si] + ';' + link_parts[si + 4];
             }
@@ -392,7 +394,7 @@ class ComparisonTable extends Component {
                     <tr>
                         <th className={'name-column'} rowSpan={2}/>
                         {/* IB flavors row*/}
-                        {archsByIb.map(item => {
+                        {archsByIb.forEach(item => {
                             if (item.archs.length > 0) {
                                 return <th key={uuid.v4()}
                                            colSpan={item.archs.length}>{getDisplayName(item.flavor)}</th>

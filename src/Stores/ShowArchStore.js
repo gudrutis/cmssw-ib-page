@@ -13,7 +13,7 @@ const {urls, colorCoding} = config;
 class ShowArchStore extends EventEmitter {
     constructor() {
         super();
-        this.setMaxListeners(20);
+        this.setMaxListeners(50); // The more tables in the page are, the more listeners I need. Looks like its cleaning up properly on unmount, but this was not the right approach
         this.emptyConfig = {
             'os': [], 'cpu': [], 'compiler': []
         };
@@ -38,15 +38,15 @@ class ShowArchStore extends EventEmitter {
                 const {all_prefixes, all_release_queues} = structureData;
                 const {prod_archs} = ibSummary;
                 let archListByRealise = {}, config = {};
-                all_release_queues.map((que) => {
+                all_release_queues.forEach((que) => {
                     if (!ibSummary[que]) {
                         return
                     }
                     archListByRealise[que] = Object.keys(ibSummary[que]);
                 });
-                all_prefixes.map((prefix) => {
+                all_prefixes.forEach((prefix) => {
                     const realeaseFlavors = structureData[prefix];
-                    realeaseFlavors.map((flavor) => {
+                    realeaseFlavors.forEach((flavor) => {
                         if (!config[prefix]) {
                             config[prefix] = [];
                         }
@@ -55,8 +55,8 @@ class ShowArchStore extends EventEmitter {
                         );
                     })
                 });
-                all_prefixes.map(que => {
-                    if (!config[que]) {
+                all_prefixes.forEach(que => {
+                    if (!config[que][0]) {
                         return
                     }
                     // TODO maybe just make seperate colors for archs
@@ -146,6 +146,9 @@ class ShowArchStore extends EventEmitter {
             case ShowArchActionTypes.SET_ACTIVE_ARCHS: {
                 this.setActiveArchs(action.values);
                 break;
+            }
+            default :{
+                console.error("Wrong case in switch logic: "+ action.type);
             }
         }
     }

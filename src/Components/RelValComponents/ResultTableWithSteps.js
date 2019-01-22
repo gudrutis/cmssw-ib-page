@@ -227,14 +227,14 @@ class ResultTableWithSteps extends Component {
         );
         if (structure.dataLoaded) {
             let flavorKeys = getObjectKeys(structure.flavors).sort().reverse();
-            filterNameList(flavorKeys, selectedFlavors).map(flavorKey => {
+            filterNameList(flavorKeys, selectedFlavors).forEach(flavorKey => {
                 let configObject = {
                     Header: () => <div>{getDisplayName(flavorKey)}</div>,
                     columns: []
                 };
                 let archsConfig = structure.flavors[flavorKey];
                 let archKeys = getObjectKeys(archsConfig);
-                filterNameList(archKeys, selectedArchs).map(archKey => {
+                filterNameList(archKeys, selectedArchs).forEach(archKey => {
                     configObject.columns.push({
                         Header: () => {
                             const statistics = structure.relvalStatus[flavorKey][archKey];

@@ -118,7 +118,7 @@ class Navigation extends Component {
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="super-colors">
                                 {urls.issues.map((el) => {
-                                    return <MenuItem href={el.url}>{el.name}</MenuItem>
+                                    return <MenuItem key={uuid.v4()} href={el.url}>{el.name}</MenuItem>
                                 })}
                             </Dropdown.Menu>
                         </Dropdown>

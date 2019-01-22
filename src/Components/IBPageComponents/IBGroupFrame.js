@@ -79,6 +79,9 @@ class IBGroupFrame extends Component {
                 commitPanelProps = {
                     collapsible: false,
                 };
+                break;
+            default:
+                console.error("wrong case: " + ibGroupType);
         }
         statusLabels =
             <StatusLabels IBGroup={this.state.IBGroup} ibGroupType={ibGroupType} showOnlyIbTag={showOnlyIbTag}/>;

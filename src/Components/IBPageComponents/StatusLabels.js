@@ -117,23 +117,26 @@ class StatusLabels extends Component {
                     glyphicon: "tag",
                     url: 'https://github.com/cms-sw/cmssw/releases/tag/'
                 };
+                break;
+            default:
+                console.error("wrong case: " + ibGroupType) ;
         }
 
         if (IBGroup.length > 1) {
             return ([
-                <Dropdown id="dropdown-custom-1" bsSize="small">
+                <Dropdown key={uuid.v4()} id="dropdown-custom-1" bsSize="small">
                     <Dropdown.Toggle>
                         <Glyphicon glyph={config.glyphicon}/>
                         {" " + config.name}
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="super-colors">
                         {IBGroup.map((ib) => {
-                            return <MenuItem key={uuid.v4()}
+                            return <MenuItem  key={uuid.v4()}
                                 href={config.url + getCurrentIbTag(ib)}>{getDisplayName(ib.release_queue)}</MenuItem>
                         })}
                     </Dropdown.Menu>
                 </Dropdown>,
-                <span>   </span>
+                <span key={uuid.v4()}>   </span>
             ])
         } else {
             config['glyphicon'] = "glyphicon-" + config['glyphicon'];
