@@ -28,7 +28,7 @@ to { transform: rotate(360deg); }
 }
 
 /*increase max view of container*/
-@media only screen and (min-width : 1200px) {
+@media only screen and (min-width : 768px) {
   .container {
       width: 99%;
   }

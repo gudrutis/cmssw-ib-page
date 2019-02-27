@@ -5,11 +5,24 @@ import Nav from "react-bootstrap/es/Nav";
 import NavItem from "react-bootstrap/es/NavItem";
 import {LinkContainer} from "react-router-bootstrap";
 import uuid from "uuid";
-import {Button, Col, Glyphicon, MenuItem, Modal, Row} from "react-bootstrap";
+import {Button, Col, Glyphicon, MenuItem, Modal, Popover, Row} from "react-bootstrap";
 import config from '../config';
 import Dropdown from "react-bootstrap/es/Dropdown";
+import {getComReleaseFromQue} from "../Utils/processing";
+import OverlayTrigger from "react-bootstrap/es/OverlayTrigger";
 
 const {urls} = config;
+
+const popoverHelp = (
+    <Popover id="modal-popover">
+        Explanation table.
+    </Popover>
+);
+const popoverIssues = (
+    <Popover id="modal-popover">
+        Report an issue with...
+    </Popover>
+);
 
 class Navigation extends Component {
 
@@ -40,7 +53,7 @@ class Navigation extends Component {
             let renderedLinks = reversed.map(item => {
                 return (
                     <LinkContainer key={uuid.v4()} to={'/ib/' + item} activeClassName="active">
-                        <NavItem>{item}</NavItem>
+                        <NavItem>{getComReleaseFromQue(item)}</NavItem>
                     </LinkContainer>
                 )
             });
@@ -101,27 +114,32 @@ class Navigation extends Component {
                     <Navbar.Toggle/>
                 </Navbar.Header>
                 <Navbar.Collapse>
+                    <Navbar.Text>CMSSW release:</Navbar.Text>
                     <Nav>
                         {importantLinks}
-                        <NavDropdown eventKey={3} title="Older releases" id="basic-nav-dropdown">
+                        <NavDropdown eventKey={3} title="Older:" id="basic-nav-dropdown">
                             {olderLinks}
                         </NavDropdown>
                     </Nav>
                     <Nav pullRight>
-                        <button className="btn btn-default navbar-btn" onClick={this.handleShow}>
-                            <Glyphicon glyph="question-sign"/> Help
-                        </button>
+                        <OverlayTrigger placement="left" overlay={popoverHelp}>
+                            <button className="btn btn-default navbar-btn" onClick={this.handleShow}>
+                                <Glyphicon glyph="question-sign"/>
+                            </button>
+                        </OverlayTrigger>
                         {' '}
-                        <Dropdown id="dropdown-custom-2">
-                            <Dropdown.Toggle>
-                                <Glyphicon glyph="exclamation-sign"/> Report an issue with ...
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="super-colors">
-                                {urls.issues.map((el) => {
-                                    return <MenuItem key={uuid.v4()} href={el.url}>{el.name}</MenuItem>
-                                })}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <OverlayTrigger placement="left" overlay={popoverIssues}>
+                            <Dropdown id="dropdown-custom-2">
+                                <Dropdown.Toggle>
+                                    <Glyphicon glyph="exclamation-sign"/>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="super-colors">
+                                    {urls.issues.map((el) => {
+                                        return <MenuItem key={uuid.v4()} href={el.url}>{el.name}</MenuItem>
+                                    })}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </OverlayTrigger>
                     </Nav>
                     <Row>
                         <Col xs={12}>

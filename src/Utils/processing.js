@@ -97,7 +97,7 @@ export function checkIfTableIsEmpty({fieldsToCheck = [], IBGroup = []}) {
         let ib = IBGroup[i];
         for (let i = 0; i < fieldsToCheck.length; i++) {
             let field = fieldsToCheck[i];
-            if (!(ib[field] === undefined || ib[field].length === 0 )) {
+            if (!(ib[field] === undefined || ib[field].length === 0)) {
                 return false // there are some data in the table
             }
         }
@@ -108,7 +108,7 @@ export function checkIfTableIsEmpty({fieldsToCheck = [], IBGroup = []}) {
 export function checkIfCommitsAreEmpty({IBGroup = []}) {
     for (let i = 0; i < IBGroup.length; i++) {
         let ib = IBGroup[i];
-        if (!(ib['merged_prs'] === undefined || ib['merged_prs'].length === 0 )) {
+        if (!(ib['merged_prs'] === undefined || ib['merged_prs'].length === 0)) {
             return false // there are commits
         }
     }
@@ -140,6 +140,14 @@ export function getDisplayName(name) {
 export function getInfoFromRelease(releseName) {
     const reReleaseInfo = /^([a-zA-Z]+_[0-9]+_[0-9])+_(.*)_(\d{4}-\d{2}-\d{2}-\d{4})/;  //CMSSW_5_3 _X _ 2018-03-04-0000
     return releseName.match(reReleaseInfo) // fullMatch, que, flavor, date
+}
+
+export function getComReleaseFromQue(release) {
+    if (release) {
+        const reReleaseInfo = /^([a-zA-Z]+_)([0-9]+_[0-9]+_.*)/;  //CMSSW _5_3_X
+        const info_list = release.match(reReleaseInfo); // fullMatch, CMSSW, que
+        return info_list[2];
+    }
 }
 
 export function getStructureFromAvalableRelVals(relvalInfoObject) {
@@ -245,7 +253,7 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
         }
 
         let statusList = getObjectKeys(statusMap);
-        for (let i = 0; i < statusList.length; i++){
+        for (let i = 0; i < statusList.length; i++) {
             if (valueInTheList(selectedStatus, statusList[i])) {
                 filteredRelvals.push(relVal);
                 break;
@@ -268,13 +276,12 @@ export function filterRelValStructure({structure, selectedArchs, selectedFlavors
 */
 
 
-
 export function isRelValKnownFailed(relVal) {
-    return relVal.known_error === 1 ;
+    return relVal.known_error === 1;
 }
 
 function isRelValPassingWhenKnownFailed(relval) {
-    return relval.known_error === -1 ;
+    return relval.known_error === -1;
 }
 
 export function isRelValTrackedForFailed(relVal) {
@@ -284,7 +291,7 @@ export function isRelValTrackedForFailed(relVal) {
 
 function doMarkAsFailed(relVal) {
     //
-    return (relVal.exitcode !== 0 && !isRelValKnownFailed(relVal))  || isRelValPassingWhenKnownFailed(relVal);
+    return (relVal.exitcode !== 0 && !isRelValKnownFailed(relVal)) || isRelValPassingWhenKnownFailed(relVal);
 }
 
 export function relValStatistics(relValList) {
@@ -296,7 +303,7 @@ export function relValStatistics(relValList) {
     };
     for (let i = 0; i < relValList.length; i++) {
         const relVal = relValList[i];
-        if ( doMarkAsFailed(relVal) ) {
+        if (doMarkAsFailed(relVal)) {
             statistics.failed += 1;
         } else if (isRelValKnownFailed(relVal)) {
             statistics.known_failed += 1;
