@@ -313,3 +313,34 @@ export function relValStatistics(relValList) {
     }
     return statistics;
 }
+
+
+export function checkLabelType(showLabelConfig, details) {
+    /**
+     * Check details and show if has errors, if no - warnings, if no - then show success
+     * @type {{value: number, colorType: success | warning | error }}
+     */
+    let resultKeys = Object.keys(details);
+    let labelConfig = {value: 0};
+    for (let i = 0; i < showLabelConfig.length; i++) {
+        let el = showLabelConfig[i];
+        el.groupFields.forEach((predicate) => {
+            if (typeof predicate === "function") {
+                resultKeys.forEach(key => {
+                    if (predicate(key)) {
+                        labelConfig.value += details[key] * 1;
+                    }
+                });
+            } else {
+                if (valueInTheList(resultKeys, predicate)) {
+                    labelConfig.value += details[predicate] * 1;
+                }
+            }
+        });
+        if (labelConfig.value > 0) {
+            labelConfig.colorType = el.color;
+            break;
+        }
+    }
+    return labelConfig;
+}

@@ -3,7 +3,7 @@ import './App.css';
 import {Redirect, Route, Switch} from "react-router-dom";
 import IBLayout from './Components/IBLayout'
 import RelValLayout from './Components/RelValLayout'
-import config from './config';
+import { config } from './config';
 import {getSingleFile} from "./Utils/ajax";
 import Jumbotron from "react-bootstrap/es/Jumbotron";
 

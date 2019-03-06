@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import config from '../../config';
+import { config } from '../../config';
 import uuid from 'uuid';
 import MenuItem from "react-bootstrap/es/MenuItem";
 import {Dropdown, Glyphicon} from "react-bootstrap";
@@ -19,12 +19,13 @@ class StatusLabels extends Component {
         }
     }
 
-    static formatLabel({glyphicon, name, url}) {
+    static formatLabel({glyphicon, name, url, labelColor}) {
+
         if (url) {
             return (
                 <a href={url} key={uuid.v4()}>
                     <span className={`glyphicon ${glyphicon}`}/>
-                    <span> {name} </span>
+                    <span style={{back:labelColor}}> {name} </span>
                 </a>
             )
         } else {
@@ -51,13 +52,19 @@ class StatusLabels extends Component {
     };
 
     static renderLabel(config, ib) {
+        /**
+         * reads each element in config.statusLabelsConfigs array
+         * applies config and renders it
+         */
         let status;
         const {key} = config;
         const result = ib[key];
-        if (result !== null && typeof result === 'object') {
-            status = result.status;
-        } else {
-            status = result;
+        if (result !== null && Array.isArray(result)){
+            status = result  // give all array to check
+        } else if (result !== null && typeof result === 'object') {
+            status = result.status;  // just get status of the object element
+        }  else {
+            status = result; // the value is a string
         }
         // if result variable does not follow standard and needs custom interpretation
         if (config.customResultInterpretation) {
@@ -85,6 +92,13 @@ class StatusLabels extends Component {
             outputConfig = config.ifNotFound ? config.ifNotFound(ib, result) : undefined;
         } else if (status === "inprogress" || status === "inProgress") {
             outputConfig = config.ifInProgress ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
+        } else if (status === "errors") {
+            // TODO
+            outputConfig = config.ifErrors ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
+        }
+        else if (status === "warnings") {
+            // TODO
+            outputConfig = config.ifErrors ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
         }
         if (outputConfig) {
             return StatusLabels.formatLabel(outputConfig);
@@ -93,7 +107,7 @@ class StatusLabels extends Component {
 
     static renderIBTag(IBGroup, ibGroupType) {
         /**
-         * non-standart function to show IB tag
+         * non-standard function to show IB tag
          */
         let config = {};
         switch (ibGroupType) {

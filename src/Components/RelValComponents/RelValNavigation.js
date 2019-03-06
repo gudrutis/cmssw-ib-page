@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/es/Nav";
 import {Button, Col, FormGroup, Glyphicon, MenuItem, Modal, Row} from "react-bootstrap";
 import Dropdown from "react-bootstrap/es/Dropdown";
 import {legend} from '../../relValConfig';
-import config from "../../config";
+import { config } from "../../config";
 
 const {urls} = config;
 

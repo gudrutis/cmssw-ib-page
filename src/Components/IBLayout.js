@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import _ from 'underscore';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBPageComponents/IBGroups';
-import config from '../config';
+import { config } from '../config';
 import Navigation from "./Navigation";
 import TogglesShowIBFlawors from "./TogglesShowArchs";
 import {getMultipleFiles} from "../Utils/ajax";

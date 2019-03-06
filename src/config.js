@@ -1,6 +1,64 @@
 import {getCurrentIbTag} from "./Utils/processing";
 
-export default {
+export const showLabelConfig = {
+    fwlite: [
+        {
+            groupFields: [
+                "num_failed",
+                "dictError",
+                "compError",
+                "linkError",
+                "pythonError",
+                "dwnlError",
+                "miscError",
+                "scram errors"
+            ],
+            color: "danger"
+        },
+        {
+            groupFields: ["known_failed"],
+            color: "info"
+        },
+        {
+            groupFields: ["num_passed"],
+            color: "success"
+        }
+    ],
+    gpu: [{
+        groupFields: ["num_fails"],
+        color: "danger"
+    }],
+    relvals: [
+        {
+            groupFields: ["num_failed"],
+            color: "danger"
+        },
+        {
+            groupFields: ["known_failed"],
+            color: "warning"
+        },
+        {
+            groupFields: ["num_passed"],
+            color: "success"
+        }
+    ],
+    addons: [
+        {
+            groupFields: ["num_failed"],
+            color: "danger"
+        },
+        {
+            groupFields: ["known_failed"],
+            color: "info"
+        },
+        {
+            groupFields: ["num_passed"],
+            color: "success"
+        }
+    ]
+};
+
+export const config = {
     tooltipDelayInMs: 200,
     urls: {
         issues: [
@@ -20,7 +78,7 @@ export default {
         relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
         commits: "https://github.com/cms-sw/cmsdist/commits/",
         newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`,
-        newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}` // TODO fix relvals
+        newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}`
     },
     colorCoding: {
         prodColor: '#5cb85c', // production arch
@@ -170,9 +228,7 @@ export default {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
                     + getCurrentIbTag(ib) + '/' + result.arch + "/" + this.iterateItem;
             },
-            ifInProgress: () => {
-                return null;
-            },
+            ifInProgress: () => { return null ; },
             ifFound: function (ib, result) {
                 return {
                     name: this.name,
@@ -238,6 +294,17 @@ export default {
             key: "check_headers",
             getUrl: function (ib) {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/check_headers/" + getCurrentIbTag(ib);
+            }
+        },
+        {
+            name: "FWLite",
+            key: "fwlite",
+            customResultInterpretation: (result) => {
+                // checkLabelType()
+                console.log(showLabelConfig.fwlite)
+            //
+            //     console.log(result);
+            //     return "found";
             }
         }
     ]

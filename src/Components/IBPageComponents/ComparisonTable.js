@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Label, OverlayTrigger, Table, Tooltip} from "react-bootstrap";
 import {
+    checkLabelType,
     getAllActiveArchitecturesFromIBGroupByFlavor, getDisplayName, getInfoFromRelease,
     valueInTheList
 } from '../../Utils/processing';
 import _ from 'underscore';
 import uuid from 'uuid';
-import config from '../../config';
+import { config, showLabelConfig } from '../../config';
 import ShowArchStore from "../../Stores/ShowArchStore";
 
 const {tooltipDelayInMs, urls} = config;
@@ -185,28 +186,8 @@ class ComparisonTable extends Component {
         return function (result, ib) {
             const {details, done} = result;
             const resultKeys = Object.keys(details); //get all object properties name
-            let labelConfig = {value: 0};
 
-            for (let i = 0; i < showLabelConfig.length; i++) {
-                let el = showLabelConfig[i];
-                el.groupFields.forEach((predicate) => {
-                    if (typeof predicate === "function") {
-                        resultKeys.forEach(key => {
-                            if (predicate(key)) {
-                                labelConfig.value += details[key] * 1;
-                            }
-                        });
-                    } else {
-                        if (valueInTheList(resultKeys, predicate)) {
-                            labelConfig.value += details[predicate] * 1;
-                        }
-                    }
-                });
-                if (labelConfig.value > 0) {
-                    labelConfig.colorType = el.color;
-                    break;
-                }
-            }
+            let labelConfig = checkLabelType(showLabelConfig, details);
             if (done === false) {
                 labelConfig.value = '' + labelConfig.value + '*';
             }
@@ -503,10 +484,7 @@ class ComparisonTable extends Component {
                             {this.renderRowCellsWithDefaultPreConfig({
                                     resultType: 'gpu_utests',
                                     getUrl: getBuildOrUnitUrl,
-                                    showLabelConfig: [{
-                                        groupFields: ["num_fails"],
-                                        color: "danger"
-                                    }],
+                                    showLabelConfig: showLabelConfig.gpu,
                                     urlParameter: '?gpu_utests'
                                 }
                             )}
@@ -520,20 +498,7 @@ class ComparisonTable extends Component {
                             {this.renderRelVals({
                                     resultType: 'relvals',
                                     getUrl: getRelValUrl,
-                                    showLabelConfig: [
-                                        {
-                                            groupFields: ["num_failed"],
-                                            color: "danger"
-                                        },
-                                        {
-                                            groupFields: ["known_failed"],
-                                            color: "warning"
-                                        },
-                                        {
-                                            groupFields: ["num_passed"],
-                                            color: "success"
-                                        }
-                                    ]
+                                    showLabelConfig: showLabelConfig.relvals
                                 }
                             )}
                         </tr>
@@ -544,20 +509,7 @@ class ComparisonTable extends Component {
                             {this.renderOtherTestResults({
                                     resultType: 'addons',
                                     getUrl: getOtherTestUrl,
-                                    showLabelConfig: [
-                                        {
-                                            groupFields: ["num_failed"],
-                                            color: "danger"
-                                        },
-                                        {
-                                            groupFields: ["known_failed"],
-                                            color: "info"
-                                        },
-                                        {
-                                            groupFields: ["num_passed"],
-                                            color: "success"
-                                        }
-                                    ]
+                                    showLabelConfig: showLabelConfig.addons
                                 }
                             )}
                         </tr>
@@ -568,29 +520,7 @@ class ComparisonTable extends Component {
                             {this.renderRowCellsWithDefaultPreConfig({
                                     resultType: 'fwlite',
                                     getUrl: getFWliteUrl,
-                                    showLabelConfig: [
-                                        {
-                                            groupFields: [
-                                                "num_failed",
-                                                "dictError",
-                                                "compError",
-                                                "linkError",
-                                                "pythonError",
-                                                "dwnlError",
-                                                "miscError",
-                                                "scram errors"
-                                            ],
-                                            color: "danger"
-                                        },
-                                        {
-                                            groupFields: ["known_failed"],
-                                            color: "info"
-                                        },
-                                        {
-                                            groupFields: ["num_passed"],
-                                            color: "success"
-                                        }
-                                    ]
+                                    showLabelConfig: showLabelConfig.fwlite
                                 }
                             )}
                         </tr>

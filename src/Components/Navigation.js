@@ -6,7 +6,7 @@ import NavItem from "react-bootstrap/es/NavItem";
 import {LinkContainer} from "react-router-bootstrap";
 import uuid from "uuid";
 import {Button, Col, Glyphicon, MenuItem, Modal, Popover, Row} from "react-bootstrap";
-import config from '../config';
+import { config } from '../config';
 import Dropdown from "react-bootstrap/es/Dropdown";
 import {getComReleaseFromQue} from "../Utils/processing";
 import OverlayTrigger from "react-bootstrap/es/OverlayTrigger";
