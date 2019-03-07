@@ -20,18 +20,17 @@ class StatusLabels extends Component {
     }
 
     static formatLabel({glyphicon, name, url, labelColor}) {
-
         if (url) {
             return (
-                <a href={url} key={uuid.v4()}>
-                    <span className={`glyphicon ${glyphicon}`}/>
-                    <span style={{back:labelColor}}> {name} </span>
+                <a href={url} key={uuid.v4()} style={{background:labelColor}}>
+                    <span key={uuid.v4()} className={`glyphicon ${glyphicon}`}/>
+                    <span key={uuid.v4()} > {name} </span>
                 </a>
             )
         } else {
             return [
                 <span key={uuid.v4()} className={`glyphicon ${glyphicon}`}/>,
-                <span key={uuid.v4()}> {name} </span>
+                <span key={uuid.v4()} style={{background:labelColor}}> {name} </span>
             ]
         }
     };
@@ -95,10 +94,10 @@ class StatusLabels extends Component {
             outputConfig = config.ifNotFound ? config.ifNotFound(ib, result) : undefined;
         } else if (status === STATUS_ENUM.inprogress || status === STATUS_ENUM.inProgress) {
             outputConfig = config.ifInProgress ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
-        } else if (status === STATUS_ENUM.errors) {
-            outputConfig = config.ifErrors ? config.ifErrors(ib, result) : StatusLabels.defaultInProgress(config);
+        } else if (status === STATUS_ENUM.error) {
+            outputConfig = config.ifError ? config.ifError(ib, result) : StatusLabels.defaultInProgress(config);
         }
-        else if (status === STATUS_ENUM.warnings) {
+        else if (status === STATUS_ENUM.warning) {
             outputConfig = config.ifWarning ? config.ifWarning(ib, result) : StatusLabels.defaultInProgress(config);
         }
         else if (status === STATUS_ENUM.success) {

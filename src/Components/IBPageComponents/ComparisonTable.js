@@ -49,7 +49,6 @@ function renderLabel({colorType = "default", value, glyphicon, link, tooltipCont
     }
 }
 
-// TODO refactor and put to configs
 const getBuildOrUnitUrl = function (params) {
     const {file, arch, ibName} = params;
     const urlParameter = params.urlParameter ? params.urlParameter : '';

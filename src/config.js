@@ -7,8 +7,8 @@ export const STATUS_ENUM = {
     not_found: "not-found",
     inprogress: "inprogress",
     inProgress: "inProgress",
-    errors: "errors",
-    warnings: "warnings",
+    error: "error",
+    warning: "warning",
     success: "success"
 };
 
@@ -25,11 +25,11 @@ export const showLabelConfig = {
                 "miscError",
                 "scram errors"
             ],
-            color: "danger"
+            color: "danger" // class to give bootstrap color
         },
         {
             groupFields: ["known_failed"],
-            color: "info"
+            color: "warning"
         },
         {
             groupFields: ["num_passed"],
@@ -70,28 +70,31 @@ export const showLabelConfig = {
     ]
 };
 
+const urls = {
+    issues: [
+        {name: 'CMSSW', url: 'https://github.com/cms-sw/cmssw/issues'},
+        {name: 'CMSDIST', url: 'https://github.com/cms-sw/cmsdist/issues'},
+        {name: 'CMSSW IB page ', url: 'https://github.com/cms-sw/cmssdt-ib/issues'}
+    ],
+    q_a: (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
+    dataDir: "/SDT/html/data/",
+    releaseStructure: "/SDT/html/data/structure.json",
+    latestIBSummary: "/SDT/html/data/LatestIBsSummary.json",
+    buildOrUnitTestUrl: "/SDT/cgi-bin/showBuildLogs.py/",
+    scramDetailUrl: "http://cms-sw.github.io/scramDetail.html#",
+    relvalLogDetailUrl: "https://cms-sw.github.io/relvalLogDetail.html#",
+    fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
+    showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
+    relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
+    commits: "https://github.com/cms-sw/cmsdist/commits/",
+    newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`,
+    newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}`
+};
+
+
 export const config = {
     tooltipDelayInMs: 200,
-    urls: {
-        issues: [
-            {name: 'CMSSW', url: 'https://github.com/cms-sw/cmssw/issues'},
-            {name: 'CMSDIST', url: 'https://github.com/cms-sw/cmsdist/issues'},
-            {name: 'CMSSW IB page ', url: 'https://github.com/cms-sw/cmssdt-ib/issues'}
-        ],
-        q_a: (arch, release_name) => '/SDT/cgi-bin/newQA.py?arch=' + arch + '&release=' + release_name,
-        dataDir: "/SDT/html/data/",
-        releaseStructure: "/SDT/html/data/structure.json",
-        latestIBSummary: "/SDT/html/data/LatestIBsSummary.json",
-        buildOrUnitTestUrl: "/SDT/cgi-bin/showBuildLogs.py/",
-        scramDetailUrl: "http://cms-sw.github.io/scramDetail.html#",
-        relvalLogDetailUrl: "https://cms-sw.github.io/relvalLogDetail.html#",
-        fwliteUrl: "/SDT/cgi-bin/showBuildLogs.py/fwlite/",
-        showAddOnLogsUrls: "/SDT/cgi-bin//showAddOnLogs.py/",
-        relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
-        commits: "https://github.com/cms-sw/cmsdist/commits/",
-        newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`,
-        newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}`
-    },
+    urls: urls,
     colorCoding: {
         prodColor: '#5cb85c', // production arch
         alternatingColors: [
@@ -226,7 +229,7 @@ export const config = {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
                     + getCurrentIbTag(ib) + '/' + result.arch + "/reports/modules2statics.txt";
             },
-            ifInProgress: () => {
+            ifInProgress: function() {
                 return null;
             }
         },
@@ -240,7 +243,7 @@ export const config = {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
                     + getCurrentIbTag(ib) + '/' + result.arch + "/" + this.iterateItem;
             },
-            ifInProgress: () => { return null ; },
+            ifInProgress: function() { return null ; },
             ifFound: function (ib, result) {
                 return {
                     name: this.name,
@@ -256,7 +259,7 @@ export const config = {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/ib-static-analysis/"
                     + getCurrentIbTag(ib) + '/' + result.arch + "/reports/tlf2esd.txt";
             },
-            ifInProgress: () => {
+            ifInProgress: function() {
                 return null;
             }
         },
@@ -284,7 +287,7 @@ export const config = {
             getUrl: function (ib, result) {
                 return "/SDT/jenkins-artifacts/material-budget/" + getCurrentIbTag(ib) + '/' + result.arch + "/comparison";
             },
-            ifFound: (ib, result) => {
+            ifFound: function(ib, result) {
                 const results = result.results;
                 if (results === "ok") {
                     return {
@@ -311,20 +314,117 @@ export const config = {
         {
             name: "FWLite",
             key: "fwlite",
+            getUrl: function (ib) {
+                let file = ib.fwlite[0].file;
+                if (file === 'not-ready' || file === undefined ) {
+                    // return nothing
+                } else {
+                    const si = 4;
+                    let link_parts = file.split('/');
+                    link_parts = link_parts.slice(si, si + 5);
+                    return urls.fwliteUrl + link_parts.join('/');
+                }
+            },
             customResultInterpretation: (result) => {
                 if ( _.isEmpty(result)) {
                     return STATUS_ENUM.not_found
                 }
                 // the assumption here is that result is a list of object which can only have 1 element
-                // (originally was used in the table)
-                // let result_element = result[0];
-                // if (result_element.status === STATUS_ENUM.passed){
-                //     return STATUS_ENUM.passed;
-                // }
-                // let checkLabelType(showLabelConfig.fwlite, result_element);
+                // (originally this field was used in the table)
+                let result_element = result[0];
+                if (result_element.passed === STATUS_ENUM.passed){
+                    return STATUS_ENUM.passed;
+                }
+                let labelelType = checkLabelType(showLabelConfig.fwlite, result_element.details);
+                switch (labelelType.colorType) {
+                    case "danger" :
+                        return STATUS_ENUM.error;
+                    default:
+                        return labelelType.colorType // should be success | warning
+                }
+            },
+            ifFound: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-ok",
+                    url:  this.getUrl(ib),
+                };
+            },
+            ifError: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-remove",
+                    url:  this.getUrl(ib),
+                    labelColor: "red"
+                };
+            },
+            ifWarning: function (ib) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-warning-sign",
+                    url: this.getUrl(ib),
+                    labelColor: "orange"
+                };
+            },
 
-                // console.log(result);
-                // return "found";
+        },
+        {
+            name: "GPU unit tests",
+            key: "gpu_utests",
+            getUrl: function (ib) {
+                let ibName = ib.release_name;
+                let { arch, file } = ib.gpu_utests[0];
+                if (!file) {
+                    // do nothing
+                } else if (file === 'not-ready') {
+                    return urls.scramDetailUrl + arch + ";" + ibName
+                } else {
+                    let link_parts = file.split('/');
+                    const si = 4;
+                    link_parts = link_parts.slice(si, si + 5);
+                    return urls.buildOrUnitTestUrl + link_parts.join('/') + '?gpu_utests';
+                }
+            },
+            customResultInterpretation: function(result) {
+                if ( _.isEmpty(result)) {
+                    return STATUS_ENUM.not_found
+                }
+                // the assumption here is that result is a list of object which can only have 1 element
+                // (originally this field was used in the table)
+                let result_element = result[0];
+                if (result_element.passed === STATUS_ENUM.passed){
+                    return STATUS_ENUM.passed;
+                }
+                let labelelType = checkLabelType(showLabelConfig.gpu, result_element.details);
+                switch (labelelType.colorType) {
+                    case "danger" :
+                        return STATUS_ENUM.error;
+                    default:
+                        return labelelType.colorType // should be success | warning
+                }
+            },
+            ifFound: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-ok",
+                    url:  this.getUrl(ib),
+                };
+            },
+            ifError: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-remove",
+                    url:  this.getUrl(ib),
+                    labelColor: "red"
+                };
+            },
+            ifWarning: function (ib) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-warning-sign",
+                    url: this.getUrl(ib),
+                    labelColor: "orange"
+                };
             }
         }
     ]

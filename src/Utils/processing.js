@@ -318,7 +318,7 @@ export function relValStatistics(relValList) {
 export function checkLabelType(showLabelConfig, details) {
     /**
      * Check details and show if has errors, if no - warnings, if no - then show success
-     * @type {{value: number, colorType: success | warning | error }}
+     * @type {{value: number, colorType: success | warning | error , or anything passed from config}}
      */
     let resultKeys = Object.keys(details);
     let labelConfig = {value: 0};
