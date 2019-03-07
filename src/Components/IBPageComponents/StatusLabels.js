@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { config } from '../../config';
+import { config, STATUS_ENUM } from '../../config';
 import uuid from 'uuid';
 import MenuItem from "react-bootstrap/es/MenuItem";
 import {Dropdown, Glyphicon} from "react-bootstrap";
@@ -71,7 +71,8 @@ class StatusLabels extends Component {
             status = config.customResultInterpretation(status);
         }
         let outputConfig;
-        if (status === "found" || status === "passed") {
+        if (status === STATUS_ENUM.found || status === STATUS_ENUM.passed) {
+            // if the result has information to create more label, do the following logic
             if (result.iterable) {
                 let count = 1;
                 let configSeperatedByIterable = result.iterable.map(item => {
@@ -86,20 +87,24 @@ class StatusLabels extends Component {
                     return StatusLabels.formatLabel(outputConfig);
                 })
             } else {
+                // create default labels
                 outputConfig = config.ifFound ? config.ifFound(ib, result) : StatusLabels.defaultFound(config, ib, result);
             }
-        } else if (status === "not-found") {
+        } else if (status === STATUS_ENUM.not_found) {
+            // by default, do not show the label
             outputConfig = config.ifNotFound ? config.ifNotFound(ib, result) : undefined;
-        } else if (status === "inprogress" || status === "inProgress") {
+        } else if (status === STATUS_ENUM.inprogress || status === STATUS_ENUM.inProgress) {
             outputConfig = config.ifInProgress ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
-        } else if (status === "errors") {
-            // TODO
-            outputConfig = config.ifErrors ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
+        } else if (status === STATUS_ENUM.errors) {
+            outputConfig = config.ifErrors ? config.ifErrors(ib, result) : StatusLabels.defaultInProgress(config);
         }
-        else if (status === "warnings") {
-            // TODO
-            outputConfig = config.ifErrors ? config.ifInProgress(ib, result) : StatusLabels.defaultInProgress(config);
+        else if (status === STATUS_ENUM.warnings) {
+            outputConfig = config.ifWarning ? config.ifWarning(ib, result) : StatusLabels.defaultInProgress(config);
         }
+        else if (status === STATUS_ENUM.success) {
+            outputConfig = config.ifSuccess ? config.ifSuccess(ib, result) : StatusLabels.defaultInProgress(config);
+        }
+        // only if the config object exist, create label
         if (outputConfig) {
             return StatusLabels.formatLabel(outputConfig);
         }

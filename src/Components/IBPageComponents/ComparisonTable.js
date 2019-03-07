@@ -49,6 +49,54 @@ function renderLabel({colorType = "default", value, glyphicon, link, tooltipCont
     }
 }
 
+// TODO refactor and put to configs
+const getBuildOrUnitUrl = function (params) {
+    const {file, arch, ibName} = params;
+    const urlParameter = params.urlParameter ? params.urlParameter : '';
+    if (!file) {
+        // do nothing
+    } else if (file === 'not-ready') {
+        return urls.scramDetailUrl + arch + ";" + ibName
+    } else {
+        let link_parts = file.split('/');
+        const si = 4;
+        link_parts = link_parts.slice(si, si + 5);
+        return urls.buildOrUnitTestUrl + link_parts.join('/') + urlParameter;
+    }
+};
+
+const getRelValUrl = function (params) {
+    const {file, arch, ibName, selectedStatus} = params;
+    if (!file) {
+        // do nothing
+    } else if (file === 'not-ready') {
+        return urls.relVals + arch + ';' + ibName
+    } else {
+        const [ , que, flavor, date] = getInfoFromRelease(ibName);  // fullMatch, que, flavor, date
+        return urls.newRelValsSpecific(que, date, flavor, arch, selectedStatus );
+    }
+};
+
+const getFWliteUrl = function (params) {
+    const {file} = params;
+    if (file === 'not-ready') {
+        // return nothing
+    } else {
+        const si = 4;
+        let link_parts = file.split('/');
+        link_parts = link_parts.slice(si, si + 5);
+        return urls.fwliteUrl + link_parts.join('/');
+    }
+};
+
+const getOtherTestUrl = function (params) {
+    const {file} = params;
+    const si = 4;
+    let link_parts = file.split('/');
+    link_parts = link_parts.slice(si, si + 5);
+    return urls.showAddOnLogsUrls + link_parts.join('/') + '/addOnTests/';
+};
+
 class ComparisonTable extends Component {
     static propTypes = {
         data: PropTypes.array
@@ -151,14 +199,14 @@ class ComparisonTable extends Component {
         const showGeneralResults = this.showGeneralResults(showLabelConfig, getUrl, urlParameter);
         const config = {
             resultType: resultType,
-            ifPassed: function (details, ib) {
+            ifPassed: function (details, ibName) {
                 let tooltipContent = <p><strong>All good!</strong> Click for more info.</p>;
                 let cellInfo = renderLabel(
                     {
                         colorType: 'success',
                         glyphicon: 'glyphicon-ok-circle',
                         tooltipContent,
-                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ib, "urlParameter": urlParameter})
+                        link: getUrl({"file": details.file, "arch": details.arch, "ibName": ibName, "urlParameter": urlParameter})
                     }
                 );
                 return renderCell(cellInfo);
@@ -319,54 +367,6 @@ class ComparisonTable extends Component {
 
     render() {
         const {archsByIb} = this.state;
-        // TODO refactor and put to configs
-        const getBuildOrUnitUrl = function (params) {
-            const {file, arch, ibName} = params;
-            const urlParameter = params.urlParameter ? params.urlParameter : '';
-            if (!file) {
-                // do nothing
-            } else if (file === 'not-ready') {
-                return urls.scramDetailUrl + arch + ";" + ibName
-            } else {
-                let link_parts = file.split('/');
-                const si = 4;
-                link_parts = link_parts.slice(si, si + 5);
-                return urls.buildOrUnitTestUrl + link_parts.join('/') + urlParameter;
-            }
-        };
-
-        const getRelValUrl = function (params) {
-            const {file, arch, ibName, selectedStatus} = params;
-            if (!file) {
-                // do nothing
-            } else if (file === 'not-ready') {
-                return urls.relVals + arch + ';' + ibName
-            } else {
-                const [ , que, flavor, date] = getInfoFromRelease(ibName);  // fullMatch, que, flavor, date
-                return urls.newRelValsSpecific(que, date, flavor, arch, selectedStatus );
-                // return urls.relVals + link_parts[si] + ';' + link_parts[si + 4];
-            }
-        };
-
-        const getFWliteUrl = function (params) {
-            const {file} = params;
-            if (file === 'not-ready') {
-                // return nothing
-            } else {
-                const si = 4;
-                let link_parts = file.split('/');
-                link_parts = link_parts.slice(si, si + 5);
-                return urls.fwliteUrl + link_parts.join('/');
-            }
-        };
-
-        const getOtherTestUrl = function (params) {
-            const {file} = params;
-            const si = 4;
-            let link_parts = file.split('/');
-            link_parts = link_parts.slice(si, si + 5);
-            return urls.showAddOnLogsUrls + link_parts.join('/') + '/addOnTests/';
-        };
 
         return (
             <div className="table-responsive">

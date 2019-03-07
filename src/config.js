@@ -1,4 +1,16 @@
-import {getCurrentIbTag} from "./Utils/processing";
+import {checkLabelType, getCurrentIbTag} from "./Utils/processing";
+import _ from 'underscore';
+
+export const STATUS_ENUM = {
+    found: "found",
+    passed: "passed",
+    not_found: "not-found",
+    inprogress: "inprogress",
+    inProgress: "inProgress",
+    errors: "errors",
+    warnings: "warnings",
+    success: "success"
+};
 
 export const showLabelConfig = {
     fwlite: [
@@ -272,7 +284,7 @@ export const config = {
             getUrl: function (ib, result) {
                 return "/SDT/jenkins-artifacts/material-budget/" + getCurrentIbTag(ib) + '/' + result.arch + "/comparison";
             },
-            ifFound: function (ib, result) {
+            ifFound: (ib, result) => {
                 const results = result.results;
                 if (results === "ok") {
                     return {
@@ -300,11 +312,19 @@ export const config = {
             name: "FWLite",
             key: "fwlite",
             customResultInterpretation: (result) => {
-                // checkLabelType()
-                console.log(showLabelConfig.fwlite)
-            //
-            //     console.log(result);
-            //     return "found";
+                if ( _.isEmpty(result)) {
+                    return STATUS_ENUM.not_found
+                }
+                // the assumption here is that result is a list of object which can only have 1 element
+                // (originally was used in the table)
+                // let result_element = result[0];
+                // if (result_element.status === STATUS_ENUM.passed){
+                //     return STATUS_ENUM.passed;
+                // }
+                // let checkLabelType(showLabelConfig.fwlite, result_element);
+
+                // console.log(result);
+                // return "found";
             }
         }
     ]
