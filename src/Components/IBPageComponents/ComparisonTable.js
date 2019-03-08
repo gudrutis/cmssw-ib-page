@@ -477,18 +477,6 @@ class ComparisonTable extends Component {
                             )}
                         </tr>
                     : null}
-                    {  this.shouldShowRow("gpu_utests") ?
-                        <tr>
-                            <td className={'name-column'}><b>GPU Unit Tests</b></td>
-                            {this.renderRowCellsWithDefaultPreConfig({
-                                    resultType: 'gpu_utests',
-                                    getUrl: getBuildOrUnitUrl,
-                                    showLabelConfig: showLabelConfig.gpu,
-                                    urlParameter: '?gpu_utests'
-                                }
-                            )}
-                        </tr>
-                    : null}
                     { this.shouldShowRow("relvals") ?
                         <tr>
                             <td className={'name-column'}>
@@ -502,24 +490,13 @@ class ComparisonTable extends Component {
                             )}
                         </tr>
                     : null}
-                    {  this.shouldShowRow("addons") ?
+                    { this.shouldShowRow("addons") ?
                         <tr>
                             <td className={'name-column'}><b>Other Tests</b></td>
                             {this.renderOtherTestResults({
                                     resultType: 'addons',
                                     getUrl: getOtherTestUrl,
                                     showLabelConfig: showLabelConfig.addons
-                                }
-                            )}
-                        </tr>
-                    : null}
-                    { this.shouldShowRow("fwlite") ?
-                        <tr>
-                            <td className={'name-column'}><b>FWLite</b></td>
-                            {this.renderRowCellsWithDefaultPreConfig({
-                                    resultType: 'fwlite',
-                                    getUrl: getFWliteUrl,
-                                    showLabelConfig: showLabelConfig.fwlite
                                 }
                             )}
                         </tr>
