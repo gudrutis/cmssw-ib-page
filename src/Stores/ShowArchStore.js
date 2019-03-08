@@ -59,11 +59,11 @@ class ShowArchStore extends EventEmitter {
                     })
                 });
                 all_prefixes.forEach(que => {
-                    if (!config[que][0]) {
-                        return
-                    }
                     if (!prod_archs[que]){
-                        return // workaround if arch is missing, all page will not crash
+                        return; // workaround if arch is missing, all page will not crash
+                    }
+                    if (!config[que][0] && prod_archs[que] ) {
+                        config[que][0] = prod_archs[que];
                     }
                     // TODO maybe just make seperate colors for archs
                     // TODO if 1 color per combination, add logic here

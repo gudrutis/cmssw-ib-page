@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+    import React, {Component} from 'react';
 import _ from 'underscore';
 import ToggleButtonGroupControlled from "./TogglesShowIBFlawors";
 import IBGroups from './IBPageComponents/IBGroups';
