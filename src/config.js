@@ -426,6 +426,52 @@ export const config = {
                     labelColor: "orange"
                 };
             }
+        },
+        {
+            name: "Python3",
+            key: "python3_tests",
+            // TODO getUrl
+            customResultInterpretation: function(result) {
+                if ( _.isEmpty(result)) {
+                    return STATUS_ENUM.not_found
+                }
+                // the assumption here is that result is a list of object which can only have 1 element
+                // (originally this field was used in the table)
+                let result_element = result[0];
+                if (result_element.passed === STATUS_ENUM.passed){
+                    return STATUS_ENUM.passed;
+                }
+                let labelelType = checkLabelType(showLabelConfig.gpu, result_element.details);
+                switch (labelelType.colorType) {
+                    case "danger" :
+                        return STATUS_ENUM.error;
+                    default:
+                        return labelelType.colorType // should be success | warning
+                }
+            },
+            ifFound: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-ok",
+                    // url:  this.getUrl(ib),
+                };
+            },
+            ifError: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-remove",
+                    // url:  this.getUrl(ib),
+                    labelColor: "red"
+                };
+            },
+            ifWarning: function (ib) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-warning-sign",
+                    // url: this.getUrl(ib),
+                    labelColor: "orange"
+                };
+            }
         }
     ]
 };
