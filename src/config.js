@@ -92,6 +92,28 @@ const urls = {
 };
 
 
+function getBuildOrUnitUrl(ib, test_array, urlParam) {
+    /**
+     * Generates link to that points to showBuildLogs.py cgi script. Adding parameters at the end of the link
+     * (ex. '?gpu_utests' shows specific tests
+     *
+     * Takes whole IB object and manipulates it.
+     */
+    let ibName = ib.release_name;
+    let { arch, file } = ib[test_array][0];
+    if (!file) {
+        // do nothing
+    } else if (file === 'not-ready') {
+        return urls.scramDetailUrl + arch + ";" + ibName
+    } else {
+        let link_parts = file.split('/');
+        const si = 4;
+        link_parts = link_parts.slice(si, si + 5);
+        return urls.buildOrUnitTestUrl + link_parts.join('/') + urlParam;
+    }
+}
+
+
 export const config = {
     tooltipDelayInMs: 200,
     urls: urls,
@@ -372,18 +394,7 @@ export const config = {
             name: "GPU unit tests",
             key: "gpu_utests",
             getUrl: function (ib) {
-                let ibName = ib.release_name;
-                let { arch, file } = ib.gpu_utests[0];
-                if (!file) {
-                    // do nothing
-                } else if (file === 'not-ready') {
-                    return urls.scramDetailUrl + arch + ";" + ibName
-                } else {
-                    let link_parts = file.split('/');
-                    const si = 4;
-                    link_parts = link_parts.slice(si, si + 5);
-                    return urls.buildOrUnitTestUrl + link_parts.join('/') + '?gpu_utests';
-                }
+                return getBuildOrUnitUrl(ib, 'gpu_utests', '?gpu_utests')
             },
             customResultInterpretation: function(result) {
                 if ( _.isEmpty(result)) {
@@ -430,7 +441,9 @@ export const config = {
         {
             name: "Python3",
             key: "python3_tests",
-            // TODO getUrl
+            getUrl: function (ib) {
+                return getBuildOrUnitUrl(ib, 'python3_tests', '?python3')
+            },
             customResultInterpretation: function(result) {
                 if ( _.isEmpty(result)) {
                     return STATUS_ENUM.not_found
@@ -453,14 +466,14 @@ export const config = {
                 return {
                     name: this.name,
                     glyphicon: "glyphicon-ok",
-                    // url:  this.getUrl(ib),
+                    url:  this.getUrl(ib),
                 };
             },
             ifError: function(ib, result) {
                 return {
                     name: this.name,
                     glyphicon: "glyphicon-remove",
-                    // url:  this.getUrl(ib),
+                    url:  this.getUrl(ib),
                     labelColor: "red"
                 };
             },
