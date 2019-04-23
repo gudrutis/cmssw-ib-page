@@ -328,7 +328,7 @@ export const config = {
         },
         {
             name: "Header consistency",
-            key: "check_headers",
+            key: "check-headers",
             getUrl: function (ib) {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/check_headers/" + getCurrentIbTag(ib);
             }
