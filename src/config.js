@@ -88,7 +88,8 @@ const urls = {
     relVals: "https://cms-sw.github.io/relvalLogDetail.html#",
     commits: "https://github.com/cms-sw/cmsdist/commits/",
     newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`,
-    newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}`
+    newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}`,
+    githubCompareTags: (repo, startTag, endtag ) => `https://github.com/${repo}/compare/${startTag}...${endtag}`
 };
 
 
