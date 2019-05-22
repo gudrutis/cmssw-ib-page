@@ -5,7 +5,7 @@ import uuid from 'uuid';
 import _ from 'underscore';
 import { config } from "../../config";
 
-let {githubCompareTags} = config.urls;
+let {githubCompareTags, githubRepo, githubRepoTag} = config.urls;
 
 function isFromMergedCommit(pr) {
     if (pr.from_merge_commit === true) {
@@ -13,10 +13,10 @@ function isFromMergedCommit(pr) {
     }
 }
 
-function renderCommits(mergedPrs, previousIBTag) {
+function renderCommits(mergedPrs, previousIBTag, repo) {
     let commits;
     if (mergedPrs.length === 0) {
-        commits = <p key={uuid.v4()}>No new pull requests since {previousIBTag}</p>
+        commits = <p key={uuid.v4()}>No new pull requests since <a href={githubRepoTag(repo, previousIBTag)}>{previousIBTag}</a></p>
     } else {
         commits = (
             <ul>
@@ -34,7 +34,7 @@ function renderCommits(mergedPrs, previousIBTag) {
 }
 
 function renderComparisonLink(repo, startTag, endTag){
-        return <p>Compared {repo} between <a href={githubCompareTags(repo, startTag, endTag)}> {startTag} and {endTag}</a></p>;
+        return <p>Compared <a href={githubRepo(repo)}>{repo}</a> between <a href={githubCompareTags(repo, startTag, endTag)}> {startTag} and {endTag}</a></p>;
 }
 
 class Commits extends Component {
@@ -59,7 +59,7 @@ class Commits extends Component {
                 <Tab.Pane key={uuid.v4()} eventKey={pos}>
                     <br/>
                     {renderComparisonLink('cms-sw/cmssw',getPreviousIbTag(ib), getCurrentIbTag(ib))}
-                    {renderCommits(ib.merged_prs, getPreviousIbTag(ib))}
+                    {renderCommits(ib.merged_prs, getPreviousIbTag(ib), 'cms-sw/cmssw')}
                 </Tab.Pane>
             );
             cmsswTabList.push(
@@ -77,7 +77,7 @@ class Commits extends Component {
                         <Tab.Pane key={uuid.v4()} eventKey={tabKey}>
                             <br/>
                             {renderComparisonLink('cms-sw/cmsdist',previousCompTag, currentCompTagAfter)}
-                            {renderCommits(pr_list_by_arch, previousCompTag)}
+                            {renderCommits(pr_list_by_arch, previousCompTag, 'cms-sw/cmsdist')}
                         </Tab.Pane>
                     );
                 })
