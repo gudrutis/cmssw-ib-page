@@ -67,14 +67,11 @@ class Commits extends Component {
             );
             // ----
             if (!_.isEmpty(ib.cmsdist_merged_prs)){
-                cmsDistDropdownList.push(
-                    <MenuItem key={uuid.v4()} header>{getDisplayName(ib.release_queue)}</MenuItem>
-                );
                 _.each(ib.cmsdist_merged_prs, (pr_list_by_arch, key) => {
                     let tabKey = getDisplayName(ib.release_queue) + key;
                     let [previousCompTag, currentCompTagAfter] =  ib.cmsdist_compared_tags[key].split('..');
                     cmsDistDropdownList.push(
-                        <MenuItem key={uuid.v4()} eventKey={tabKey}>{key}</MenuItem>
+                        <MenuItem key={uuid.v4()} eventKey={tabKey}>{getDisplayName(ib.release_queue)} - {key}</MenuItem>
                     );
                     cmsDistTabPaneList.push(
                         <Tab.Pane key={uuid.v4()} eventKey={tabKey}>
