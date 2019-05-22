@@ -89,7 +89,9 @@ const urls = {
     commits: "https://github.com/cms-sw/cmsdist/commits/",
     newRelVals: (releaseQue, date) => `#/relVal/${releaseQue}/${date}`,
     newRelValsSpecific: (releaseQue, date, flavor, arch, selectedStatus ) => `#/relVal/${releaseQue}/${date}?selectedArchs=${arch}&selectedFlavors=${flavor}${selectedStatus}`,
-    githubCompareTags: (repo, startTag, endtag ) => `https://github.com/${repo}/compare/${startTag}...${endtag}`
+    githubCompareTags: (repo, startTag, endtag ) => `https://github.com/${repo}/compare/${startTag}...${endtag}`,
+    githubRepo: (repo) => `https://github.com/${repo}`,
+    githubRepoTag: (repo, tag) => `https://github.com/${repo}/releases/tag/${tag}`
 };
 
 
