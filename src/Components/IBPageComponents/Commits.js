@@ -77,7 +77,6 @@ class Commits extends Component {
                         <Tab.Pane key={uuid.v4()} eventKey={tabKey}>
                             <br/>
                             {renderComparisonLink('cms-sw/cmsdist',previousCompTag, currentCompTagAfter)}
-                            {/* TODO getPreviousIbTag should be chab */}
                             {renderCommits(pr_list_by_arch, previousCompTag)}
                         </Tab.Pane>
                     );
