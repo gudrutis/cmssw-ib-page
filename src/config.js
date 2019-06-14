@@ -334,7 +334,14 @@ export const config = {
             key: "check-headers",
             getUrl: function (ib) {
                 return "https://cmssdt.cern.ch/SDT/jenkins-artifacts/check_headers/" + getCurrentIbTag(ib);
-            }
+            },
+            ifError: function(ib, result) {
+                return {
+                    name: this.name,
+                    glyphicon: "glyphicon-remove",
+                    url:  this.getUrl(ib),
+                    labelColor: "red"
+            }}
         },
         {
             name: "FWLite",
