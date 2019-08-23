@@ -366,7 +366,7 @@ class ComparisonTable extends Component {
 
     render() {
         const {archsByIb} = this.state;
-
+        console.log(archsByIb);
         return (
             <div className="table-responsive">
                 <Table striped={true} bordered={true} condensed={true} hover>
@@ -447,7 +447,7 @@ class ComparisonTable extends Component {
                                 resultType: 'builds',
                                 getUrl: getBuildOrUnitUrl,
                                 // first group will be showed as label,
-                                // if not found, then second group will be showed
+                                // if not found, then second group will be shown
                                 showLabelConfig: [
                                     {
                                         groupFields: [(key) => key.includes("Error")],
@@ -520,6 +520,16 @@ class ComparisonTable extends Component {
                             })
                         })}
                     </tr>
+                    {/*{ this.shouldShowRow("dupDict") ?*/}
+                        {/*<tr>*/}
+                            {/*<td className={'name-column'}><b>Unit Tests</b></td>*/}
+                            {/*{this.renderRowCellsWithDefaultPreConfig({*/}
+                                    {/*resultType: 'dupDict',*/}
+                                    {/*getUrl: getBuildOrUnitUrl*/}
+                                {/*}*/}
+                            {/*)}*/}
+                        {/*</tr>*/}
+                        {/*: null}*/}
                     </tbody>
                 </Table>
             </div>
